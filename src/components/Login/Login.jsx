@@ -1,7 +1,7 @@
 import { useState } from "react";
 import Input from "../Input.jsx";
 
-export default function Login() {
+export default function Login({ setRegisterValue, setLoginValue }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -42,15 +42,30 @@ export default function Login() {
           }}
         />
 
-        <button type="submit">Login</button>
-      </form>
+        <button
+          onClick={(e) => {
+            setLoginValue(!e);
+          }}
+        >
+          Login
+        </button>
 
-      <a
-        href="https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Ftse1.mm.bing.net%2Fth%2Fid%2FOIP.H88aKb7tUCF3XycKwqHjFgHaEK%3Fpid%3DApi&f=1&ipt=9494b8724a2c4334c745ca42d552037d591b5a6c5889b3ae0375cdabf29a6a19&ipo=images"
-        className="menu-subtitle"
-      >
-        Accedi come Ospite
-      </a>
+        <button
+          onClick={(e) => {
+            setRegisterValue(!e);
+          }}
+        >
+          Registrati
+        </button>
+
+        <button
+          onClick={(e) => {
+            setLoginValue(!e);
+          }}
+        >
+          Accedi come Ospite
+        </button>
+      </form>
     </div>
   );
 }

@@ -1,25 +1,34 @@
-import { useState, useEffect } from 'react';
-import './index.css';
-import BombHeader from './components/BombHeader';
-import GuessRow from './components/GuessRow';
-import ColorPicker from './components/ColorPicker';
-import EndScreen from './components/EndScreen';
-import GameBoard from './components/GameBoard';
-import VersusSetup from './components/VersusSetup';
+import { useState, useEffect } from "react";
+import "./index.css";
+import BombHeader from "./components/BombHeader";
+import GuessRow from "./components/GuessRow";
+import ColorPicker from "./components/ColorPicker";
+import EndScreen from "./components/EndScreen";
+import GameBoard from "./components/GameBoard";
+import VersusSetup from "./components/VersusSetup";
+import Login from "./components/Login/Login";
+import Registration from "./components/Registration/Registration";
 
-const COLORS_BOMB = ['#ef4444', '#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#06b6d4'];
-const MAX_TURNS = 12;
-
-
+const COLORS_BOMB = [
+  "#ef4444",
+  "#10b981",
+  "#3b82f6",
+  "#f59e0b",
+  "#ec4899",
+  "#06b6d4",
+];
+const MAX_TURNS = 10;
 
 function App() {
-  const [mode, setMode] = useState(null);        // null | 'normal' | 'devil' | 'versus'
+  const [isLogged, setLogged] = useState(false);
+  const [isRegisterView, setRegisterView] = useState(false);
+  const [mode, setMode] = useState(null); // null | 'normal' | 'devil' | 'versus'
   const [guesses, setGuesses] = useState([]);
   const [currentGuess, setCurrentGuess] = useState(Array(4).fill(null));
   const [selectedColor, setSelectedColor] = useState(0);
   const [gameWon, setGameWon] = useState(false);
   const [gameOver, setGameOver] = useState(false);
-  const [gameOverReason, setGameOverReason] = useState('');
+  const [gameOverReason, setGameOverReason] = useState("");
   const [secretCode, setSecretCode] = useState([]);
   const [timeLeft, setTimeLeft] = useState(0);
   const [hasStarted, setHasStarted] = useState(false); // per far partire il timer in Diavolo
@@ -36,11 +45,11 @@ function App() {
     setSelectedColor(0);
     setGameWon(false);
     setGameOver(false);
-    setGameOverReason('');
+    setGameOverReason("");
     setHasStarted(false);
     setTempCode(Array(4).fill(null));
 
-    if (mode === 'versus') {
+    if (mode === "versus") {
       // in 1 vs 1 il codice viene scelto dal Giocatore 1
       setSecretCode([]);
       setTimeLeft(0);
@@ -52,37 +61,37 @@ function App() {
           .fill(0)
           .map(() => Math.floor(Math.random() * COLORS_BOMB.length))
       );
-      setTimeLeft(mode === 'devil' ? 60 : 0);
+      setTimeLeft(mode === "devil" ? 60 : 0);
       setIsSettingCode(false);
     }
   }, [mode]);
 
   // timer solo in modalità Diavolo e solo dopo Start
   useEffect(() => {
-    if (mode !== 'devil') return;
+    if (mode !== "devil") return;
     if (!hasStarted) return;
     if (gameWon || gameOver) return;
 
     if (timeLeft <= 0) {
       setGameOver(true);
-      setGameOverReason('timer');
+      setGameOverReason("timer");
       return;
     }
 
-    const timer = setTimeout(() => setTimeLeft(t => t - 1), 1000);
+    const timer = setTimeout(() => setTimeLeft((t) => t - 1), 1000);
     return () => clearTimeout(timer);
   }, [timeLeft, gameWon, gameOver, mode, hasStarted]);
 
   const addPeg = (index) => {
     if (gameWon || gameOver || guesses.length >= MAX_TURNS) return;
-    setCurrentGuess(prev =>
+    setCurrentGuess((prev) =>
       prev.map((val, i) => (i === index ? selectedColor : val))
     );
   };
 
   const submitGuess = () => {
     if (gameWon || gameOver || guesses.length >= MAX_TURNS) return;
-    if (!currentGuess.every(c => c !== null)) return;
+    if (!currentGuess.every((c) => c !== null)) return;
 
     const feedback = calculateFeedback(secretCode, currentGuess);
     const newGuesses = [...guesses, { guess: currentGuess, feedback }];
@@ -98,7 +107,7 @@ function App() {
     // esplosione per tentativi finiti
     if (newGuesses.length >= MAX_TURNS) {
       setGameOver(true);
-      setGameOverReason('turns');
+      setGameOverReason("turns");
     }
   };
 
@@ -117,7 +126,7 @@ function App() {
     });
 
     // bianchi
-    secretCopy.forEach(val => {
+    secretCopy.forEach((val) => {
       if (val !== -1) {
         const idx = guessCopy.indexOf(val);
         if (idx !== -1) {
@@ -127,10 +136,7 @@ function App() {
       }
     });
 
-    return [
-      ...Array(black).fill('black'),
-      ...Array(white).fill('white'),
-    ];
+    return [...Array(black).fill("black"), ...Array(white).fill("white")];
   };
 
   const resetGame = () => {
@@ -140,15 +146,57 @@ function App() {
 
   // handler per impostare il codice in 1 vs 1
   const setCodePeg = (index) => {
-    setTempCode(prev => prev.map((v, i) => (i === index ? selectedColor : v)));
+    setTempCode((prev) =>
+      prev.map((v, i) => (i === index ? selectedColor : v))
+    );
   };
 
   const confirmSecretCode = () => {
-    if (!tempCode.every(c => c !== null)) return;
+    if (!tempCode.every((c) => c !== null)) return;
     setSecretCode(tempCode);
     setIsSettingCode(false);
     // Giocatore 2 inizia a giocare, nessun timer in 1 vs 1
   };
+
+  /* SCHERMATA LOGIN */
+  // if (isRegisterView) {
+  //   return <Registration />;
+  // } else if (!isLogged) {
+  //   return (
+  //     <Login
+  //       setRegisterValue={(e) => {
+  //         setRegisterView(!e);
+  //       }}
+  //       bypassLogin={(e) => {
+  //         setRegisterView(!e);
+  //       }}
+  //     />
+  //   );
+  // }
+
+  if (!isLogged && !isRegisterView) {
+    return (
+      <Login
+        setRegisterValue={(e) => {
+          setRegisterView(!e);
+        }}
+        setLoginValue={(e) => {
+          setLogged(!e);
+        }}
+      />
+    );
+  } else if (isRegisterView) {
+    return (
+      <Registration
+        setLoginValue={(e) => {
+          console.log("prima:" + isLogged);
+          setLogged(!e);
+          setRegisterView(!isRegisterView);
+          console.log("dopo:" + isLogged);
+        }}
+      />
+    );
+  }
 
   // SCHERMATA MENU MODALITÀ
   if (!mode) {
@@ -157,22 +205,13 @@ function App() {
         <div className="mode-menu">
           <h1 className="menu-title">MASTERMIND SCAM</h1>
           <p className="menu-subtitle">Scegli la modalità di gioco</p>
-          <button
-            className="menu-btn"
-            onClick={() => setMode('normal')}
-          >
+          <button className="menu-btn" onClick={() => setMode("normal")}>
             Modalità Normale
           </button>
-          <button
-            className="menu-btn"
-            onClick={() => setMode('versus')}
-          >
+          <button className="menu-btn" onClick={() => setMode("versus")}>
             1 vs 1 (Codemaker / Codebreaker)
           </button>
-          <button
-            className="menu-btn"
-            onClick={() => setMode('devil')}
-          >
+          <button className="menu-btn" onClick={() => setMode("devil")}>
             Modalità Diavolo
           </button>
         </div>
@@ -181,7 +220,7 @@ function App() {
   }
 
   // FASE SCELTA CODICE (1 vs 1)
-  if (mode === 'versus' && isSettingCode) {
+  if (mode === "versus" && isSettingCode) {
     return (
       <VersusSetup
         tempCode={tempCode}
@@ -199,36 +238,35 @@ function App() {
 
   if (!secretCode.length) return <div>Caricamento...</div>;
 
-  const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0');
-  const seconds = String(timeLeft % 60).padStart(2, '0');
+  const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
+  const seconds = String(timeLeft % 60).padStart(2, "0");
 
   const mainButtonDisabled =
-    (mode === 'devil' && !hasStarted)
+    mode === "devil" && !hasStarted
       ? false
-      : (gameWon || gameOver || !currentGuess.every(c => c !== null));
+      : gameWon || gameOver || !currentGuess.every((c) => c !== null);
 
   const mainButtonLabel =
-    mode === 'devil' && !hasStarted ? 'START' : 'DEFUSE NOW';
+    mode === "devil" && !hasStarted ? "START" : "DEFUSE NOW";
 
   const mainButtonOnClick =
-    mode === 'devil' && !hasStarted
-      ? () => setHasStarted(true)
-      : submitGuess;
+    mode === "devil" && !hasStarted ? () => setHasStarted(true) : submitGuess;
 
   return (
     <div className="page-wrapper">
       <div className="bomb-container">
         {/* Pulsante per tornare al menu se la partita NON è iniziata */}
-        {mode && guesses.length === 0 && !gameWon && !gameOver && !isSettingCode && (
-          <div style={{ padding: '12px 16px' }}>
-            <button
-              className="back-menu-btn"
-              onClick={() => setMode(null)}
-            >
-              ← Torna alla scelta modalità
-            </button>
-          </div>
-        )}
+        {mode &&
+          guesses.length === 0 &&
+          !gameWon &&
+          !gameOver &&
+          !isSettingCode && (
+            <div style={{ padding: "12px 16px" }}>
+              <button className="back-menu-btn" onClick={() => setMode(null)}>
+                ← Torna alla scelta modalità
+              </button>
+            </div>
+          )}
 
         <BombHeader
           minutes={minutes}
@@ -261,7 +299,7 @@ function App() {
             gameOverReason={gameOverReason}
             guessesCount={guesses.length}
             secretCode={secretCode}
-            onReset={resetGame}   // torna al menu
+            onReset={resetGame} // torna al menu
           />
         )}
       </div>
