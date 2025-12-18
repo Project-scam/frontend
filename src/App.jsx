@@ -6,13 +6,16 @@ import ColorPicker from './components/ColorPicker';
 import EndScreen from './components/EndScreen';
 import GameBoard from './components/GameBoard';
 import VersusSetup from './components/VersusSetup';
+import  Login  from './components/Login/Login';
+
 
 const COLORS_BOMB = ['#ef4444', '#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#06b6d4'];
-const MAX_TURNS = 12;
+const MAX_TURNS = 10;
 
 
 
 function App() {
+  const [isLogged, setLogged] = useState(false)
   const [mode, setMode] = useState(null);        // null | 'normal' | 'devil' | 'versus'
   const [guesses, setGuesses] = useState([]);
   const [currentGuess, setCurrentGuess] = useState(Array(4).fill(null));
@@ -149,6 +152,13 @@ function App() {
     setIsSettingCode(false);
     // Giocatore 2 inizia a giocare, nessun timer in 1 vs 1
   };
+
+  /* SCHERMATA LOGIN */
+  if (!isLogged) {
+    return(
+      <Login />
+    )
+  }
 
   // SCHERMATA MENU MODALITÀ
   if (!mode) {
