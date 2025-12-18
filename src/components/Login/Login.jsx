@@ -8,7 +8,7 @@ export default function Login({ setRegisterValue, setLoginValue }) {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const response = await fetch("/api/login.php", {
+    const response = await fetch("https://backend-snowy-mu-43.vercel.app/login", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
