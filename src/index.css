@@ -11,6 +11,19 @@ body {
   overflow-y: auto;
 }
 
+.leaderboard-card{
+  display: flex;
+  border: 1px solid black;
+  width: 450px;
+  height: 50px;
+  margin: 15px;
+  justify-content: space-between;
+  border-radius: 12px;
+  align-items: center;
+  padding: 20px;
+
+}
+
 .page-wrapper {
   display: flex;
   justify-content: center;
@@ -18,7 +31,40 @@ body {
   min-height: 100vh;
 }
 
-/* MENU MODALITÀ */
+.page-login {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+}
+.form-login{
+  display: flex;
+  flex-direction: column;  
+}
+.form-login input{
+    width: 100%;
+    padding: 12px;
+    margin: 8px 0px 20px;
+    border: none;
+    border-radius: 8px;
+    background: rgba(255,255,255,0.1);
+    color: white;
+    font-size: 16px;
+  }
+  .form-login button{
+    height: 40px;
+    padding: 10px;
+    background-color: rgba(255,255,255,0.3);
+    color:white;
+    border-radius: 8px;
+    margin-bottom: 20px;
+  }
+  .form-login input:focus {
+    outline:none;
+    box-shadow: 0 5px 0 0 #eab308;
+  }
+  /* MENU MODALITÀ */
 
 .mode-menu {
   width: 360px;
