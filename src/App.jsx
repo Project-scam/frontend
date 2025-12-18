@@ -7,6 +7,7 @@ import EndScreen from './components/EndScreen';
 import GameBoard from './components/GameBoard';
 import VersusSetup from './components/VersusSetup';
 import  Login  from './components/Login/Login';
+import Registration from './components/Registration/Registration';
 
 
 const COLORS_BOMB = ['#ef4444', '#10b981', '#3b82f6', '#f59e0b', '#ec4899', '#06b6d4'];

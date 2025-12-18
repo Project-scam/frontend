@@ -1,6 +1,7 @@
 // src/components/Registration/Registration.jsx
 
 import { useState } from "react";
+import Message from "../Message";
 
 const Registration = ({
     inputName = "Username", // defaul cambiabile liv. visivo
@@ -26,7 +27,18 @@ const Registration = ({
     const password = event.target.elements.password.value // prendo i valori della password
     const rewritePassword = event.target.elements.passwordReconfirm.value // prendo i valori della seconda password
 
-    /* Faccio la richiesta al server tramite Fetch */
+    // CONTROLLO DATI INSERITI DALL'UTENTE
+    const areSpaces = username.includes(" "); // se gli spazi contengono stringhe vuote
+    if (areSpaces){
+        return setMessageError("Non puoi lasciare spazi vuoti")
+    } else if (password !== rewritePassword) { // se le password non coincidono
+        setMessageError("Le password non coincidono!")
+    }else {
+        isSuccess() // esegui la funzione passata dal padre
+    }
+   
+
+    /* RICHIESTA AL SERVER TRAMITE FECTH */
     fetch(urlFetch, {
         method: 'POST', // il metodo è post
         headers: {'Content-Type':'application/json'}, // gli dico quali dati sta ricevendo in questo caso json
@@ -35,12 +47,7 @@ const Registration = ({
     .then(reply => reply.json()) // ricevo la risposta dal server e converto i dati in json
     .then((dates) => {
         if (dates) { // se esistono i dati
-                /* Controllo delle due password: */
-            if (password !== rewritePassword) {
-                    setMessageError("Le password non coincidono!")
-            }else{
-                isSuccess() // esegui la funzione passata dal padre
-            }
+            /* Controllo delle due password: */
             
         } else {
             setMessageError("Registrazione non riuscita")
@@ -68,6 +75,9 @@ const Registration = ({
                     <input id="passwordReconfirm" name="passwordReconfirm" type="password" placeholder="Rewrite your password " required/>
 
                     <button type="submit" className="registration-btn">CREATE ACCOUNT</button>
+
+                    <br />
+                    <Message textColor="#d83924">{messageError}</Message>
 
                 </form>
             </div>
