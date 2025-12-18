@@ -1,0 +1,356 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Orbitron:wght@700;900&display=swap');
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body { 
+  font-family: 'Inter', sans-serif;
+  background: radial-gradient(ellipse at center, #0f0f23 0%, #000 100%);
+  min-height: 100vh;
+  padding: 20px;
+  position: relative;
+  overflow-y: auto;
+}
+
+.page-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 100vh;
+}
+
+/* MENU MODALITÀ */
+
+.mode-menu {
+  width: 360px;
+  margin: 0 auto;
+  padding: 40px 32px;
+  border-radius: 24px;
+  background: rgba(15,15,35,0.9);
+  box-shadow: 0 0 80px rgba(239,68,68,0.4);
+  text-align: center;
+}
+
+.menu-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 32px;
+  font-weight: 900;
+  color: #eab308;
+  margin-bottom: 12px;
+}
+
+.menu-subtitle {
+  color: #e5e7eb;
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+.menu-btn {
+  width: 100%;
+  margin-bottom: 12px;
+  padding: 14px 20px;
+  border-radius: 9999px;
+  border: none;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+/* Primo pulsante (Normale) – sfumatura calda */
+.mode-menu .menu-btn:nth-child(3) {
+  /* h1 = child 1, p = child 2, primo button = child 3 */
+  background: linear-gradient(135deg, #f97316, #ea580c);
+}
+
+/* Secondo pulsante (1 vs 1) – sfumatura blu */
+.mode-menu .menu-btn:nth-child(4) {
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+}
+
+/* Terzo pulsante (Diavolo) – rosso */
+.mode-menu .menu-btn:nth-child(5) {
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
+}
+
+.menu-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(0,0,0,0.4);
+}
+
+/* CONTAINER GIOCO */
+
+.bomb-container {
+  width: 428px;
+  margin: 0 auto;
+  background: rgba(15,15,35,0.9);
+  backdrop-filter: blur(30px);
+  border-radius: 28px;
+  border: 1px solid rgba(255,255,255,0.1);
+  overflow: hidden;
+  box-shadow: 0 0 100px rgba(239,68,68,0.4);
+  position: relative;
+}
+
+/* Pulsante torna al menu */
+
+.back-menu-btn {
+  background: transparent;
+  border: 1px solid #4b5563;
+  color: #e5e7eb;
+  font-size: 12px;
+  padding: 6px 10px;
+  border-radius: 9999px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.back-menu-btn:hover {
+  border-color: #eab308;
+  color: #eab308;
+}
+
+/* HEADER */
+
+.header-bomb {
+  background: linear-gradient(135deg, #1e1b4b, #0f0f23);
+  padding: 50px 36px 28px;
+  text-align: center;
+  border-bottom: 3px solid #ef4444;
+  position: relative;
+}
+
+.badge-scam {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: linear-gradient(135deg, #eab308, #f59e0b);
+  color: #000;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-family: 'Orbitron', monospace;
+  font-size: 12px;
+  font-weight: 900;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  box-shadow: 0 8px 24px rgba(234,179,8,0.5);
+}
+
+.title-bomb {
+  font-family: 'Orbitron', monospace;
+  font-size: 40px;
+  font-weight: 900;
+  background: linear-gradient(45deg, #eab308, #f59e0b, #ef4444);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  letter-spacing: 2px;
+  text-shadow: 0 0 40px rgba(234,179,8,0.8);
+  margin-bottom: 16px;
+}
+
+.timer-bomb {
+  font-family: 'Orbitron', monospace;
+  font-size: 32px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 900;
+  letter-spacing: 4px;
+  text-shadow: 0 0 30px rgba(239,68,68,1);
+  animation: countdown 1s infinite;
+}
+
+@keyframes countdown {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.05); }
+}
+
+.urgency-meter {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-content: center;
+  margin-top: 20px;
+  color: #eab308;
+  font-weight: 700;
+  font-size: 14px;
+}
+
+.meter-bar {
+  width: 140px;
+  height: 8px;
+  background: rgba(31,41,55,0.8);
+  border-radius: 4px;
+  overflow: hidden;
+  border: 1px solid #ef4444;
+}
+
+.meter-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #eab308, #f59e0b);
+  border-radius: 3px;
+  width: 17%;
+  transition: width 0.3s ease;
+}
+
+/* BOARD */
+
+.board-bomb {
+  padding: 24px 36px 16px;
+}
+
+.row-bomb {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  padding: 10px 0;
+  border-bottom: 1px solid rgba(239,68,68,0.2);
+}
+
+.guess-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 64px);
+  gap: 12px;
+}
+
+/* Griglia feedback a destra */
+
+.feedback-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 20px);
+  grid-auto-rows: 20px;
+  gap: 4px;
+}
+
+/* PEG PRINCIPALI */
+
+.peg-bomb {
+  width: 64px;
+  height: 64px;
+  border-radius: 18px;
+  border: 2px solid rgba(255,255,255,0.2);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  background: rgba(15,15,35,0.8);
+  backdrop-filter: blur(10px);
+  box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+}
+
+.peg-bomb.empty {
+  background: rgba(31,41,55,0.6);
+}
+
+.peg-bomb:hover {
+  transform: translateY(-4px) scale(1.03);
+  box-shadow: 0 18px 40px rgba(0,0,0,0.8);
+}
+
+.peg-bomb:active {
+  transform: scale(0.96);
+}
+
+/* PEG DI CONTROLLO (neri/bianchi con bordo bianco) */
+
+.feedback-peg-bomb {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  border: 2px solid #ffffff;
+  background-color: transparent;
+  box-shadow: 0 0 4px rgba(0,0,0,0.6);
+}
+
+.feedback-peg-bomb.black {
+  background-color: #000000;
+}
+
+.feedback-peg-bomb.white {
+  background-color: #ffffff;
+}
+
+/* PALETTE COLORI */
+
+.colors-bomb {
+  display: flex;
+  gap: 16px;
+  justify-content: center;
+  padding: 24px 24px 28px;
+  background: rgba(15,15,35,0.9);
+  border-top: 2px solid #ef4444;
+}
+
+.color-btn-bomb {
+  width: 48px;
+  height: 48px;
+  border-radius: 16px;
+  border: 3px solid rgba(239,68,68,0.6);
+  cursor: pointer;
+  position: relative;
+  transition: all 0.3s ease;
+  box-shadow: 0 12px 32px rgba(0,0,0,0.6);
+}
+
+.color-btn-bomb.active {
+  border-color: #ef4444;
+  box-shadow:
+    0 0 0 4px rgba(239,68,68,0.3),
+    0 16px 32px rgba(239,68,68,0.4);
+  transform: scale(1.08);
+}
+
+/* BOTTONE PRINCIPALE */
+
+.defuse-btn {
+  width: 100%;
+  background: linear-gradient(135deg, #ef4444, #dc2626, #b91c1c);
+  color: white;
+  border: none;
+  padding: 24px;
+  font-family: 'Orbitron', monospace;
+  font-size: 20px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 3px;
+  border-radius: 0 0 28px 28px;
+  cursor: pointer;
+  box-shadow: 0 20px 48px rgba(239,68,68,0.6);
+  transition: all 0.2s ease;
+}
+
+.defuse-btn:hover {
+  transform: translateY(-2px);
+}
+
+.defuse-btn:active {
+  transform: scale(0.97);
+}
+
+.defuse-btn:disabled {
+  background: linear-gradient(135deg, #4b5563, #374151);
+  cursor: not-allowed;
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+
+/* HEADER SETUP 1 VS 1 */
+
+.setup-header {
+  padding: 24px 32px 8px;
+  text-align: center;
+  border-bottom: 1px solid rgba(239,68,68,0.4);
+}
+
+.setup-title {
+  font-family: 'Orbitron', monospace;
+  font-size: 20px;
+  color: #eab308;
+  margin-bottom: 8px;
+}
+
+.setup-subtitle {
+  color: #e5e7eb;
+  font-size: 13px;
+}
