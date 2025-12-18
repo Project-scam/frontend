@@ -5,7 +5,7 @@ function BombHeader({ minutes, seconds, guessesCount, maxTurns, mode }) {
   return (
     <div className="header-bomb">
       <div className="badge-scam">MASTERMIND SCAM</div>
-      <h1 className="title-bomb">DEFUSE THE BOMB</h1>
+      <h1 className="title">DEFUSE THE BOMB</h1>
 
       {mode === 'devil' && (
         <div className="timer-bomb">

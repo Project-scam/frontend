@@ -35,16 +35,19 @@ const Registration = ({
     .then(reply => reply.json()) // ricevo la risposta dal server e converto i dati in json
     .then((dates) => {
         if (dates) { // se esistono i dati
-            isSuccess() // esegui la funzione passata dal padre
+                /* Controllo delle due password: */
+            if (password !== rewritePassword) {
+                    setMessageError("Le password non coincidono!")
+            }else{
+                isSuccess() // esegui la funzione passata dal padre
+            }
+            
         } else {
             setMessageError("Registrazione non riuscita")
         }
     }) 
 
-    /* Controllo delle due password: */
-    if (password !== rewritePassword) {
-        setMessageError("Le password non coincidono!")
-    }
+
 
   };
 
