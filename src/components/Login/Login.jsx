@@ -31,6 +31,7 @@ export default function Login({ setRegisterValue, setLoginValue }) {
         // Se la risposta non è OK (es. 401, 404, 500), lancia un errore con il messaggio del backend
         throw new Error(risposta.error || "Errore durante il login");
       }
+      alert(risposta);
       console.log(JSON.stringify({ username, password }))
       console.log("Login riuscito:", risposta);
       // Qui potresti salvare il token utente e reindirizzare l'utente
