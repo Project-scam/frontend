@@ -63,15 +63,12 @@ export default function Login({ setRegisterValue, setLoginValue }) {
 
         {error && <p className="error-message">{error}</p>}
 
-        <button
-          onClick={(e) => {
-            setLoginValue(!e);
-          }}
-        >
+        <button type="submit">
           Login
         </button>
 
         <button
+          type="button"
           onClick={(e) => {
             setRegisterValue(!e);
           }}
@@ -80,8 +77,9 @@ export default function Login({ setRegisterValue, setLoginValue }) {
         </button>
 
         <button
+          type="button"
           onClick={(e) => {
-            setLoginValue(!e);
+            setLoginValue(false); // Presumo che questo nasconda il form di login
           }}
         >
           Accedi come Ospite
