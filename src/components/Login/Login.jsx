@@ -2,25 +2,43 @@ import { useState } from "react";
 import Input from "../Input.jsx";
 
 export default function Login({ setRegisterValue, setLoginValue }) {
-  const [email, setEmail] = useState("");
+  const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setError(null); // Resetta gli errori precedenti
 
-    const response = await fetch("https://backend-snowy-mu-43.vercel.app/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        email,
-        password,
-      }),
-    });
+    try {
+      const response = await fetch(
+        "https://backend-snowy-mu-43.vercel.app/login",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            username, // Invia 'username' come richiesto dal backend
+            password,
+          }),
+        }
+      );
 
-    const risposta = await response.json();
-    console.log(risposta);
+      const risposta = await response.json();
+
+      if (!response.ok) {
+        // Se la risposta non è OK (es. 401, 404, 500), lancia un errore con il messaggio del backend
+        throw new Error(risposta.error || "Errore durante il login");
+      }
+
+      console.log("Login riuscito:", risposta);
+      // Qui potresti salvare il token utente e reindirizzare l'utente
+    } catch (err) {
+      // Cattura errori di rete o quelli lanciati sopra
+      console.error(err.message);
+      setError(err.message);
+    }
   };
 
   return (
@@ -28,9 +46,9 @@ export default function Login({ setRegisterValue, setLoginValue }) {
       <form className="form-login" onSubmit={handleSubmit}>
         <Input
           label={"Username"}
-          value={email}
+          value={username}
           setInputValue={(e) => {
-            setEmail(e);
+            setUsername(e);
           }}
         />
 
@@ -41,6 +59,8 @@ export default function Login({ setRegisterValue, setLoginValue }) {
             setPassword(e);
           }}
         />
+
+        {error && <p className="error-message">{error}</p>}
 
         <button
           onClick={(e) => {
