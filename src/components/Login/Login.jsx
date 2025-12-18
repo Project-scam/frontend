@@ -1,4 +1,5 @@
 import { useState } from "react";
+import Input from "../Input.jsx";
 
 export default function Login() {
   const [email, setEmail] = useState("");
@@ -25,18 +26,20 @@ export default function Login() {
   return (
     <div className="page-login">
       <form className="form-login" onSubmit={handleSubmit}>
-        <Input label={"Username"}
-        value={email}
-        setValue={setEmail({e}=>{})} />
+        <Input
+          label={"Username"}
+          value={email}
+          setInputValue={(e) => {
+            setEmail(e);
+          }}
+        />
 
-        <label className="menu-title">Password</label>
-        <br />
-        <input
-          type="password"
+        <Input
+          label={"Password"}
           value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          required
-          className="login-input"
+          setInputValue={(e) => {
+            setPassword(e);
+          }}
         />
 
         <button type="submit">Login</button>
