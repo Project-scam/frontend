@@ -1,14 +1,14 @@
 import { useState } from "react";
 import Input from "../Input.jsx";
 
-export default function Login({ setRegisterValue, setLoginValue }) {
+export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null); // Resetta gli errori precedenti
+    setError(null);
 
     try {
       const response = await fetch(
@@ -31,12 +31,8 @@ export default function Login({ setRegisterValue, setLoginValue }) {
         // Se la risposta non è OK (es. 401, 404, 500), lancia un errore con il messaggio del backend
         throw new Error(risposta.error || "Errore durante il login");
       }
-      alert(risposta);
-      console.log(JSON.stringify({ username, password }))
-      console.log("Login riuscito:", risposta);
-      // Qui potresti salvare il token utente e reindirizzare l'utente
+      onLoginSuccess(); // Comunica il successo al componente App
     } catch (err) {
-      // Cattura errori di rete o quelli lanciati sopra
       console.error(err.message);
       setError(err.message);
     }
@@ -48,17 +44,14 @@ export default function Login({ setRegisterValue, setLoginValue }) {
         <Input
           label={"Username"}
           value={username}
-          setInputValue={(e) => {
-            setUsername(e);
-          }}
+          setInputValue={setUsername}
         />
 
         <Input
           label={"Password"}
+          type="password"
           value={password}
-          setInputValue={(e) => {
-            setPassword(e);
-          }}
+          setInputValue={setPassword}
         />
 
         {error && <p className="error-message">{error}</p>}
@@ -69,18 +62,14 @@ export default function Login({ setRegisterValue, setLoginValue }) {
 
         <button
           type="button"
-          onClick={(e) => {
-            setRegisterValue(!e);
-          }}
+          onClick={onShowRegister}
         >
           Registrati
         </button>
 
         <button
           type="button"
-          onClick={(e) => {
-            setLoginValue(false); // Presumo che questo nasconda il form di login
-          }}
+          onClick={onGuestLogin}
         >
           Accedi come Ospite
         </button>
