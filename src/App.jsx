@@ -158,85 +158,10 @@ function App() {
     // Giocatore 2 inizia a giocare, nessun timer in 1 vs 1
   };
 
-  /* SCHERMATA LOGIN */
-  // if (isRegisterView) {
-  //   return <Registration />;
-  // } else if (!isLogged) {
-  //   return (
-  //     <Login
-  //       setRegisterValue={(e) => {
-  //         setRegisterView(!e);
-  //       }}
-  //       bypassLogin={(e) => {
-  //         setRegisterView(!e);
-  //       }}
-  //     />
-  //   );
-  // }
-
-  if (!isLogged && !isRegisterView) {
-    return (
-      <Login
-        setRegisterValue={(e) => {
-          setRegisterView(!e);
-        }}
-        setLoginValue={(e) => {
-          setLogged(!e);
-        }}
-      />
-    );
-  } else if (isRegisterView) {
-    return (
-      <Registration
-        setLoginValue={(e) => {
-          console.log("prima:" + isLogged);
-          setLogged(!e);
-          setRegisterView(!isRegisterView);
-          console.log("dopo:" + isLogged);
-        }}
-      />
-    );
-  }
-
-  // SCHERMATA MENU MODALITÀ
-  if (!mode) {
-    return (
-      <div className="page-wrapper">
-        <div className="mode-menu">
-          <h1 className="menu-title">MASTERMIND SCAM</h1>
-          <p className="menu-subtitle">Scegli la modalità di gioco</p>
-          <button className="menu-btn" onClick={() => setMode("normal")}>
-            Modalità Normale
-          </button>
-          <button className="menu-btn" onClick={() => setMode("versus")}>
-            1 vs 1 (Codemaker / Codebreaker)
-          </button>
-          <button className="menu-btn" onClick={() => setMode("devil")}>
-            Modalità Diavolo
-          </button>
-        </div>
-      </div>
-    );
-  }
-
-  // FASE SCELTA CODICE (1 vs 1)
-  if (mode === "versus" && isSettingCode) {
-    return (
-      <VersusSetup
-        tempCode={tempCode}
-        colors={COLORS_BOMB}
-        selectedColor={selectedColor}
-        onSelectColor={setSelectedColor}
-        onSetCodePeg={setCodePeg}
-        onConfirm={confirmSecretCode}
-        onBack={() => setMode(null)}
-      />
-    );
-  }
-
-  // da qui in poi: partita normale (secretCode pronto)
-
-  if (!secretCode.length) return <div>Caricamento...</div>;
+  const handleLoginSuccess = () => {
+    setLogged(true);
+    setRegisterView(false); // Assicura di tornare alla vista di gioco
+  };
 
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const seconds = String(timeLeft % 60).padStart(2, "0");
@@ -252,22 +177,62 @@ function App() {
   const mainButtonOnClick =
     mode === "devil" && !hasStarted ? () => setHasStarted(true) : submitGuess;
 
-  return (
+  // --- Logica di Rendering Unificata ---
+  return !isLogged ? (
+    // Se l'utente NON è loggato...
+    isRegisterView ? (
+      // ...e vuole registrarsi, mostra Registration
+      <Registration
+        onRegisterSuccess={handleLoginSuccess}
+        onShowLogin={() => setRegisterView(false)}
+      />
+    ) : (
+      // ...altrimenti, mostra Login
+      <Login
+        onLoginSuccess={handleLoginSuccess}
+        onShowRegister={() => setRegisterView(true)}
+        onGuestLogin={handleLoginSuccess} // Anche l'ospite viene "loggato"
+      />
+    )
+  ) : !mode ? (
+    // Se l'utente è loggato ma non ha scelto la modalità, mostra il menu
+    <div className="page-wrapper">
+      <div className="mode-menu">
+        <h1 className="menu-title">MASTERMIND SCAM</h1>
+        <p className="menu-subtitle">Scegli la modalità di gioco</p>
+        <button className="menu-btn" onClick={() => setMode("normal")}>
+          Modalità Normale
+        </button>
+        <button className="menu-btn" onClick={() => setMode("versus")}>
+          1 vs 1 (Codemaker / Codebreaker)
+        </button>
+        <button className="menu-btn" onClick={() => setMode("devil")}>
+          Modalità Diavolo
+        </button>
+      </div>
+    </div>
+  ) : mode === "versus" && isSettingCode ? (
+    // Se è in modalità 1vs1 e il Giocatore 1 deve scegliere il codice
+    <VersusSetup
+      tempCode={tempCode}
+      colors={COLORS_BOMB}
+      selectedColor={selectedColor}
+      onSelectColor={setSelectedColor}
+      onSetCodePeg={setCodePeg}
+      onConfirm={confirmSecretCode}
+      onBack={() => setMode(null)}
+    />
+  ) : (
+    // Altrimenti, l'utente è loggato e in partita: mostra la schermata di gioco
     <div className="page-wrapper">
       <div className="bomb-container">
-        {/* Pulsante per tornare al menu se la partita NON è iniziata */}
-        {mode &&
-          guesses.length === 0 &&
-          !gameWon &&
-          !gameOver &&
-          !isSettingCode && (
-            <div style={{ padding: "12px 16px" }}>
-              <button className="back-menu-btn" onClick={() => setMode(null)}>
-                ← Torna alla scelta modalità
-              </button>
-            </div>
-          )}
-
+        {guesses.length === 0 && !isSettingCode && (
+          <div style={{ padding: "12px 16px" }}>
+            <button className="back-menu-btn" onClick={() => setMode(null)}>
+              ← Torna alla scelta modalità
+            </button>
+          </div>
+        )}
         <BombHeader
           minutes={minutes}
           seconds={seconds}
@@ -275,9 +240,7 @@ function App() {
           maxTurns={MAX_TURNS}
           mode={mode}
         />
-
-        {/* gioco in corso */}
-        {!gameWon && !gameOver && (
+        {(!gameWon && !gameOver) ? (
           <GameBoard
             guesses={guesses}
             currentGuess={currentGuess}
@@ -290,16 +253,13 @@ function App() {
             mainButtonDisabled={mainButtonDisabled}
             mainButtonOnClick={mainButtonOnClick}
           />
-        )}
-
-        {/* fine partita */}
-        {(gameWon || gameOver) && (
+        ) : (
           <EndScreen
             gameWon={gameWon}
             gameOverReason={gameOverReason}
             guessesCount={guesses.length}
             secretCode={secretCode}
-            onReset={resetGame} // torna al menu
+            onReset={resetGame}
           />
         )}
       </div>
