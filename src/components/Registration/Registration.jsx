@@ -7,18 +7,12 @@ const Registration = ({
   inputName = "Username", // defaul cambiabile liv. visivo
   inputPassword = "Password", // defaut cambiabile liv. visivo
   inputPasswordReconfirm = "Rewrite Password", // default cambiabile liv. visivo
-  urlFetch,
-  isSuccess,
-  setLoginValue,
+  onRegisterSuccess,
+  onShowLogin,
 }) => {
   const [messageError, setMessageError] = useState(null); // stato per messaggio errore
 
-  const handleSubmit = (event) => {
-    /*  VERIFICA DEI DATI SE PRESENTI PER ESSERE SPEDITI:
-    event.preventDefault() // blocca l’invio “classico” del form
-    console.log(event.target.elements.username.value)
-    console.log(event.target.elements.password.value) 
-*/
+  const handleSubmit = async (event) => {
     event.preventDefault(); // qui blocco per inviare i dati nel formato json con fetch
 
     setMessageError(null); // vado così a cancellare possibili errori se c'è ne sono stati a una richiesta di registrazione precedente rimpostanto lo stato a null
@@ -28,36 +22,35 @@ const Registration = ({
     const rewritePassword = event.target.elements.passwordReconfirm.value; // prendo i valori della seconda password
 
     // CONTROLLO DATI INSERITI DALL'UTENTE
-    const areSpaces = username.includes(" "); // se gli spazi contengono stringhe vuote
-    if (areSpaces) {
+    if (username.includes(" ")) {
       return setMessageError("Non puoi lasciare spazi vuoti");
-    } else if (password !== rewritePassword) {
+    }
+    if (password !== rewritePassword) {
       // se le password non coincidono
-      setMessageError("Le password non coincidono!");
-    } else {
-      isSuccess(); // esegui la funzione passata dal padre
+      return setMessageError("Le password non coincidono!");
     }
 
-    /* RICHIESTA AL SERVER TRAMITE FECTH */
-    fetch("https://backend-snowy-mu-43.vercel.app/register", {
-      method: "POST", // il metodo è post
-      headers: { "Content-Type": "application/json" }, // gli dico quali dati sta ricevendo in questo caso json
-      body: JSON.stringify({ username: username, password: password }), // inserico i dati che voglio spedirgli in json trasformati in stringa da stringify
-    })
-      .then((reply) => reply.json()) // ricevo la risposta dal server e converto i dati in json
-      .then((dates) => {
-        if (dates) {
-          // se esistono i dati
-          /* Controllo delle due password: */
-          if (password !== rewritePassword) {
-            setMessageError("Le password non coincidono!");
-          } else {
-            isSuccess(); // esegui la funzione passata dal padre
-          }
-        } else {
-          setMessageError("Registrazione non riuscita");
+    try {
+      /* RICHIESTA AL SERVER TRAMITE FETCH */
+      const response = await fetch(
+        "https://backend-snowy-mu-43.vercel.app/register",
+        {
+          method: "POST", // il metodo è post
+          headers: { "Content-Type": "application/json" }, // gli dico quali dati sta ricevendo in questo caso json
+          body: JSON.stringify({ username: username, password: password }), // inserico i dati che voglio spedirgli in json trasformati in stringa da stringify
         }
-      });
+      );
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Registrazione non riuscita");
+      }
+
+      onRegisterSuccess();
+    } catch (error) {
+      setMessageError(error.message);
+    }
   };
 
   return (
@@ -96,14 +89,15 @@ const Registration = ({
           />
 
           <button
+            type="submit"
             className="registration-btn"
-            onClick={(e) => {
-              setLoginValue(!e);
-            }}
           >
             CREATE ACCOUNT
           </button>
         </form>
+        <button type="button" className="back-btn" onClick={onShowLogin}>
+          Back to Login
+        </button>
       </div>
     </div>
   );
