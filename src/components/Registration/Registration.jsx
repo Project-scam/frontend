@@ -39,7 +39,7 @@ const Registration = ({
     }
 
     /* RICHIESTA AL SERVER TRAMITE FECTH */
-    fetch(urlFetch, {
+    fetch("https://backend-snowy-mu-43.vercel.app/register", {
       method: "POST", // il metodo è post
       headers: { "Content-Type": "application/json" }, // gli dico quali dati sta ricevendo in questo caso json
       body: JSON.stringify({ username: username, password: password }), // inserico i dati che voglio spedirgli in json trasformati in stringa da stringify
