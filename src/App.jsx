@@ -8,6 +8,7 @@ import GameBoard from "./components/GameBoard";
 import VersusSetup from "./components/VersusSetup";
 import Login from "./components/Login/Login";
 import Registration from "./components/Registration/Registration";
+import Modal from "./components/Modal/Modal";
 
 const COLORS_BOMB = [
   "#ef4444",
@@ -139,9 +140,12 @@ function App() {
     return [...Array(black).fill("black"), ...Array(white).fill("white")];
   };
 
+  if (true) return <Modal />
+  
+
   const resetGame = () => {
     // torna al menu principale
-    setMode(null);
+    setMode(null);  
   };
 
   // handler per impostare il codice in 1 vs 1
