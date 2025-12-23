@@ -2,7 +2,7 @@ const isDevelopment = import.meta.env.MODE === 'development';
 
 const API_BASE_URL = isDevelopment
     ? "http://localhost:3000"
-    : "https://backend-snowy-mu-43.vercel.app";
+    : "https://backend-21ia.onrender.com";
 
 export const API_URLS = {
     LOGIN: `${API_BASE_URL}/login`,
