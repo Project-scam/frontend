@@ -1,73 +1,106 @@
-//=========================================================
+//==============================================================
 // File: UserList.jsx
-// Lista utenti online (loggati) da sfidare.
-// @authors: "catalin.groppo@allievi.itsdigitalacademy.com"
-//           "sandu.batrincea@allievi.itsdigitalacademy.com"
+// lista degli utenti logggati e non (per sceglie uno sfidante)
+// @authors: "mattia.zara@allievi.itsdigitalacademy.com"
 //           "mattia.zara@allievi.itsdigitalacademy.com"
-//           "andrea.vilari@allievi.itsdigitalacademy.com"
-//===========================================================
+//           "mattia.zara@allievi.itsdigitalacademy.com"
+//           "mattia.zara@allievi.itsdigitalacademy.com"
+// @version: "1.0.0 2025-12-23"
+//==============================================================
 
-import React, { useState, useEffect } from "react";
-import { API_URLS } from "../config.js";
-import "../index.css"
+import { useState, useEffect } from "react";
+import "../index.css";
 
-export const UserList = ({ onBack }) => {
+export function UserList({ socket, currentUser, incomingChallenge, onAcceptChallenge, onBack }) {
     const [users, setUsers] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
+    const [outgoingChallenge, setOutgoingChallenge] = useState(null); // Username dell'utente sfidato
 
     useEffect(() => {
-        const fetchUsers = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                if (!token) throw new Error("Nessun token trovato. Effettua il login.");
+        if (!socket) return;
 
-                const response = await fetch(API_URLS.USER_LIST, {
-                    method: "GET",
-                    headers: {
-                        "Content-Type": "application/json",
-                        "Authorization": `Bearer ${token}` // Invio il Token JWT nell'header
-                    }
-                });
+        // Richiediamo la lista utenti appena montato il componente
+        socket.emit("get_users");
 
-                if (!response.ok) {
-                    throw new Error("Errore nel recupero della lista utenti.");
-                }
+        // Ascoltiamo aggiornamenti sulla lista utenti (connessioni/disconnessioni)
+        socket.on("user_list_update", (updatedUsers) => {
+            // updatedUsers dovrebbe essere un array di oggetti { username, socketId, status }
+            setUsers(updatedUsers);
+        });
 
-                const data = await response.json();
-                // Assicuriamoci che data sia un array
-                setUsers(Array.isArray(data) ? data : []);
-            } catch (err) {
-                console.error(err);
-                setError(err.message);
-            } finally {
-                setLoading(false);
-            }
+        return () => {
+            socket.off("user_list_update");
         };
+    }, [socket]);
 
-        fetchUsers();
-    }, []);
+    const handleSendChallenge = (targetUser) => {
+        setOutgoingChallenge(targetUser.username);
+        socket.emit("send_challenge", { targetSocketId: targetUser.socketId });
+    };
 
     return (
         <div className="page-wrapper">
-            <div className="mode-menu" style={{ width: "90%", maxWidth: "500px" }}>
-                <h1 className="menu-title">CHALLENGERS</h1>
+            <div className="mode-menu" style={{ width: "500px" }}>
+                <h2 className="menu-title">CHALLENGERS</h2>
+                <p className="menu-subtitle">Choose an opponent</p>
 
-                {loading && <p style={{ color: "#eab308" }}>Loading...</p>}
-                {error && <p style={{ color: "#ef4444" }}>{error}</p>}
+                <div style={{
+                    maxHeight: "300px",
+                    overflowY: "auto",
+                    marginBottom: "20px",
+                    background: "rgba(0,0,0,0.3)",
+                    borderRadius: "12px",
+                    padding: "10px"
+                }}>
+                    {users.length === 0 ? (
+                        <p style={{ color: "#9ca3af" }}>No user online...</p>
+                    ) : (
+                        <table style={{ width: "100%", borderCollapse: "collapse", color: "white" }}>
+                            <thead>
+                                <tr style={{ borderBottom: "1px solid #374151", textAlign: "left" }}>
+                                    <th style={{ padding: "10px" }}>User</th>
+                                    <th style={{ padding: "10px", textAlign: "right" }}>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {users.map((u) => {
+                                    const isMe = u.username === currentUser;
+                                    // Verifica se questo utente è colui che mi sta sfidando
+                                    const isChallenger = incomingChallenge?.username === u.username;
+                                    // Verifica se è l'utente che ho appena sfidato
+                                    const isChallengedByMe = outgoingChallenge === u.username;
 
-                <div style={{ display: "flex", flexDirection: "column", gap: "10px", margin: "20px 0", maxHeight: "400px", overflowY: "auto" }}>
-                    {users.map((user) => (
-                        <div key={user.id} className="leaderboard-card" style={{ width: "100%", margin: 0, height: "auto", color: "white", borderColor: "rgba(255,255,255,0.2)" }}>
-                            <div style={{ textAlign: "left" }}>
-                                <div style={{ fontWeight: "bold" }}>{user.username}</div>
-                                <div style={{ fontSize: "12px", color: user.stato === 'L' ? "#10b981" : "#6b7280" }}>
-                                    {user.stato === 'L' ? "● Online" : "○ Offline"}
-                                </div>
-                            </div>
-                            <button className="menu-btn" style={{ width: "auto", padding: "8px 16px", fontSize: "12px", color: "black", marginBottom: 0 }}>CHALLENGE</button>
-                        </div>
-                    ))}
+                                    return (
+                                        <tr key={u.socketId} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
+                                            <td style={{ padding: "12px 10px" }}>
+                                                <span style={{ fontWeight: isMe ? "bold" : "normal", color: isMe ? "#eab308" : "white" }}>
+                                                    {u.username} {isMe && "(Tu)"}
+                                                </span>
+                                            </td>
+                                            <td style={{ padding: "12px 10px", textAlign: "right" }}>
+                                                {isMe ? (
+                                                    <span style={{ fontSize: "12px", color: "#6b7280" }}>-</span>
+                                                ) : isChallenger ? (
+                                                    <button className="menu-btn" style={{ padding: "6px 12px", fontSize: "12px", background: "linear-gradient(135deg, #10b981, #059669)" }} onClick={onAcceptChallenge}>
+                                                        ACCEPT THE CHALLANGE
+                                                    </button>
+                                                ) : isChallengedByMe ? (
+                                                    <span style={{ fontSize: "12px", color: "#eab308" }}>Waiting...</span>
+                                                ) : (
+                                                    <button
+                                                        className="menu-btn"
+                                                        style={{ padding: "6px 12px", fontSize: "12px", marginBottom: 0 }}
+                                                        onClick={() => handleSendChallenge(u)}
+                                                    >
+                                                        CHALLENGE
+                                                    </button>
+                                                )}
+                                            </td>
+                                        </tr>
+                                    );
+                                })}
+                            </tbody>
+                        </table>
+                    )}
                 </div>
 
                 <button className="back-menu-btn" onClick={onBack}>
@@ -75,5 +108,5 @@ export const UserList = ({ onBack }) => {
                 </button>
             </div>
         </div>
-    )
+    );
 }

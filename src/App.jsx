@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { io } from "socket.io-client";
 import "./index.css";
 import BombHeader from "./components/BombHeader";
 import GuessRow from "./components/GuessRow";
@@ -19,9 +20,12 @@ const COLORS_BOMB = [
   "#06b6d4",
 ];
 const MAX_TURNS = 10;
+const SOCKET_URL = "http://localhost:3000"; // Da configurare in base all'ambiente
 
 function App() {
   const [isLogged, setLogged] = useState(false);
+  const [currentUser, setCurrentUser] = useState(null);
+  const [socket, setSocket] = useState(null);
   const [isRegisterView, setRegisterView] = useState(false);
   const [mode, setMode] = useState(null); // null | 'normal' | 'devil' | 'versus'
   const [guesses, setGuesses] = useState([]);
@@ -35,6 +39,51 @@ function App() {
   const [hasStarted, setHasStarted] = useState(false); // per far partire il timer in Diavolo
   const [isSettingCode, setIsSettingCode] = useState(false); // fase in cui P1 imposta il codice (1vs1)
   const [tempCode, setTempCode] = useState(Array(4).fill(null)); // codice scelto da P1
+  const [incomingChallenge, setIncomingChallenge] = useState(null);
+  const [opponent, setOpponent] = useState(null);
+
+  // Gestione Socket.io
+  useEffect(() => {
+    if (isLogged && !socket) {
+      const newSocket = io(SOCKET_URL);
+
+      newSocket.on("connect", () => {
+        console.log("Socket connesso:", newSocket.id);
+        if (currentUser) {
+          newSocket.emit("register_user", currentUser);
+        }
+      });
+
+      // Quando ricevo una sfida
+      newSocket.on("challenge_received", (challenger) => {
+        setIncomingChallenge(challenger); // { username: 'Mario', socketId: '...' }
+      });
+
+      // Quando la mia sfida viene accettata
+      newSocket.on("challenge_accepted", (data) => {
+        setOpponent(data.opponent);
+        setMode("versus");
+        // Chi ha lanciato la sfida (noi) inizia impostando il codice? 
+        // O decidiamo i ruoli dinamicamente. Per ora assumiamo che chi sfida è il Codemaker.
+        setIsSettingCode(true);
+      });
+
+      setSocket(newSocket);
+
+      return () => newSocket.close();
+    }
+  }, [isLogged, currentUser]);
+
+  const handleAcceptChallenge = () => {
+    if (socket && incomingChallenge) {
+      socket.emit("accept_challenge", { challengerId: incomingChallenge.socketId });
+      setOpponent(incomingChallenge.username);
+      setIncomingChallenge(null);
+      setMode("versus");
+      // Chi accetta la sfida è il Codebreaker (aspetta che l'altro imposti il codice)
+      setIsSettingCode(false);
+    }
+  };
 
   // inizializza partita quando scelgo una modalità
   useEffect(() => {
@@ -159,8 +208,9 @@ function App() {
     // Giocatore 2 inizia a giocare, nessun timer in 1 vs 1
   };
 
-  const handleLoginSuccess = () => {
+  const handleLoginSuccess = (user) => {
     setLogged(true);
+    setCurrentUser(user?.username || "Guest"); // Assumiamo che il login ritorni info utente
     setRegisterView(false); // Assicura di tornare alla vista di gioco
   };
 
@@ -214,17 +264,29 @@ function App() {
     </div>
   ) : mode === "versus" && isSettingCode ? (
     // Se è in modalità 1vs1 e il Giocatore 1 deve scegliere il codice
-    <UserList onBack={() => setMode(null)} />
-    /*<VersusSetup
-      tempCode={tempCode}
-      colors={COLORS_BOMB}
-      selectedColor={selectedColor}
-      onSelectColor={setSelectedColor}
-      onSetCodePeg={setCodePeg}
-      onConfirm={confirmSecretCode}
-      onBack={() => setMode(null)}
-    />*/
+    // Se non ho ancora un avversario, mostro la lista per sceglierlo
+    !opponent ? (
+      <UserList
+        socket={socket}
+        currentUser={currentUser}
+        incomingChallenge={incomingChallenge}
+        onAcceptChallenge={handleAcceptChallenge}
+        onBack={() => setMode(null)}
+      />
+    ) : (
+      // Se ho un avversario e devo settare il codice
+      /*<VersusSetup
+        tempCode={tempCode}
+        colors={COLORS_BOMB}
+        selectedColor={selectedColor}
+        onSelectColor={setSelectedColor}
+        onSetCodePeg={setCodePeg}
+        onConfirm={confirmSecretCode}
+        onBack={() => setMode(null)}
+      />*/
 
+      <div style={{ color: 'white' }}>Setup contro {opponent} (WIP)</div>
+    )
   ) : (
     // Altrimenti, l'utente è loggato e in partita: mostra la schermata di gioco
     <div className="page-wrapper">
