@@ -19,9 +19,9 @@ const COLORS_BOMB = [
   "#f59e0b",
   "#ec4899",
   "#06b6d4",
-];
+]
 const MAX_TURNS = 10;
-const SOCKET_URL = "http://localhost:3000"; // Da configurare in base all'ambiente
+const SOCKET_URL = "https://backend-21ia.onrender.com"; // Da configurare in base all'ambiente
 
 function App() {
   const [isLogged, setLogged] = useState(false);
@@ -190,12 +190,12 @@ function App() {
     return [...Array(black).fill("black"), ...Array(white).fill("white")];
   };
 
-  if (true) return <Modal />
-  
+  //if (true) return <Modal />
+
 
   const resetGame = () => {
     // torna al menu principale
-    setMode(null);  
+    setMode(null);
   };
 
   // handler per impostare il codice in 1 vs 1
