@@ -1,5 +1,7 @@
 import { useState } from "react";
 import Input from "../Input.jsx";
+import { API_URLS } from "../../config.js";
+
 
 export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) {
   const [username, setUsername] = useState("");
@@ -12,7 +14,7 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) 
 
     try {
       const response = await fetch(
-        "https://backend-snowy-mu-43.vercel.app/login",
+        API_URLS.LOGIN,
         {
           method: "POST",
           headers: {
@@ -31,6 +33,10 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) 
         // Se la risposta non è OK (es. 401, 404, 500), lancia un errore con il messaggio del backend
         throw new Error(risposta.error || "Errore durante il login");
       }
+
+      // Salva il token ricevuto nel localStorage per le richieste future
+      localStorage.setItem("token", risposta.token);
+
       onLoginSuccess(); // Comunica il successo al componente App
     } catch (err) {
       console.error(err.message);

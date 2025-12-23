@@ -6,7 +6,7 @@ import ColorPicker from "./ColorPicker";
 import EndScreen from "./EndScreen";
 import GameBoard from "./GameBoard";
 import VersusSetup from "./VersusSetup";
-import UserList from "./UserList";
+import { UserList } from "./UserList";
 import { useState, useEffect } from "react";
 
 const COLORS_BOMB = [
@@ -180,7 +180,7 @@ export default function MainMenu() {
   // FASE SCELTA CODICE (1 vs 1)
   if (mode === "versus" && isSettingCode) {
     return (
-      <UserList></UserList>
+      <UserList onBack={() => setMode(null)} />
       /*<VersusSetup
         tempCode={tempCode}
         colors={COLORS_BOMB}
@@ -190,6 +190,7 @@ export default function MainMenu() {
         onConfirm={confirmSecretCode}
         onBack={() => setMode(null)}
       />*/
+
     );
   }
 

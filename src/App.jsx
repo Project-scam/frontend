@@ -8,6 +8,7 @@ import GameBoard from "./components/GameBoard";
 import VersusSetup from "./components/VersusSetup";
 import Login from "./components/Login/Login";
 import Registration from "./components/Registration/Registration";
+import { UserList } from "./components/UserList";
 
 const COLORS_BOMB = [
   "#ef4444",
@@ -213,7 +214,8 @@ function App() {
     </div>
   ) : mode === "versus" && isSettingCode ? (
     // Se è in modalità 1vs1 e il Giocatore 1 deve scegliere il codice
-    <VersusSetup
+    <UserList onBack={() => setMode(null)} />
+    /*<VersusSetup
       tempCode={tempCode}
       colors={COLORS_BOMB}
       selectedColor={selectedColor}
@@ -221,7 +223,8 @@ function App() {
       onSetCodePeg={setCodePeg}
       onConfirm={confirmSecretCode}
       onBack={() => setMode(null)}
-    />
+    />*/
+
   ) : (
     // Altrimenti, l'utente è loggato e in partita: mostra la schermata di gioco
     <div className="page-wrapper">
@@ -232,7 +235,8 @@ function App() {
               ← Torna alla scelta modalità
             </button>
           </div>
-        )}
+        )
+        }
         <BombHeader
           minutes={minutes}
           seconds={seconds}
@@ -240,30 +244,32 @@ function App() {
           maxTurns={MAX_TURNS}
           mode={mode}
         />
-        {(!gameWon && !gameOver) ? (
-          <GameBoard
-            guesses={guesses}
-            currentGuess={currentGuess}
-            colors={COLORS_BOMB}
-            canPlay={guesses.length < MAX_TURNS}
-            onPegClick={addPeg}
-            selectedColor={selectedColor}
-            onSelectColor={setSelectedColor}
-            mainButtonLabel={mainButtonLabel}
-            mainButtonDisabled={mainButtonDisabled}
-            mainButtonOnClick={mainButtonOnClick}
-          />
-        ) : (
-          <EndScreen
-            gameWon={gameWon}
-            gameOverReason={gameOverReason}
-            guessesCount={guesses.length}
-            secretCode={secretCode}
-            onReset={resetGame}
-          />
-        )}
-      </div>
-    </div>
+        {
+          (!gameWon && !gameOver) ? (
+            <GameBoard
+              guesses={guesses}
+              currentGuess={currentGuess}
+              colors={COLORS_BOMB}
+              canPlay={guesses.length < MAX_TURNS}
+              onPegClick={addPeg}
+              selectedColor={selectedColor}
+              onSelectColor={setSelectedColor}
+              mainButtonLabel={mainButtonLabel}
+              mainButtonDisabled={mainButtonDisabled}
+              mainButtonOnClick={mainButtonOnClick}
+            />
+          ) : (
+            <EndScreen
+              gameWon={gameWon}
+              gameOverReason={gameOverReason}
+              guessesCount={guesses.length}
+              secretCode={secretCode}
+              onReset={resetGame}
+            />
+          )
+        }
+      </div >
+    </div >
   );
 }
 

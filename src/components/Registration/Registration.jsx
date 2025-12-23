@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Message from "../Message";
+import { API_URLS } from "../../config.js";
 
 const Registration = ({
   inputName = "Username", // defaul cambiabile liv. visivo
@@ -33,7 +34,7 @@ const Registration = ({
     try {
       /* RICHIESTA AL SERVER TRAMITE FETCH */
       const response = await fetch(
-        "https://backend-snowy-mu-43.vercel.app/register",
+        API_URLS.REGISTER,
         {
           method: "POST", // il metodo è post
           headers: { "Content-Type": "application/json" }, // gli dico quali dati sta ricevendo in questo caso json
