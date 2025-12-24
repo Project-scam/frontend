@@ -11,6 +11,7 @@ import Login from "./components/Login/Login";
 import Registration from "./components/Registration/Registration";
 import Modal from "./components/Modal/Modal";
 import { UserList } from "./components/UserList";
+import { API_URLS } from "./config";
 
 const COLORS_BOMB = [
   "#ef4444",
@@ -22,6 +23,24 @@ const COLORS_BOMB = [
 ]
 const MAX_TURNS = 10;
 const SOCKET_URL = "https://backend-21ia.onrender.com"; // Da configurare in base all'ambiente
+
+const LogoutIcon = () => (
+  <svg
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 24 24"
+    fill="none"
+    stroke="currentColor"
+    strokeWidth="2"
+    strokeLinecap="round"
+    strokeLinejoin="round"
+  >
+    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" />
+    <polyline points="16 17 21 12 16 7" />
+    <line x1="21" y1="12" x2="9" y2="12" />
+  </svg>
+);
 
 function App() {
   const [isLogged, setLogged] = useState(false);
@@ -42,6 +61,37 @@ function App() {
   const [tempCode, setTempCode] = useState(Array(4).fill(null)); // codice scelto da P1
   const [incomingChallenge, setIncomingChallenge] = useState(null);
   const [opponent, setOpponent] = useState(null);
+
+  const handleLogout = async () => {
+    const token = localStorage.getItem("token");
+
+    // 1. Notifica il backend per aggiornare lo stato DB
+    if (token) {
+      try {
+        await fetch(`${SOCKET_URL}/logout`, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${token}`
+          }
+        });
+      } catch (error) {
+        console.error("Errore logout:", error);
+      }
+    }
+
+    // 2. Disconnetti socket
+    if (socket) {
+      socket.disconnect();
+      setSocket(null);
+    }
+
+    // 3. Pulisci stato locale
+    localStorage.removeItem("token");
+    setLogged(false);
+    setCurrentUser(null);
+    setMode(null);
+  };
 
   // Gestione Socket.io
   useEffect(() => {
@@ -215,6 +265,8 @@ function App() {
   const handleLoginSuccess = (user) => {
     setLogged(true);
     setCurrentUser(user?.username || "Guest"); // Assumiamo che il login ritorni info utente
+    // Se il backend restituisce il token nell'oggetto user (come visto nel controller), lo salviamo
+    if (user?.token) localStorage.setItem("token", user.token);
     setRegisterView(false); // Assicura di tornare alla vista di gioco
   };
 
@@ -263,6 +315,21 @@ function App() {
         </button>
         <button className="menu-btn" onClick={() => setMode("devil")}>
           Modalità Diavolo
+        </button>
+        <button
+          className="menu-btn"
+          onClick={handleLogout}
+          style={{ 
+            marginTop: "24px", 
+            background: "linear-gradient(135deg, #4b5563, #374151)",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            gap: "8px"
+          }}
+        >
+          <LogoutIcon />
+          LOGOUT
         </button>
       </div>
     </div>
