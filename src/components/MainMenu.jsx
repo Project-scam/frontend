@@ -8,6 +8,7 @@ import GameBoard from "./GameBoard";
 import VersusSetup from "./VersusSetup";
 import { UserList } from "./UserList";
 import { useState, useEffect } from "react";
+import { io } from "socket.io-client";
 
 const COLORS_BOMB = [
   "#ef4444",
@@ -32,6 +33,25 @@ export default function MainMenu() {
   const [hasStarted, setHasStarted] = useState(false); // per far partire il timer in Diavolo
   const [isSettingCode, setIsSettingCode] = useState(false); // fase in cui P1 imposta il codice (1vs1)
   const [tempCode, setTempCode] = useState(Array(4).fill(null)); // codice scelto da P1
+
+  const [socket, setSocket] = useState(null);
+  const [currentUser, setCurrentUser] = useState("");
+
+  useEffect(() => {
+    // Inizializza la connessione (assumendo che il backend sia su localhost:3000)
+    const newSocket = io("https://pwscam-2.onrender.com");
+    setSocket(newSocket);
+
+    // Genera un nome utente temporaneo (o recuperalo da un input di login)
+    const user = "Player" + Math.floor(Math.random() * 1000);
+    setCurrentUser(user);
+
+    newSocket.on("connect", () => {
+      newSocket.emit("register_user", { username: user });
+    });
+
+    return () => newSocket.disconnect();
+  }, []);
 
   // inizializza partita quando scelgo una modalità
   useEffect(() => {
@@ -180,7 +200,11 @@ export default function MainMenu() {
   // FASE SCELTA CODICE (1 vs 1)
   if (mode === "versus" && isSettingCode) {
     return (
-      <UserList onBack={() => setMode(null)} />
+      <UserList
+        socket={socket}
+        currentUser={currentUser}
+        onBack={() => setMode(null)}
+      />
       /*<VersusSetup
         tempCode={tempCode}
         colors={COLORS_BOMB}
