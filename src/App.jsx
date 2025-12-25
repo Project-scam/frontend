@@ -190,7 +190,7 @@ function App() {
     return [...Array(black).fill("black"), ...Array(white).fill("white")];
   };
 
-  if (true) return <Modal />
+ /*  if (true) return <Modal /> */
   
 
   const resetGame = () => {
