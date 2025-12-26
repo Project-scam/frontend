@@ -264,7 +264,7 @@ function App() {
 
   const handleLoginSuccess = (user) => {
     setLogged(true);
-    setCurrentUser(user?.username || "Guest"); // Assumiamo che il login ritorni info utente
+    setCurrentUser(typeof user === "string" ? user : (user?.username || "Guest"));
     // Se il backend restituisce il token nell'oggetto user (come visto nel controller), lo salviamo
     if (user?.token) localStorage.setItem("token", user.token);
     setRegisterView(false); // Assicura di tornare alla vista di gioco
