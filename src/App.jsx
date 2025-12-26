@@ -11,6 +11,7 @@ import Login from "./components/Login/Login";
 import Registration from "./components/Registration/Registration";
 import Modal from "./components/Modal/Modal";
 import { UserList } from "./components/UserList";
+import Btn from "./components/Btn/Btn";
 
 const COLORS_BOMB = [
   "#ef4444",
@@ -251,10 +252,10 @@ function App() {
     )
   ) : !mode ? (
     // Se l'utente è loggato ma non ha scelto la modalità, mostra il menu
-    <div className="page-wrapper">
+    <div className="page-wrapper">  
       <div className="mode-menu">
         <h1 className="menu-title">MASTERMIND SCAM</h1>
-        <p className="menu-subtitle">Scegli la modalità di gioco</p>
+        <p className="menu-subtitle">Scegli la modalità o <Btn variant="simple">IMPARA LE REGOLE DI GIOCO</Btn></p>
         <button className="menu-btn" onClick={() => setMode("normal")}>
           Modalità Normale
         </button>
