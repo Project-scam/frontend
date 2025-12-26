@@ -319,8 +319,8 @@ function App() {
         <button
           className="menu-btn"
           onClick={handleLogout}
-          style={{ 
-            marginTop: "24px", 
+          style={{
+            marginTop: "24px",
             background: "linear-gradient(135deg, #4b5563, #374151)",
             display: "flex",
             alignItems: "center",
@@ -340,8 +340,8 @@ function App() {
       <UserList
         socket={socket}
         currentUser={currentUser}
-        incomingChallenge={incomingChallenge}
-        onAcceptChallenge={handleAcceptChallenge}
+        //incomingChallenge={incomingChallenge}
+        //onAcceptChallenge={handleAcceptChallenge}
         onBack={() => setMode(null)}
       />
     ) : (
