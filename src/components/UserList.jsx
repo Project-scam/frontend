@@ -21,11 +21,11 @@ export const UserList = ({ socket, currentUser, onBack }) => {
       alert("La sfida è stata rifiutata o l'utente si è disconnesso.");
     };
 
-    socket.on("users_list", handleUsersList);
+    socket.on("users_list_update", handleUsersList);
     socket.on("challenge_declined", handleChallengeDeclined);
 
     return () => {
-      socket.off("users_list", handleUsersList);
+      socket.off("users_list_update", handleUsersList);
       socket.off("challenge_declined", handleChallengeDeclined);
     };
   }, [socket, currentUser]);
