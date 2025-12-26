@@ -263,6 +263,7 @@ function App() {
   };
 
   const handleLoginSuccess = (user) => {
+    console.log("Dati utenti ricevuti dal Login:", user);
     setLogged(true);
     setCurrentUser(typeof user === "string" ? user : (user?.username || "Guest"));
     // Se il backend restituisce il token nell'oggetto user (come visto nel controller), lo salviamo
