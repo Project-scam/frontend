@@ -31,10 +31,10 @@ const Btn = ({
   const variants= {
     default: {}, 
     simple: { 
-        base: { margin: 0, padding: "2px", borderRadius: 0, background: "rgb(15, 15, 35)" , backgroundColor: "transparent", textDecoration: "underline" },
-        hover: { color: "blue"},
+        base: { margin: 0, padding: "2px", borderRadius: "2px", background: "rgb(15, 15, 35)" , backgroundColor: "transparent", boxShadow: "0 3px 0 0 rgb(255, 255, 255)" },
+        hover: { color: "green", boxShadow: "0 3px 0 0 rgb(0, 145, 0)" },
         active: {color: "green"},
-        focus: { boxShadow: "0 3px 0  rgba(255,0,0,0.5)", textDecoration: "none" }
+        focus: { boxShadow: "0 3px 0  rgba(0,145,0.5)", textDecoration: "none" }
     },  
     bubbleOrange: {
         base: {background: "linear-gradient(200deg, #fd8027, #cd4d0eff)" },

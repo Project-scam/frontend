@@ -43,6 +43,7 @@ function App() {
   const [tempCode, setTempCode] = useState(Array(4).fill(null)); // codice scelto da P1
   const [incomingChallenge, setIncomingChallenge] = useState(null);
   const [opponent, setOpponent] = useState(null);
+  const [gameOfRules, setGameOfRules] = useState(false); // apre la modale con la spiegazione delle regole di gioco
 
   // Gestione Socket.io
   useEffect(() => {
@@ -255,7 +256,7 @@ function App() {
     <div className="page-wrapper">  
       <div className="mode-menu">
         <h1 className="menu-title">MASTERMIND SCAM</h1>
-        <p className="menu-subtitle">Scegli la modalità o <Btn variant="simple">IMPARA LE REGOLE DI GIOCO</Btn></p>
+        <p className="menu-subtitle">Scegli la modalità o <Btn variant="simple" onChange={()=> setGameOfRules}>IMPARA LE REGOLE DI GIOCO</Btn></p>
         <button className="menu-btn" onClick={() => setMode("normal")}>
           Modalità Normale
         </button>

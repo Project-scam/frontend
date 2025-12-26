@@ -17,7 +17,7 @@ const COLORS_BOMB = [
   "#ec4899",
   "#06b6d4",
 ];
-const MAX_TURNS = 12;
+const MAX_TURNS = 10; // Modificato in 10 turni che 12
 
 export default function MainMenu() {
   const [mode, setMode] = useState(null); // null | 'normal' | 'devil' | 'versus'
