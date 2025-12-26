@@ -14,7 +14,10 @@ import "../index.css";
 export function UserList({ socket, currentUser, incomingChallenge, onAcceptChallenge, onBack }) {
     const [users, setUsers] = useState([]);
     const [outgoingChallenge, setOutgoingChallenge] = useState(null); // Username dell'utente sfidato
-
+    alert("socket" + socket);
+    alert("currentUser" + currentUser);
+    alert("incomingChallenge" + inocomingChallenge);
+    alert("onAcceptChallenge" + onAcceptChallenge);
     useEffect(() => {
         if (!socket) return;
 
@@ -22,13 +25,15 @@ export function UserList({ socket, currentUser, incomingChallenge, onAcceptChall
         socket.emit("get_users");
 
         // Ascoltiamo aggiornamenti sulla lista utenti (connessioni/disconnessioni)
-        socket.on("user_list_update", (updatedUsers) => {
+        const handleUserListUpdate = (updatedUsers) => {
             // updatedUsers dovrebbe essere un array di oggetti { username, socketId, status }
             setUsers(updatedUsers);
-        });
+        };
+
+        socket.on("user_list_update", handleUserListUpdate);
 
         return () => {
-            socket.off("user_list_update");
+            socket.off("user_list_update", handleUserListUpdate);
         };
     }, [socket]);
 
