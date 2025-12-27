@@ -82,7 +82,7 @@ function App() {
 
     // 2. Disconnetti socket
     if (socket) {
-      socket.disconnect();""
+      socket.disconnect(); ""
       console.log("Socket disconnesso")
       setSocket(null);
     }
@@ -347,18 +347,19 @@ function App() {
         onBack={() => setMode(null)}
       />
     ) : (
-      // Se ho un avversario e devo settare il codice
-      /*<VersusSetup
-        tempCode={tempCode}
-        colors={COLORS_BOMB}
-        selectedColor={selectedColor}
-        onSelectColor={setSelectedColor}
-        onSetCodePeg={setCodePeg}
-        onConfirm={confirmSecretCode}
-        onBack={() => setMode(null)}
-      />*/
+      <>
+        <VersusSetup
+          tempCode={tempCode}
+          colors={COLORS_BOMB}
+          selectedColor={selectedColor}
+          onSelectColor={setSelectedColor}
+          onSetCodePeg={setCodePeg}
+          onConfirm={confirmSecretCode}
+          onBack={() => setMode(null)}
+        />
 
-      <div style={{ color: 'white' }}>Setup contro {opponent} (WIP)</div>
+        <div style={{ color: 'white' }}>Setup contro {opponent} (WIP)</div>
+      </>
     )
   ) : (
     // Altrimenti, l'utente è loggato e in partita: mostra la schermata di gioco

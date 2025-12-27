@@ -23,9 +23,8 @@ export const UserList = ({ socket, currentUser, onBack }) => {
 
     const handleChallengeDeclined = () => {
       setPendingChallenge(null);
-      alert("La sfida è stata rifiutata o l'utente si è disconnesso.");
+      alert("The challenge is refused or the user is disconnected.");
     };
-
     socket.on("users_list_update", handleUsersList);
     socket.on("challenge_received", handleChallengeReceived);
     socket.on("challenge_declined", handleChallengeDeclined);
@@ -84,7 +83,7 @@ export const UserList = ({ socket, currentUser, onBack }) => {
                   onClick={() => sendChallenge(user.socketId)}
                   disabled={!!pendingChallenge}
                 >
-                  {pendingChallenge === user.socketId ? "In attesa..." : "SFIDA"}
+                  {pendingChallenge === user.socketId ? "Waiting..." : "Challenge"}
                 </button>
               </div>
             ))}
@@ -102,12 +101,12 @@ export const UserList = ({ socket, currentUser, onBack }) => {
               background: "#1f2937", padding: "20px", borderRadius: "10px",
               textAlign: "center", border: "1px solid #374151", minWidth: "300px"
             }}>
-              <h3 style={{ color: "#fff", marginBottom: "15px" }}>Sfida Ricevuta!</h3>
+              <h3 style={{ color: "#fff", marginBottom: "15px" }}>Challenge received!</h3>
               <p style={{ color: "#d1d5db", marginBottom: "20px" }}>
-                <strong style={{ color: "#60a5fa" }}>{incomingChallenge.username}</strong> vuole giocare con te.
+                <strong style={{ color: "#60a5fa" }}>{incomingChallenge.username}</strong> wants to play with you.
               </p>
-              <button className="menu-btn" onClick={handleAcceptChallenge} style={{ marginBottom: "10px" }}>ACCETTA</button>
-              <button className="menu-btn" onClick={handleDeclineChallenge} style={{ backgroundColor: "#ef4444" }}>RIFIUTA</button>
+              <button className="menu-btn" onClick={handleAcceptChallenge} style={{ marginBottom: "10px" }}>ACCEPT</button>
+              <button className="menu-btn" onClick={handleDeclineChallenge} style={{ backgroundColor: "#ef4444" }}>DENAY</button>
             </div>
           </div>
         )}
