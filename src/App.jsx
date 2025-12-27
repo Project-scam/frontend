@@ -82,7 +82,8 @@ function App() {
 
     // 2. Disconnetti socket
     if (socket) {
-      socket.disconnect();
+      socket.disconnect();""
+      console.log("Socket disconnesso")
       setSocket(null);
     }
 
