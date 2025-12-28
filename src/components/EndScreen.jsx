@@ -30,15 +30,17 @@ function EndScreen({ gameWon, gameOverReason, guessesCount, secretCode, onReset 
       >
         {message}
       </p>
-      <p
+      
+      <div
         style={{
           color: '#e5e7eb',
           textAlign: 'center',
-          fontSize: '14px'
+          fontSize: '14px',
+          fontFamily: 'Orbitron, monospace'
         }}
       >
         Codice corretto: {secretCode.join(' - ')}
-      </p>
+      </div>
       <button className="defuse-btn" onClick={onReset} style={{ marginTop: '24px' }}>
         NUOVA MISSIONE
       </button>

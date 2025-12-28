@@ -12,6 +12,8 @@ import Registration from "./components/Registration/Registration";
 import Modal from "./components/Modal/Modal";
 import { UserList } from "./components/UserList";
 import { API_URLS } from "./config";
+import Btn from "./components/Btn/Btn";
+import RulesOfGame from "./components/RulesOfGame";
 
 const COLORS_BOMB = [
   "#ef4444",
@@ -61,6 +63,12 @@ function App() {
   const [tempCode, setTempCode] = useState(Array(4).fill(null)); // codice scelto da P1
   const [incomingChallenge, setIncomingChallenge] = useState(null);
   const [opponent, setOpponent] = useState(null);
+  const [isRulesOfGame, setIsRulesOfGame] = useState(false); // apre la modale con la spiegazione delle regole di gioco
+
+  // Gestione Finestra 
+  const handleCloseModal = ()=> {
+    setIsRulesOfGame(false)
+  }
 
   const handleLogout = async () => {
     const token = localStorage.getItem("token");
@@ -240,8 +248,8 @@ function App() {
     return [...Array(black).fill("black"), ...Array(white).fill("white")];
   };
 
-  //if (true) return <Modal />
-
+ /*  if (true) return <Modal /> */
+  
 
   const resetGame = () => {
     // torna al menu principale
@@ -303,10 +311,16 @@ function App() {
     )
   ) : !mode ? (
     // Se l'utente è loggato ma non ha scelto la modalità, mostra il menu
-    <div className="page-wrapper">
+    <div className="page-wrapper">  
       <div className="mode-menu">
         <h1 className="menu-title">MASTERMIND SCAM</h1>
-        <p className="menu-subtitle">Scegli la modalità di gioco</p>
+        <p className="menu-subtitle">Scegli la modalità o <Btn variant="simple" onClick={()=> setIsRulesOfGame(true)}>IMPARA LE REGOLE DI GIOCO</Btn></p>
+       
+        {/* REGOLE DEL GIOCO */}
+        { isRulesOfGame && (<RulesOfGame onClose={ handleCloseModal}/>)}
+
+
+    
         <button className="menu-btn" onClick={() => setMode("normal")}>
           Modalità Normale
         </button>
@@ -371,7 +385,7 @@ function App() {
         )
         }
         <BombHeader
-          minutes={minutes}
+ds          minutes={minutes}
           seconds={seconds}
           guessesCount={guesses.length}
           maxTurns={MAX_TURNS}
@@ -398,6 +412,7 @@ function App() {
               guessesCount={guesses.length}
               secretCode={secretCode}
               onReset={resetGame}
+              color={COLORS_BOMB}
             />
           )
         }

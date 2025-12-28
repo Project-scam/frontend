@@ -1,6 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&family=Orbitron:wght@700;900&display=swap');
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
+/* toglie lo scroll-bar per Chrome, Edge, Safari */
+*::-webkit-scrollbar {
+  width: 0;
+  height: 0;
+}
 
 body { 
   font-family: 'Inter', sans-serif;
