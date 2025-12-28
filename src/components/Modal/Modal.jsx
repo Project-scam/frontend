@@ -1,31 +1,36 @@
-import Btn from "../Btn/Btn";
+import Btn from "../Btn/Btn"
 
 const Modal = ({
     children,
-    title="Inserisci Titolo",
+    title= "Inserisci Titolo",
     classNameTitle,
     subtitle,
     onClose,
     onX,
     onConfirm,
     onCancel,
-    backgroundModal = "white"
+    backgroundModal= "white",
+    maxHeight,
+    textAlign= "left"
 }) => {
 
   const styleModal = { // Mappo lo Stile per la finestra Modale
     modalContainer: { 
         position: "fixed", top:0, left:0, width: "100%", height: "100%",
         display: "flex", flexDirection: "column", justifyContent: "center",
-        alignItems: "center", background:" rgba(0,0,0,0.5)", fontFamily: "Orbitron, monospace"
+        alignItems: "center", background:" rgba(0,0,0,0.5)", 
+        fontFamily: "Orbitron, monospace", textAlign: textAlign
     },
     windowsModal: {
-        borderRadius: "8px", backgroundColor: backgroundModal, padding: "1.5rem", width: "30rem"
+        borderRadius: "8px", backgroundColor: backgroundModal, padding: "1.5rem", 
+        width: "30rem", maxHeight: maxHeight, overflow: "auto"
     },
     modalHeader: {
         display: "flex", justifyContent: "flex-end", fontSize: "30px", fontWeight: 500
     },
     modalContent: {
-        display: "flex", padding: "8px", flexDirection: "column", justifyContent: "start"
+        display: "flex", padding: "8px", flexDirection: "column", justifyContent: "start",
+        
     },
     modalFooter: {
         display: "flex", justifyContent: "flex-end", gap: "8px"
@@ -59,4 +64,4 @@ const Modal = ({
   ) 
 }
 
-export default Modal;
+export default Modal

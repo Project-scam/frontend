@@ -12,7 +12,7 @@ import Registration from "./components/Registration/Registration";
 import Modal from "./components/Modal/Modal";
 import { UserList } from "./components/UserList";
 import Btn from "./components/Btn/Btn";
-import CurvedArrow from "./components/Modal/Arrow/CurvedArrow";
+import RulesOfGame from "./components/RulesOfGame";
 
 const COLORS_BOMB = [
   "#ef4444",
@@ -44,11 +44,11 @@ function App() {
   const [tempCode, setTempCode] = useState(Array(4).fill(null)); // codice scelto da P1
   const [incomingChallenge, setIncomingChallenge] = useState(null);
   const [opponent, setOpponent] = useState(null);
-  const [gameOfRules, setGameOfRules] = useState(false); // apre la modale con la spiegazione delle regole di gioco
+  const [isRulesOfGame, setIsRulesOfGame] = useState(false); // apre la modale con la spiegazione delle regole di gioco
 
   // Gestione Finestra 
   const handleCloseModal = ()=> {
-    setGameOfRules(false)
+    setIsRulesOfGame(false)
   }
 
   // Gestione Socket.io
@@ -262,37 +262,13 @@ function App() {
     <div className="page-wrapper">  
       <div className="mode-menu">
         <h1 className="menu-title">MASTERMIND SCAM</h1>
-        <p className="menu-subtitle">Scegli la modalità o <Btn variant="simple" onClick={()=> setGameOfRules(true)}>IMPARA LE REGOLE DI GIOCO</Btn></p>
-        {gameOfRules && (
-          // REGOLE DEL GIOCO
-          <Modal
-          title="Rules of Game"
-          classNameTitle={"title"}
-          onClose={handleCloseModal}
-          >
-           
-          <div style={{ display: "flex", flexDirection: "column", gap: "3px", width: "100%"}}>
-            
+        <p className="menu-subtitle">Scegli la modalità o <Btn variant="simple" onClick={()=> setIsRulesOfGame(true)}>IMPARA LE REGOLE DI GIOCO</Btn></p>
+       
+        {/* REGOLE DEL GIOCO */}
+        { isRulesOfGame && (<RulesOfGame onClose={ handleCloseModal}/>)}
 
-            <div style={{marginBlockStart:"20px", display: "flex", width: "300px", flexDirection: "column", alignItems: "flex-start"}}>
-              Modalità SinglePlayer
-            </div>
-                
-            <div style={{ display: "flex", justifyContent: "flex-end", margin: "-20px 50px 0 0" }}>
-              <CurvedArrow  direction={"up"} size={120} reverse/>
-            </div>
-            <p style={{display:"flex", justifyContent:"flex-end"}}>Secondo step delle regole...</p>
 
-            <div style={{ display: "flex", justifyContent: "flex-start", margin: "-20px 0 0 30px" }}>
-              <CurvedArrow direction={"down"} />
-            </div>
-
-            <p style={{display: "flex"}}>Terzo step delle regole ...</p>
-        </div>
-        
-
-          </Modal>
-      )}
+    
         <button className="menu-btn" onClick={() => setMode("normal")}>
           Modalità Normale
         </button>
@@ -369,6 +345,7 @@ function App() {
               guessesCount={guesses.length}
               secretCode={secretCode}
               onReset={resetGame}
+              color={COLORS_BOMB}
             />
           )
         }

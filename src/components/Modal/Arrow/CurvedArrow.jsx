@@ -1,9 +1,12 @@
 // Modal/Arrow/CurvedArrow.jsx
 const CurvedArrow = ({
+  justify,
+  margin,
   color= "orange",  // colore della freccia
   direction, // rotazione della freccia (del contenitore)
-  size = 120, // rappresenta la larghezza e l'altezzza del quadrato (120 come valore default)
-  reverse = false // booleano se passato al padre diventa "true"
+  size= 120, // rappresenta la larghezza e l'altezzza del quadrato (120 come valore default)
+  reverse= false, // booleano se passato al padre diventa "true"
+  selectAngle
 }) => {
   
   // PROPORZIONE PER COLLEGARE LA FRECCIA CON LE DIMENSIONI DEL CORPO
@@ -18,7 +21,7 @@ const CurvedArrow = ({
     up: "270deg"
   }
 
-  const angle = rotationMap[direction] || "0deg" // rota in base alla prop direction
+  const angle = rotationMap[direction] || selectAngle || "0deg" // rota in base alla prop direction
   const container = {
     width: size,          // grandezza orrizzontale dipende dal parametro size passato
     height: size,         // grandezza verticale dipende dal parametro size passato
@@ -52,9 +55,11 @@ const CurvedArrow = ({
   };
 
   return (
-    <div style={container}>
-      <div style={curve}></div>
-      <div style={head}></div>
+    <div style={{display:"flex", justifyContent: justify, margin}}>
+      <div style={container}>
+        <div style={curve}></div>
+        <div style={head}></div>
+      </div>
     </div>
   );
 };
