@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect } from "react";
 
-export const UserList = ({ socket, currentUser, onBack }) => {
+export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
   const [users, setUsers] = useState([]);
   const [pendingChallenge, setPendingChallenge] = useState(null);
   const [incomingChallenge, setIncomingChallenge] = useState(null);
@@ -25,16 +25,26 @@ export const UserList = ({ socket, currentUser, onBack }) => {
       setPendingChallenge(null);
       alert("The challenge is refused or the user is disconnected.");
     };
+
+    const handleChallengeAccepted = (data) => {
+      // Se avevo una sfida in sospeso verso questo utente, sono io lo sfidante (Maker)
+      // Altrimenti, ho accettato io la sfida, quindi sono il Breaker
+      const isMyChallenge = pendingChallenge === data.opponentSocketId;
+      if (onGameStart) onGameStart({ ...data, role: isMyChallenge ? 'maker' : 'breaker' });
+    };
+
     socket.on("users_list_update", handleUsersList);
     socket.on("challenge_received", handleChallengeReceived);
     socket.on("challenge_declined", handleChallengeDeclined);
+    socket.on("challenge_accepted", handleChallengeAccepted);
 
     return () => {
       socket.off("users_list_update", handleUsersList);
       socket.off("challenge_received", handleChallengeReceived);
       socket.off("challenge_declined", handleChallengeDeclined);
+      socket.off("challenge_accepted", handleChallengeAccepted);
     };
-  }, [socket, currentUser]);
+  }, [socket, currentUser, onGameStart, pendingChallenge]);
 
   const sendChallenge = (targetSocketId) => {
     socket.emit("send_challenge", { targetSocketId });

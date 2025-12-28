@@ -33,6 +33,7 @@ export default function MainMenu() {
   const [hasStarted, setHasStarted] = useState(false); // per far partire il timer in Diavolo
   const [isSettingCode, setIsSettingCode] = useState(false); // fase in cui P1 imposta il codice (1vs1)
   const [tempCode, setTempCode] = useState(Array(4).fill(null)); // codice scelto da P1
+  const [showUserList, setShowUserList] = useState(true); // Gestisce la vista UserList vs VersusSetup
 
   const [socket, setSocket] = useState(null);
   const [currentUser, setCurrentUser] = useState("");
@@ -66,6 +67,7 @@ export default function MainMenu() {
     setGameOverReason("");
     setHasStarted(false);
     setTempCode(Array(4).fill(null));
+    setShowUserList(true); // Reset della vista lista utenti
 
     if (mode === "versus") {
       // in 1 vs 1 il codice viene scelto dal Giocatore 1
@@ -199,23 +201,28 @@ export default function MainMenu() {
 
   // FASE SCELTA CODICE (1 vs 1)
   if (mode === "versus" && isSettingCode) {
-    return (
-      <UserList
-        socket={socket}
-        currentUser={currentUser}
-        onBack={() => setMode(null)}
-      />
-      /*<VersusSetup
-        tempCode={tempCode}
-        colors={COLORS_BOMB}
-        selectedColor={selectedColor}
-        onSelectColor={setSelectedColor}
-        onSetCodePeg={setCodePeg}
-        onConfirm={confirmSecretCode}
-        onBack={() => setMode(null)}
-      />*/
-
-    );
+    if (showUserList) {
+      return (
+        <UserList
+          socket={socket}
+          currentUser={currentUser}
+          onBack={() => setMode(null)}
+          onGameStart={(data) => setShowUserList(false)}
+        />
+      );
+    } else {
+      return (
+        <VersusSetup
+          tempCode={tempCode}
+          colors={COLORS_BOMB}
+          selectedColor={selectedColor}
+          onSelectColor={setSelectedColor}
+          onSetCodePeg={setCodePeg}
+          onConfirm={confirmSecretCode}
+          onBack={() => setMode(null)}
+        />
+      );
+    }
   }
 
   // da qui in poi: partita normale (secretCode pronto)
