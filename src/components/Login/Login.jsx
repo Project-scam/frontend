@@ -37,7 +37,7 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) 
       // Salva il token ricevuto nel localStorage per le richieste future
       localStorage.setItem("token", risposta.token);
 
-      onLoginSuccess(); // Comunica il successo al componente App
+      onLoginSuccess(risposta.user); // Comunica il successo al componente App passando i dati utente
     } catch (err) {
       console.error(err.message);
       setError(err.message);

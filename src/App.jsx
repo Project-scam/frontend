@@ -90,7 +90,8 @@ function App() {
 
     // 2. Disconnetti socket
     if (socket) {
-      socket.disconnect();
+      socket.disconnect(); ""
+      console.log("Socket disconnesso")
       setSocket(null);
     }
 
@@ -113,35 +114,19 @@ function App() {
         }
       });
 
-      // Quando ricevo una sfida
-      newSocket.on("challenge_received", (challenger) => {
-        setIncomingChallenge(challenger); // { username: 'Mario', socketId: '...' }
-      });
-
-      // Quando la mia sfida viene accettata
-      newSocket.on("challenge_accepted", (data) => {
-        setOpponent(data.opponent);
-        setMode("versus");
-        // Chi ha lanciato la sfida (noi) inizia impostando il codice? 
-        // O decidiamo i ruoli dinamicamente. Per ora assumiamo che chi sfida è il Codemaker.
-        setIsSettingCode(true);
-      });
-
       setSocket(newSocket);
 
       return () => newSocket.close();
     }
   }, [isLogged, currentUser]);
 
-  const handleAcceptChallenge = () => {
-    if (socket && incomingChallenge) {
-      socket.emit("accept_challenge", { challengerId: incomingChallenge.socketId });
-      setOpponent(incomingChallenge.username);
-      setIncomingChallenge(null);
-      setMode("versus");
-      // Chi accetta la sfida è il Codebreaker (aspetta che l'altro imposti il codice)
-      setIsSettingCode(false);
-    }
+  // Gestisce l'inizio della partita 1vs1 attivato da UserList
+  const handleGameStart = (data) => {
+    setOpponent(data.opponent);
+    setMode("versus");
+    // Se il ruolo è 'maker', devo impostare il codice (isSettingCode = true)
+    // Se il ruolo è 'breaker', aspetto (isSettingCode = false)
+    setIsSettingCode(data.role === 'maker');
   };
 
   // inizializza partita quando scelgo una modalità
@@ -271,8 +256,9 @@ function App() {
   };
 
   const handleLoginSuccess = (user) => {
+    console.log("Dati utenti ricevuti dal Login:", user);
     setLogged(true);
-    setCurrentUser(user?.username || "Guest"); // Assumiamo che il login ritorni info utente
+    setCurrentUser(typeof user === "string" ? user : (user?.username || "Guest"));
     // Se il backend restituisce il token nell'oggetto user (come visto nel controller), lo salviamo
     if (user?.token) localStorage.setItem("token", user.token);
     setRegisterView(false); // Assicura di tornare alla vista di gioco
@@ -333,8 +319,8 @@ function App() {
         <button
           className="menu-btn"
           onClick={handleLogout}
-          style={{ 
-            marginTop: "24px", 
+          style={{
+            marginTop: "24px",
             background: "linear-gradient(135deg, #4b5563, #374151)",
             display: "flex",
             alignItems: "center",
@@ -354,23 +340,23 @@ function App() {
       <UserList
         socket={socket}
         currentUser={currentUser}
-        incomingChallenge={incomingChallenge}
-        onAcceptChallenge={handleAcceptChallenge}
         onBack={() => setMode(null)}
+        onGameStart={handleGameStart}
       />
     ) : (
-      // Se ho un avversario e devo settare il codice
-      /*<VersusSetup
-        tempCode={tempCode}
-        colors={COLORS_BOMB}
-        selectedColor={selectedColor}
-        onSelectColor={setSelectedColor}
-        onSetCodePeg={setCodePeg}
-        onConfirm={confirmSecretCode}
-        onBack={() => setMode(null)}
-      />*/
+      <>
+        <VersusSetup
+          tempCode={tempCode}
+          colors={COLORS_BOMB}
+          selectedColor={selectedColor}
+          onSelectColor={setSelectedColor}
+          onSetCodePeg={setCodePeg}
+          onConfirm={confirmSecretCode}
+          onBack={() => setMode(null)}
+        />
 
-      <div style={{ color: 'white' }}>Setup contro {opponent} (WIP)</div>
+        <div style={{ color: 'white' }}>Setup contro {opponent} (WIP)</div>
+      </>
     )
   ) : (
     // Altrimenti, l'utente è loggato e in partita: mostra la schermata di gioco

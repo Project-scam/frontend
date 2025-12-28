@@ -1,112 +1,130 @@
-//==============================================================
-// File: UserList.jsx
-// lista degli utenti logggati e non (per sceglie uno sfidante)
-// @authors: "mattia.zara@allievi.itsdigitalacademy.com"
-//           "mattia.zara@allievi.itsdigitalacademy.com"
-//           "mattia.zara@allievi.itsdigitalacademy.com"
-//           "mattia.zara@allievi.itsdigitalacademy.com"
-// @version: "1.0.0 2025-12-23"
-//==============================================================
 
-import { useState, useEffect } from "react";
-import "../index.css";
+import React, { useState, useEffect } from "react";
 
-export function UserList({ socket, currentUser, incomingChallenge, onAcceptChallenge, onBack }) {
-    const [users, setUsers] = useState([]);
-    const [outgoingChallenge, setOutgoingChallenge] = useState(null); // Username dell'utente sfidato
+export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
+  const [users, setUsers] = useState([]);
+  const [pendingChallenge, setPendingChallenge] = useState(null);
+  const [incomingChallenge, setIncomingChallenge] = useState(null);
 
-    useEffect(() => {
-        if (!socket) return;
+  useEffect(() => {
+    if (!socket) return;
 
-        // Richiediamo la lista utenti appena montato il componente
-        socket.emit("get_users");
+    // Richiedi la lista utenti appena il componente viene montato
+    socket.emit("get_users");
 
-        // Ascoltiamo aggiornamenti sulla lista utenti (connessioni/disconnessioni)
-        socket.on("user_list_update", (updatedUsers) => {
-            // updatedUsers dovrebbe essere un array di oggetti { username, socketId, status }
-            setUsers(updatedUsers);
-        });
-
-        return () => {
-            socket.off("user_list_update");
-        };
-    }, [socket]);
-
-    const handleSendChallenge = (targetUser) => {
-        setOutgoingChallenge(targetUser.username);
-        socket.emit("send_challenge", { targetSocketId: targetUser.socketId });
+    const handleUsersList = (list) => {
+      // Filtra te stesso dalla lista
+      setUsers(list.filter((u) => u.username !== currentUser));
     };
 
-    return (
-        <div className="page-wrapper">
-            <div className="mode-menu" style={{ width: "500px" }}>
-                <h2 className="menu-title">CHALLENGERS</h2>
-                <p className="menu-subtitle">Choose an opponent</p>
+    const handleChallengeReceived = (data) => {
+      setIncomingChallenge(data);
+    };
 
-                <div style={{
-                    maxHeight: "300px",
-                    overflowY: "auto",
-                    marginBottom: "20px",
-                    background: "rgba(0,0,0,0.3)",
-                    borderRadius: "12px",
-                    padding: "10px"
-                }}>
-                    {users.length === 0 ? (
-                        <p style={{ color: "#9ca3af" }}>No user online...</p>
-                    ) : (
-                        <table style={{ width: "100%", borderCollapse: "collapse", color: "white" }}>
-                            <thead>
-                                <tr style={{ borderBottom: "1px solid #374151", textAlign: "left" }}>
-                                    <th style={{ padding: "10px" }}>User</th>
-                                    <th style={{ padding: "10px", textAlign: "right" }}>Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {users.map((u) => {
-                                    const isMe = u.username === currentUser;
-                                    // Verifica se questo utente è colui che mi sta sfidando
-                                    const isChallenger = incomingChallenge?.username === u.username;
-                                    // Verifica se è l'utente che ho appena sfidato
-                                    const isChallengedByMe = outgoingChallenge === u.username;
+    const handleChallengeDeclined = () => {
+      setPendingChallenge(null);
+      alert("The challenge is refused or the user is disconnected.");
+    };
 
-                                    return (
-                                        <tr key={u.socketId} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
-                                            <td style={{ padding: "12px 10px" }}>
-                                                <span style={{ fontWeight: isMe ? "bold" : "normal", color: isMe ? "#eab308" : "white" }}>
-                                                    {u.username} {isMe && "(Tu)"}
-                                                </span>
-                                            </td>
-                                            <td style={{ padding: "12px 10px", textAlign: "right" }}>
-                                                {isMe ? (
-                                                    <span style={{ fontSize: "12px", color: "#6b7280" }}>-</span>
-                                                ) : isChallenger ? (
-                                                    <button className="menu-btn" style={{ padding: "6px 12px", fontSize: "12px", background: "linear-gradient(135deg, #10b981, #059669)" }} onClick={onAcceptChallenge}>
-                                                        ACCEPT THE CHALLANGE
-                                                    </button>
-                                                ) : isChallengedByMe ? (
-                                                    <span style={{ fontSize: "12px", color: "#eab308" }}>Waiting...</span>
-                                                ) : (
-                                                    <button
-                                                        className="menu-btn"
-                                                        style={{ padding: "6px 12px", fontSize: "12px", marginBottom: 0 }}
-                                                        onClick={() => handleSendChallenge(u)}
-                                                    >
-                                                        CHALLENGE
-                                                    </button>
-                                                )}
-                                            </td>
-                                        </tr>
-                                    );
-                                })}
-                            </tbody>
-                        </table>
-                    )}
-                </div>
+    const handleChallengeAccepted = (data) => {
+      // Se avevo una sfida in sospeso verso questo utente, sono io lo sfidante (Maker)
+      // Altrimenti, ho accettato io la sfida, quindi sono il Breaker
+      const isMyChallenge = pendingChallenge === data.opponentSocketId;
+      if (onGameStart) onGameStart({ ...data, role: isMyChallenge ? 'maker' : 'breaker' });
+    };
 
-                <button className="back-menu-btn" onClick={onBack}>
-                    ← Turn back to Menu
+    socket.on("users_list_update", handleUsersList);
+    socket.on("challenge_received", handleChallengeReceived);
+    socket.on("challenge_declined", handleChallengeDeclined);
+    socket.on("challenge_accepted", handleChallengeAccepted);
+
+    return () => {
+      socket.off("users_list_update", handleUsersList);
+      socket.off("challenge_received", handleChallengeReceived);
+      socket.off("challenge_declined", handleChallengeDeclined);
+      socket.off("challenge_accepted", handleChallengeAccepted);
+    };
+  }, [socket, currentUser, onGameStart, pendingChallenge]);
+
+  const sendChallenge = (targetSocketId) => {
+    socket.emit("send_challenge", { targetSocketId });
+    setPendingChallenge(targetSocketId);
+  };
+
+  const handleAcceptChallenge = () => {
+    if (incomingChallenge) {
+      socket.emit("accept_challenge", { challengerId: incomingChallenge.socketId });
+      setIncomingChallenge(null);
+      // Qui potresti aggiungere una callback onGameStart() se gestita dal genitore
+    }
+  };
+
+  const handleDeclineChallenge = () => {
+    setIncomingChallenge(null);
+  };
+
+  return (
+    <div className="page-wrapper">
+      <div className="mode-menu" style={{ maxWidth: "600px" }}>
+        <h2 className="menu-title">Challengers Online</h2>
+
+        {users.length === 0 ? (
+          <p style={{ color: "#9ca3af", textAlign: "center" }}>
+            No Users online.
+          </p>
+        ) : (
+          <div className="user-list" style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
+            {users.map((user) => (
+              <div
+                key={user.socketId}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  background: "rgba(255,255,255,0.1)",
+                  padding: "10px 15px",
+                  borderRadius: "8px"
+                }}
+              >
+                <span style={{ color: "#fff", fontWeight: "bold" }}>{user.username}</span>
+                <button
+                  className="menu-btn"
+                  style={{ width: "auto", padding: "8px 16px", fontSize: "14px", margin: 0 }}
+                  onClick={() => sendChallenge(user.socketId)}
+                  disabled={!!pendingChallenge}
+                >
+                  {pendingChallenge === user.socketId ? "Waiting..." : "Challenge"}
                 </button>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Modale per Sfida in Arrivo */}
+        {incomingChallenge && (
+          <div style={{
+            position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+            backgroundColor: "rgba(0,0,0,0.8)", display: "flex",
+            justifyContent: "center", alignItems: "center", zIndex: 1000
+          }}>
+            <div style={{
+              background: "#1f2937", padding: "20px", borderRadius: "10px",
+              textAlign: "center", border: "1px solid #374151", minWidth: "300px"
+            }}>
+              <h3 style={{ color: "#fff", marginBottom: "15px" }}>Challenge received!</h3>
+              <p style={{ color: "#d1d5db", marginBottom: "20px" }}>
+                <strong style={{ color: "#60a5fa" }}>{incomingChallenge.username}</strong> wants to play with you.
+              </p>
+              <button className="menu-btn" onClick={handleAcceptChallenge} style={{ marginBottom: "10px" }}>ACCEPT</button>
+              <button className="menu-btn" onClick={handleDeclineChallenge} style={{ backgroundColor: "#ef4444" }}>DENAY</button>
             </div>
-        </div>
-    );
-}
+          </div>
+        )}
+
+        <button className="back-menu-btn" onClick={onBack} style={{ marginTop: "20px" }}>
+          ← Turn back to Menu
+        </button>
+      </div>
+    </div>
+  );
+};
