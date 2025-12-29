@@ -46,6 +46,7 @@ const LogoutIcon = () => (
 
 function App() {
   const [isLogged, setLogged] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Stato per gestire il caricamento iniziale
   const [currentUser, setCurrentUser] = useState(null);
   const [socket, setSocket] = useState(null);
   const [isRegisterView, setRegisterView] = useState(false);
@@ -66,7 +67,7 @@ function App() {
   const [isRulesOfGame, setIsRulesOfGame] = useState(false); // apre la modale con la spiegazione delle regole di gioco
 
   // Gestione Finestra 
-  const handleCloseModal = ()=> {
+  const handleCloseModal = () => {
     setIsRulesOfGame(false)
   }
 
@@ -75,12 +76,12 @@ function App() {
 
     try {
       await fetch(API_URLS.LOGOUT, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          credentials: "include", // FONDAMENTALE: invia i cookie al backend
-        });
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include", // FONDAMENTALE: invia i cookie al backend
+      });
     } catch (error) {
       console.error("Errore logout:", error);
     } finally {
@@ -94,6 +95,26 @@ function App() {
       }
     }
   };
+
+  // Controllo sessione al caricamento della pagina
+  useEffect(() => {
+    const checkSession = async () => {
+      try {
+        const response = await fetch(API_URLS.VERIFY, {
+          credentials: "include", // FONDAMENTALE: Invia il cookie HttpOnly al backend
+        });
+        if (response.ok) {
+          const data = await response.json();
+          handleLoginSuccess(data.user); // Ripristina lo stato utente
+        }
+      } catch (error) {
+        console.log("Nessuna sessione attiva o token scaduto");
+      } finally {
+        setIsLoading(false); // Smette di caricare in ogni caso
+      }
+    };
+    checkSession();
+  }, []);
 
   // Gestione Socket.io
   useEffect(() => {
@@ -226,8 +247,8 @@ function App() {
     return [...Array(black).fill("black"), ...Array(white).fill("white")];
   };
 
- /*  if (true) return <Modal /> */
-  
+  /*  if (true) return <Modal /> */
+
 
   const resetGame = () => {
     // torna al menu principale
@@ -271,6 +292,11 @@ function App() {
   const mainButtonOnClick =
     mode === "devil" && !hasStarted ? () => setHasStarted(true) : submitGuess;
 
+  // Mostra una schermata di caricamento mentre verifichiamo il cookie
+  if (isLoading) {
+    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white', fontSize: '1.5rem' }}>Caricamento...</div>;
+  }
+
   // --- Logica di Rendering Unificata ---
   return !isLogged ? (
     // Se l'utente NON è loggato...
@@ -290,16 +316,16 @@ function App() {
     )
   ) : !mode ? (
     // Se l'utente è loggato ma non ha scelto la modalità, mostra il menu
-    <div className="page-wrapper">  
+    <div className="page-wrapper">
       <div className="mode-menu">
         <h1 className="menu-title">MASTERMIND SCAM</h1>
-        <p className="menu-subtitle">Scegli la modalità o <Btn variant="simple" onClick={()=> setIsRulesOfGame(true)}>IMPARA LE REGOLE DI GIOCO</Btn></p>
-       
+        <p className="menu-subtitle">Scegli la modalità o <Btn variant="simple" onClick={() => setIsRulesOfGame(true)}>IMPARA LE REGOLE DI GIOCO</Btn></p>
+
         {/* REGOLE DEL GIOCO */}
-        { isRulesOfGame && (<RulesOfGame onClose={ handleCloseModal}/>)}
+        {isRulesOfGame && (<RulesOfGame onClose={handleCloseModal} />)}
 
 
-    
+
         <button className="menu-btn" onClick={() => setMode("normal")}>
           Modalità Normale
         </button>

@@ -20,6 +20,7 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) 
           headers: {
             "Content-Type": "application/json",
           },
+          credentials: "include", // FONDAMENTALE: Permette al browser di salvare il cookie
           body: JSON.stringify({
             username, // Invia 'username' come richiesto dal backend
             password,
