@@ -11,7 +11,7 @@ import Login from "./components/Login/Login";
 import Registration from "./components/Registration/Registration";
 import Modal from "./components/Modal/Modal";
 import { UserList } from "./components/UserList";
-import { API_URLS } from "./config";
+import { API_URLS, API_BASE_URL } from "./config";
 import Btn from "./components/Btn/Btn";
 import RulesOfGame from "./components/RulesOfGame";
 
@@ -24,7 +24,7 @@ const COLORS_BOMB = [
   "#06b6d4",
 ]
 const MAX_TURNS = 10;
-const SOCKET_URL = "https://backend-21ia.onrender.com"; // Da configurare in base all'ambiente
+const SOCKET_URL = API_BASE_URL; // Usa l'URL dinamico dal config
 
 const LogoutIcon = () => (
   <svg
@@ -74,7 +74,7 @@ function App() {
     // 1. Notifica il backend per aggiornare lo stato DB
 
     try {
-      await fetch(`${SOCKET_URL}/logout`, {
+      await fetch(API_URLS.LOGOUT, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
