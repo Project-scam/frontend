@@ -71,35 +71,28 @@ function App() {
   }
 
   const handleLogout = async () => {
-    const token = localStorage.getItem("token");
-
     // 1. Notifica il backend per aggiornare lo stato DB
-    if (token) {
-      try {
-        await fetch(`${SOCKET_URL}/logout`, {
+
+    try {
+      await fetch(`${SOCKET_URL}/logout`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${token}`
-          }
+          },
+          credentials: "include", // FONDAMENTALE: invia i cookie al backend
         });
-      } catch (error) {
-        console.error("Errore logout:", error);
+    } catch (error) {
+      console.error("Errore logout:", error);
+    } finally {
+      // 2. Pulizia stato locale e socket (eseguita SEMPRE, anche se il server dà errore)
+      setLogged(false);
+      setCurrentUser(null);
+      if (socket) {
+        socket.disconnect();
+        console.log("Socket disconnesso");
+        setSocket(null);
       }
     }
-
-    // 2. Disconnetti socket
-    if (socket) {
-      socket.disconnect(); ""
-      console.log("Socket disconnesso")
-      setSocket(null);
-    }
-
-    // 3. Pulisci stato locale
-    localStorage.removeItem("token");
-    setLogged(false);
-    setCurrentUser(null);
-    setMode(null);
   };
 
   // Gestione Socket.io
@@ -371,7 +364,7 @@ function App() {
         )
         }
         <BombHeader
-ds          minutes={minutes}
+          minutes={minutes}
           seconds={seconds}
           guessesCount={guesses.length}
           maxTurns={MAX_TURNS}

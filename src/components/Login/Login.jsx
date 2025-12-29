@@ -34,8 +34,8 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) 
         throw new Error(risposta.error || "Errore durante il login");
       }
 
-      // Salva il token ricevuto nel localStorage per le richieste future
-      localStorage.setItem("token", risposta.token);
+      // Il token è ora gestito automaticamente dal browser tramite cookie HttpOnly
+      // Non è necessario (e non è possibile) salvarlo manualmente
 
       onLoginSuccess(risposta.user); // Comunica il successo al componente App passando i dati utente
     } catch (err) {
