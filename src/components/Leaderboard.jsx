@@ -66,7 +66,7 @@ export function Leaderboard({ onClose }) {
               <tbody>
                 {ranking.length === 0 ? (
                   <tr>
-                    <td colSpan="3" style={{ padding: "20px", textAlign: "center", color: "#122a53ff" }}>
+                    <td colSpan="3" style={{ padding: "20px", textAlign: "center", color: "#a9b0bdff" }}>
                       No score.
                     </td>
                   </tr>
