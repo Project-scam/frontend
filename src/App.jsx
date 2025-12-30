@@ -363,7 +363,7 @@ function App() {
           }}
           style={currentUser === "Guest" ? { opacity: 0.5, cursor: "not-allowed" } : {}}
         >
-          Ranking
+          Ranking { currentUser === "Guest" && "🔒"}
         </button>
         <button
           className="menu-btn"
