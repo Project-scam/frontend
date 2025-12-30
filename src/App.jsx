@@ -107,7 +107,9 @@ function App() {
         });
         if (response.ok) {
           const data = await response.json();
-          handleLoginSuccess(data.user); // Ripristina lo stato utente
+          if (data.user) {
+            handleLoginSuccess(data.user); // Ripristina lo stato utente
+          }
         }
       } catch (error) {
         console.log("Nessuna sessione attiva o token scaduto");
@@ -275,8 +277,6 @@ function App() {
     console.log("Dati utenti ricevuti dal Login:", user);
     setLogged(true);
     setCurrentUser(typeof user === "string" ? user : (user?.username || "Guest"));
-    // Se il backend restituisce il token nell'oggetto user (come visto nel controller), lo salviamo
-    if (user?.token) localStorage.setItem("token", user.token);
     setRegisterView(false); // Assicura di tornare alla vista di gioco
   };
 
