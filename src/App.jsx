@@ -11,9 +11,10 @@ import Login from "./components/Login/Login";
 import Registration from "./components/Registration/Registration";
 import Modal from "./components/Modal/Modal";
 import { UserList } from "./components/UserList";
-import { API_URLS, API_BASE_URL } from "./config";
+import { API_URLS, API_BASE_URL } from "./config"; 
 import Btn from "./components/Btn/Btn";
 import RulesOfGameDefault from "./components/RulesOfGameDefault";
+import {Leaderboard} from "./components/Leaderboard"
 
 const COLORS_BOMB = [
   "#ef4444",
@@ -65,6 +66,7 @@ function App() {
   const [incomingChallenge, setIncomingChallenge] = useState(null);
   const [opponent, setOpponent] = useState(null);
   const [isRulesOfGame, setIsRulesOfGame] = useState(false); // apre la modale con la spiegazione delle regole di gioco
+  const [isLeaderboard, setIsLeaderboard] = useState(false); // apre la classifica
 
   // Gestione Finestra 
   const handleCloseModal = () => {
@@ -297,6 +299,11 @@ function App() {
     return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white', fontSize: '1.5rem' }}>Caricamento...</div>;
   }
 
+  // Mostra la classifica se lo stato è attivo
+  if (isLeaderboard) {
+    return <Leaderboard onClose={() => setIsLeaderboard(false)} />;
+  }
+
   // --- Logica di Rendering Unificata ---
   return !isLogged ? (
     // Se l'utente NON è loggato...
@@ -344,6 +351,9 @@ function App() {
         </button>
         <button className="menu-btn" onClick={() => setMode("devil")}>
           Modalità Diavolo
+        </button>
+        <button className="menu-btn" onClick={() => setIsLeaderboard(true)}>
+          Ranking
         </button>
         <button
           className="menu-btn"
