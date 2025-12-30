@@ -7,7 +7,7 @@
     useEffect(() => { 
       const timer = setTimeout(() => {
         setShowSecretCode(true);
-      }, 1500);
+      }, 1000);
 
       return () => clearTimeout(timer);
     }, []);
@@ -44,7 +44,8 @@
 
         <div style={{
           opacity: showSecretCode ? 1 : 0,
-          transition: "opacity 2 ease"
+          transition: "opacity 0.8s ease"
+
         }}>
           <div
             style={{
@@ -64,7 +65,7 @@
               gap: '16px',
               justifyContent: 'center',
               margin: '20px 0',
-              padding: '12px 0'
+              padding: '12px 0',
             }}
           >
             {secretColors.map((color, index) => (
@@ -77,7 +78,9 @@
                   boxShadow:
                     '0 12px 32px rgba(0,0,0,0.6), ' +
                     '0 0 24px rgba(255,255,255,0.2) inset',
-                  transition: ""
+                  opacity: showSecretCode ? 1 : 0,
+                  transform: showSecretCode ? "scale(1)" : "scale(0.8)",
+                  transition: `opacity 0.8s ${index * 0.15}s ease-out, transform 0.8s ${index * 0.15}s ease-out` // vengono fuori uno alla volta
                 }}
               />
             ))}

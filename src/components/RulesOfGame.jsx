@@ -23,7 +23,7 @@ const RulesOfGame = ({
           gap: "12px",
         }}
       >
-        <ModalSection colorText="red">
+        <ModalSection colorText="green">
           <p style={{ textDecoration: "underline" }}>Modalità SinglePlayer:</p>
         </ModalSection>
 
