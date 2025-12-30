@@ -49,12 +49,14 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) 
     <div className="page-login">
       <form className="form-login" onSubmit={handleSubmit}>
         <Input
+          id= {"Username"} // aggiunto id per la label
           label={"Username"}
           value={username}
           setInputValue={setUsername}
         />
 
         <Input
+          id={"Password"} // aggiunto id per la label
           label={"Password"}
           type="password"
           value={password}
