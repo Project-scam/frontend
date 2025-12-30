@@ -20,7 +20,7 @@ const Modal = ({
         position: "fixed", top:0, left:0, width: "100%", height: "100%",
         display: "flex", flexDirection: "column", justifyContent: "center",
         alignItems: "center", background:" rgba(0,0,0,0.5)", 
-        fontFamily: "Orbitron, monospace", textAlign: textAlign,
+        fontFamily: "Orbitron, monospace", textAlign: textAlign, zIndex: "999"
     },
     windowsModal: {
         borderRadius: "8px", backgroundColor: backgroundModal, padding: "1.5rem", 

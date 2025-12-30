@@ -13,7 +13,7 @@ import Modal from "./components/Modal/Modal";
 import { UserList } from "./components/UserList";
 import { API_URLS, API_BASE_URL } from "./config";
 import Btn from "./components/Btn/Btn";
-import RulesOfGame from "./components/RulesOfGame";
+import RulesOfGameDefault from "./components/RulesOfGameDefault";
 
 const COLORS_BOMB = [
   "#ef4444",
@@ -322,7 +322,7 @@ function App() {
         <p className="menu-subtitle">Scegli la modalità o <Btn variant="simple" onClick={() => setIsRulesOfGame(true)}>IMPARA LE REGOLE DI GIOCO</Btn></p>
 
         {/* REGOLE DEL GIOCO */}
-        {isRulesOfGame && (<RulesOfGame onClose={handleCloseModal} />)}
+        {isRulesOfGame && (<RulesOfGameDefault onClose={handleCloseModal} />)}
 
 
 
