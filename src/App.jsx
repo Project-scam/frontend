@@ -329,8 +329,18 @@ function App() {
         <button className="menu-btn" onClick={() => setMode("normal")}>
           Modalità Normale
         </button>
-        <button className="menu-btn" onClick={() => setMode("versus")}>
-          1 vs 1 (Codemaker / Codebreaker)
+        <button
+          className="menu-btn"
+          onClick={() => {
+            if (currentUser === "Guest") {
+              alert("Questa modalità è riservata agli utenti registrati!");
+              return;
+            }
+            setMode("versus");
+          }}
+          style={currentUser === "Guest" ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+        >
+          1 vs 1 (Codemaker / Codebreaker) {currentUser === "Guest" && "🔒"}
         </button>
         <button className="menu-btn" onClick={() => setMode("devil")}>
           Modalità Diavolo
