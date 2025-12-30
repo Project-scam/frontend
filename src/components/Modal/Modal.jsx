@@ -11,7 +11,8 @@ const Modal = ({
     onCancel,
     backgroundModal= "white",
     maxHeight,
-    textAlign= "left"
+    textAlign= "left",
+    textColor= "white"
 }) => {
 
   const styleModal = { // Mappo lo Stile per la finestra Modale
@@ -19,17 +20,18 @@ const Modal = ({
         position: "fixed", top:0, left:0, width: "100%", height: "100%",
         display: "flex", flexDirection: "column", justifyContent: "center",
         alignItems: "center", background:" rgba(0,0,0,0.5)", 
-        fontFamily: "Orbitron, monospace", textAlign: textAlign
+        fontFamily: "Orbitron, monospace", textAlign: textAlign, zIndex: "999"
     },
     windowsModal: {
         borderRadius: "8px", backgroundColor: backgroundModal, padding: "1.5rem", 
-        width: "30rem", maxHeight: maxHeight, overflow: "auto"
+        width: "30rem", maxHeight: maxHeight, overflow: "auto", overflowX: "hidden"
     },
     modalHeader: {
         display: "flex", justifyContent: "flex-end", fontSize: "30px", fontWeight: 500
     },
     modalContent: {
         display: "flex", padding: "8px", flexDirection: "column", justifyContent: "start",
+         color: textColor
         
     },
     modalFooter: {

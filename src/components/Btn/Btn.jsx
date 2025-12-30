@@ -20,7 +20,8 @@ const Btn = ({
         border: "none", 
         background: "linear-gradient(200deg, #3d3d3dff, #1b1b1bff)", 
         color: "white", 
-        fontWeight: 600 
+        fontWeight: 600,
+        cursor: "pointer"
     },
     hover: {  boxShadow: "0 5px 20px 0 rgba(67, 49, 40, 0.5)"},
     active: { boxShadow: "none", background: "linear-gradient(200deg, #212121ff, #000000ff)" },
@@ -65,10 +66,10 @@ const Btn = ({
         hover: {  boxShadow: "0 5px 20px 0 rgba(69, 70, 74, 0.5)"},
         active: { boxShadow: "none", background: "linear-gradient(200deg, #707173ff, #74778eff)" },
         focus: { boxShadow: "0 3px 0  rgba(79, 80, 83, 0.41)" },
-    }
+    },
   };
 
-  // Funzione per unire gli stili (default + variante)
+  // Funzione per unire gli stili (default + variante)  
   const mergeStyles= (variantKey) => {
     const variant= variants[variantKey] || {};
     return {
