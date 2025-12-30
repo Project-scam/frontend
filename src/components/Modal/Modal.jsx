@@ -23,7 +23,7 @@ const Modal = ({
     },
     windowsModal: {
         borderRadius: "8px", backgroundColor: backgroundModal, padding: "1.5rem", 
-        width: "30rem", maxHeight: maxHeight, overflow: "auto"
+        width: "30rem", maxHeight: maxHeight, overflow: "auto", overflowX: "hidden"
     },
     modalHeader: {
         display: "flex", justifyContent: "flex-end", fontSize: "30px", fontWeight: 500

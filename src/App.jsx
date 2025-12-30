@@ -427,7 +427,7 @@ function App() {
               guessesCount={guesses.length}
               secretCode={secretCode}
               onReset={resetGame}
-              color={COLORS_BOMB}
+              colors={COLORS_BOMB}
             />
           )
         }

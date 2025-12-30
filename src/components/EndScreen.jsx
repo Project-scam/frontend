@@ -1,4 +1,4 @@
-function EndScreen({ gameWon, gameOverReason, guessesCount, secretCode, onReset }) {
+function EndScreen({ gameWon, gameOverReason, guessesCount, secretCode, colors, onReset }) {
   const title = gameWon ? '💣 BOMBA 💣 DISINNESCATA! ' : '💥 ESPLOSIONE! 💥';
   const titleColor = gameWon ? '#10b981' : '#ef4444';
   const message = gameWon
@@ -7,9 +7,13 @@ function EndScreen({ gameWon, gameOverReason, guessesCount, secretCode, onReset 
       ? 'Tempo scaduto!'
       : 'Hai usato tutti i tentativi.';
 
+  // Mappa indici colors → veri colori
+  const secretColors = secretCode.map(index => colors[index]);
+
   return (
     <div className="board-bomb" style={{ padding: '40px 36px' }}>
-      <h2
+
+            <h2
         style={{
           color: titleColor,
           fontFamily: 'Orbitron',
@@ -20,27 +24,44 @@ function EndScreen({ gameWon, gameOverReason, guessesCount, secretCode, onReset 
       >
         {title}
       </h2>
-      <p
+
+              <div
         style={{
           color: '#eab308',
           textAlign: 'center',
-          fontSize: '18px',
-          marginBottom: '8px'
+          fontSize: '14px',
+          fontFamily: 'Orbitron, monospace',
+          margin: "40px 0 8px 0"
         }}
       >
-        {message}
-      </p>
-      
+        Codice segreto:
+      </div>
+
       <div
         style={{
-          color: '#e5e7eb',
-          textAlign: 'center',
-          fontSize: '14px',
-          fontFamily: 'Orbitron, monospace'
+          display: 'grid',
+          gridTemplateColumns: 'repeat(4, 64px)',
+          gap: '16px',
+          justifyContent: 'center',
+          margin: '20px 0',
+          padding: '12px 0'
         }}
       >
-        Codice corretto: {secretCode.join(' - ')}
+        {secretColors.map((color, index) => (
+          <div
+            key={index}
+            className="peg-bomb"
+            style={{
+              backgroundColor: color,
+              border: '3px solid rgba(255,255,255,0.5)',
+              boxShadow: 
+                '0 12px 32px rgba(0,0,0,0.6), ' +
+                '0 0 24px rgba(255,255,255,0.2) inset'
+            }}
+          />
+        ))}
       </div>
+
       <button className="defuse-btn" onClick={onReset} style={{ marginTop: '24px' }}>
         NUOVA MISSIONE
       </button>
@@ -48,4 +69,4 @@ function EndScreen({ gameWon, gameOverReason, guessesCount, secretCode, onReset 
   );
 }
 
-export default EndScreen;
+export default EndScreen

@@ -20,7 +20,8 @@ const Btn = ({
         border: "none", 
         background: "linear-gradient(200deg, #3d3d3dff, #1b1b1bff)", 
         color: "white", 
-        fontWeight: 600 
+        fontWeight: 600,
+        cursor: "pointer"
     },
     hover: {  boxShadow: "0 5px 20px 0 rgba(67, 49, 40, 0.5)"},
     active: { boxShadow: "none", background: "linear-gradient(200deg, #212121ff, #000000ff)" },
