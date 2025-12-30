@@ -2,110 +2,109 @@ import CurvedArrow from "./Modal/Arrow/CurvedArrow"
 import Modal from "./Modal/Modal"
 import JustifySection from "./Modal/ModalSection/JustifySection"
 import ModalSection from "./Modal/ModalSection/ModalSection"
+import { translations } from "../language.js" // adatta path
+import { useState } from "react"
 
 const RulesOfGame = ({
-  title = "Rules of Game",
   classNameTitle = "title",
   onClose = () => { },
   maxHeight = "80vh"
 }) => {
+  const [language, setLanguage] = useState(() => {
+    return localStorage.getItem('rulesLanguage') || 'en';
+  });
+
+  const toggleLanguage = () => {
+    const newLang = language === 'en' ? 'it' : 'en';
+    setLanguage(newLang);
+    localStorage.setItem('rulesLanguage', newLang);
+  };
+
+  const t = (key) => translations[language][key] || key;
+
   return (
     <Modal
-      title={title}
+      title={t('title')}
       classNameTitle={classNameTitle}
       onClose={onClose}
       maxHeight={maxHeight}
+      backgroundModal="darkblue"
     >
-      <div
+      {/* Pulsante lingua */}
+      <button
         style={{
-          display: "flex",
-          flexDirection: "column",
-          gap: "12px",
+          position: "absolute", top: '80px', right: '450px', zIndex: 10, background: 'white', border: '2px solid #ddd',
+          borderRadius: '20px', width: '35px', height: "35", display: 'flex', alignItems: 'center', padding:"8px",
+          justifyContent: 'center', fontWeight: 'bold', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
         }}
+        onClick={toggleLanguage}
       >
+        {language === 'en' ? 'IT' : 'EN'}
+      </button>
+
+      <div style={{ display: "flex", flexDirection: "column", gap: "12px", paddingTop: '50px' }}>
         <ModalSection colorText="green">
-          <p style={{ textDecoration: "underline" }}>Modalità SinglePlayer:</p>
+          <p style={{ textDecoration: "underline" }}>{t('singlePlayer')}</p>
         </ModalSection>
 
-        <ModalSection>
-          <p>
-            Il sistema genera un codice a 4 cifre: indovinalo prima che la bomba
-            scoppi.
-          </p>
-        </ModalSection>
+        <ModalSection colorText="white"><p>{t('desc1')}</p></ModalSection>
 
-        <ModalSection>
+        <ModalSection colorText="white">
           <img src="/modalità_normale.png" alt="img modalità normale" width={300} />
         </ModalSection>
 
         <CurvedArrow direction="up" size={120} reverse margin={"-45px 25px 0 0"} justify={"flex-end"} />
 
-        <ModalSection align="flex-end" marginBlockStart={"-20px"}>
-          <p>
-            Hai solo 10 tentativi e il codice nascosto può contenere colori
-            ripetuti.
-          </p>
+        <ModalSection colorText="white" align="flex-end" marginBlockStart={"-20px"}>
+          <p>{t('attempts')}</p>
         </ModalSection>
 
-        <ModalSection align="flex-end">
+        <ModalSection colorText="white" align="flex-end">
           <img src="/tentativi.png" alt="img modalità normale" width={300} />
         </ModalSection>
 
         <CurvedArrow direction="down" margin={"-40px 0 0 15px"} />
 
-        <ModalSection marginBlockStart={"-20"}>
-          <p style={{ color: "blue" }}>
-            A ogni turno scegli 4 pedine colorate e le disponi in fila, nell’
-            ordine che ti sembra giusto. Conferma la combinazione per ricevere
-            il feedback del sistema.
-          </p>
+        <ModalSection colorText="white" marginBlockStart={"-20"}>
+          <p style={{ color: "blue" }}>{t('turn')}</p>
         </ModalSection>
 
-        <ModalSection>
+        <ModalSection colorText="white">
           <img src="/colori.png" alt="img scelta dei colori" width={300} />
         </ModalSection>
 
         <CurvedArrow direction="up" reverse margin={"-45px 25px 0 0"} justify={"flex-end"} />
 
-        <ModalSection align="flex-end" marginBlockStart={"-20px"}>
-          Dopo la conferma, compaiono i segnalini di risposta affianco:
+        <ModalSection colorText="white" align="flex-end" marginBlockStart={"-20px"}>
+          <p>{t('feedback')}</p>
         </ModalSection>
 
-        <CurvedArrow direction={"down"} margin={"-40px 0 0 25px"} />
+        <CurvedArrow direction="down" margin={"-40px 0 0 25px"} />
 
-        <ModalSection width={"100%"} marginBlockStart={"-20px"}>
+        <ModalSection colorText="white" width={"100%"} marginBlockStart={"-20px"}>
           <JustifySection>
-            <p>1. Un segnalino nero indica un colore giusto nel posto giusto.</p>
+            <p>{t('black')}</p>
             <img src="/peg_nero.png" alt="img con il peg nero" width={100} height={20} />
           </JustifySection>
         </ModalSection>
 
-        <ModalSection width={"100%"} marginBlockStart={"10px"} marginBlockEnd={"-40px"}>
+        <ModalSection colorText="white" width={"100%"} marginBlockStart={"10px"} marginBlockEnd={"-40px"}>
           <JustifySection>
-            <p>
-              2. Un segnalino bianco indica un colore presente nel codice, ma
-              in posizione diversa.
-            </p>
+            <p>{t('white')}</p>
             <img style={{ marginBlockStart: "10px" }} src="/peg_bianco.png" alt="img con il peg bianco" width={100} height={20} />
           </JustifySection>
         </ModalSection>
 
         <CurvedArrow selectAngle={"-30deg"} reverse justify={"flex-end"} margin={"20px -10px 0 0"} />
 
-        <ModalSection align="center" marginBlockStart={"-50px"}>
-          <p style={{ textAlign: "center" }}>
-            PS: L’ordine dei segnalini non corrisponde alla posizione delle
-            pedine: ti dice solo quanti sono giusti, non quali.
-          </p>
+        <ModalSection colorText="white" align="center" marginBlockStart={"-50px"}>
+          <p style={{ textAlign: "center" }}>{t('ps')}</p>
         </ModalSection>
 
         <CurvedArrow selectAngle={"70deg"} margin={"-60px 0 0 0"} />
 
-        <ModalSection align="flex-start">
-          <p>
-            Se dopo il 10º tentativo non hai ancora trovato la combinazione
-            corretta, la partita termina e il codice segreto viene rivelato.
-          </p>
+        <ModalSection  colorText={"white"} align="flex-start">
+          <p>{t('end')}</p>
         </ModalSection>
 
         <ModalSection>
