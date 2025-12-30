@@ -11,10 +11,10 @@ import Login from "./components/Login/Login";
 import Registration from "./components/Registration/Registration";
 import Modal from "./components/Modal/Modal";
 import { UserList } from "./components/UserList";
-import { API_URLS, API_BASE_URL } from "./config"; 
+import { API_URLS, API_BASE_URL } from "./config";
 import Btn from "./components/Btn/Btn";
 import RulesOfGameDefault from "./components/RulesOfGameDefault";
-import {Leaderboard} from "./components/Leaderboard"
+import { Leaderboard } from "./components/Leaderboard"
 
 const COLORS_BOMB = [
   "#ef4444",
@@ -340,7 +340,7 @@ function App() {
           className="menu-btn"
           onClick={() => {
             if (currentUser === "Guest") {
-              alert("Questa modalità è riservata agli utenti registrati!");
+              alert("This mode is reserved to registered users only!");
               return;
             }
             setMode("versus");
@@ -352,7 +352,17 @@ function App() {
         <button className="menu-btn" onClick={() => setMode("devil")}>
           Modalità Diavolo
         </button>
-        <button className="menu-btn" onClick={() => setIsLeaderboard(true)}>
+        <button
+          className="menu-btn"
+          onClick={() => {
+            if (currentUser === "Guest") {
+              alert("This ranking is reserved to registered users only!");
+              return;
+            }
+            setIsLeaderboard(true)
+          }}
+          style={currentUser === "Guest" ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+        >
           Ranking
         </button>
         <button
