@@ -1,0 +1,46 @@
+//======================================================
+// File: usePoint.js
+// Script per gestione del punteggio
+// @author: "catalin.groppo@allievi.itsdigitalacademy.com"
+//          "mattia.zarea@allievi.itsdigitalacademy.com"
+//          "sandu.batrincea@allievi.itsdigitalacademy.com
+//          "andrea.villari@allievi.itsdigitalacademy.com"
+// @version: "1.0.0 2026-01-01"
+//========================================================
+
+import { API_BASE_URL } from "../config";
+import { calculatePoints as calcPoints } from "../utils/gameUtils";
+
+export const usePoints = () => {
+  const updatePoints = async (username, pointsToAdd) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/points/update`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include",
+        body: JSON.stringify({ username, pointsToAdd }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Points updated:", data);
+        return data;
+      } else {
+        console.error("Error updating points:", await response.text());
+        return null;
+      }
+    } catch (error) {
+      console.error("Error API points call:", error);
+      return null;
+    }
+  };
+
+  const handleGameEndPoints = (mode, currentUser, gameWon, guessesCount) => {
+    if (mode === "versus" && currentUser && currentUser !== "Guest") {
+      const points = calcPoints(gameWon, guessesCount);
+      updatePoints(currentUser, gameWon ? points : 0);
+    }
+  };
+
+  return { updatePoints, handleGameEndPoints };
+};
