@@ -14,7 +14,7 @@ import { UserList } from "./components/UserList";
 import { API_URLS, API_BASE_URL } from "./config";
 import Btn from "./components/Btn/Btn";
 import RulesOfGameDefault from "./components/RulesOfGameDefault";
-import { Leaderboard } from "./components/Leaderboard"
+import { Leaderboard } from "./components/Leaderboard";
 
 const COLORS_BOMB = [
   "#ef4444",
@@ -23,7 +23,7 @@ const COLORS_BOMB = [
   "#f59e0b",
   "#ec4899",
   "#06b6d4",
-]
+];
 const MAX_TURNS = 10;
 const SOCKET_URL = API_BASE_URL; // Usa l'URL dinamico dal config
 
@@ -65,13 +65,14 @@ function App() {
   const [tempCode, setTempCode] = useState(Array(4).fill(null)); // codice scelto da P1
   const [incomingChallenge, setIncomingChallenge] = useState(null);
   const [opponent, setOpponent] = useState(null);
+  const [opponentSocketId, setOpponentSocketId] = useState(null); // SocketId dell'avversario per comunicazione 1vs1
   const [isRulesOfGame, setIsRulesOfGame] = useState(false); // apre la modale con la spiegazione delle regole di gioco
   const [isLeaderboard, setIsLeaderboard] = useState(false); // apre la classifica
 
-  // Gestione Finestra 
+  // Gestione Finestra
   const handleCloseModal = () => {
-    setIsRulesOfGame(false)
-  }
+    setIsRulesOfGame(false);
+  };
 
   const handleLogout = async () => {
     // 1. Notifica il backend per aggiornare lo stato DB
@@ -138,13 +139,38 @@ function App() {
     }
   }, [isLogged, currentUser]);
 
+  // Listener Socket per ricevere il codice segreto (solo per breaker in modalità 1vs1)
+  useEffect(() => {
+    if (!socket || mode !== "versus" || isSettingCode) return;
+
+    const handleSecretCodeReceived = (data) => {
+      console.log("Codice segreto ricevuto:", data.secretCode);
+      setSecretCode(data.secretCode);
+      // Il breaker può ora iniziare a giocare
+    };
+
+    const handleGameEnded = (data) => {
+      // Gestisci la fine partita (opzionale, per sincronizzazione)
+      console.log("Partita terminata:", data);
+    };
+
+    socket.on("secret_code_received", handleSecretCodeReceived);
+    socket.on("game_ended_notification", handleGameEnded);
+
+    return () => {
+      socket.off("secret_code_received", handleSecretCodeReceived);
+      socket.off("game_ended_notification", handleGameEnded);
+    };
+  }, [socket, mode, isSettingCode]);
+
   // Gestisce l'inizio della partita 1vs1 attivato da UserList
   const handleGameStart = (data) => {
     setOpponent(data.opponent);
+    setOpponentSocketId(data.opponentSocketId); // Salva il socketId dell'avversario
     setMode("versus");
     // Se il ruolo è 'maker', devo impostare il codice (isSettingCode = true)
     // Se il ruolo è 'breaker', aspetto (isSettingCode = false)
-    setIsSettingCode(data.role === 'maker');
+    setIsSettingCode(data.role === "maker");
   };
 
   // inizializza partita quando scelgo una modalità
@@ -162,10 +188,19 @@ function App() {
     setTempCode(Array(4).fill(null));
 
     if (mode === "versus") {
-      // in 1 vs 1 il codice viene scelto dal Giocatore 1
-      setSecretCode([]);
-      setTimeLeft(0);
-      setIsSettingCode(true);
+      // in 1 vs 1 il codice viene scelto dal Giocatore 1 (maker)
+      // Se sono il breaker, aspetto che arrivi il codice via socket
+      // Se sono il maker, devo impostarlo
+      if (!opponent) {
+        // Se non ho ancora un avversario, resetto tutto
+        setSecretCode([]);
+        setTimeLeft(0);
+        setIsSettingCode(true);
+      } else {
+        // Se ho già un avversario, il codice verrà gestito da handleGameStart
+        setSecretCode([]);
+        setTimeLeft(0);
+      }
     } else {
       // normal / devil → codice random
       setSecretCode(
@@ -204,15 +239,31 @@ function App() {
   const submitGuess = () => {
     if (gameWon || gameOver || guesses.length >= MAX_TURNS) return;
     if (!currentGuess.every((c) => c !== null)) return;
+    if (secretCode.length === 0) return; // Attendi che il codice sia disponibile
 
     const feedback = calculateFeedback(secretCode, currentGuess);
     const newGuesses = [...guesses, { guess: currentGuess, feedback }];
     setGuesses(newGuesses);
+    const guessToSubmit = [...currentGuess]; // Salva il tentativo prima di resettare
     setCurrentGuess(Array(4).fill(null));
 
+    // In modalità 1vs1, invia il tentativo al maker (opzionale, per sincronizzazione)
+    if (mode === "versus" && socket && opponentSocketId && !isSettingCode) {
+      socket.emit("send_guess", {
+        targetSocketId: opponentSocketId,
+        guess: guessToSubmit,
+        feedback: feedback,
+      });
+    }
+
     // vittoria solo se il tentativo coincide col codice
-    if (currentGuess.every((val, idx) => val === secretCode[idx])) {
+    if (guessToSubmit.every((val, idx) => val === secretCode[idx])) {
       setGameWon(true);
+
+      // Aggiorna i punti se l'utente è registrato
+      if (mode === "versus" && currentUser && currentUser !== "Guest") {
+        updatePoints(currentUser, calculatePoints(true, newGuesses.length));
+      }
       return;
     }
 
@@ -220,6 +271,11 @@ function App() {
     if (newGuesses.length >= MAX_TURNS) {
       setGameOver(true);
       setGameOverReason("turns");
+
+      // Aggiorna i punti (0 per sconfitta)
+      if (mode === "versus" && currentUser && currentUser !== "Guest") {
+        updatePoints(currentUser, 0); // 0 punti per sconfitta
+      }
     }
   };
 
@@ -253,7 +309,6 @@ function App() {
 
   /*  if (true) return <Modal /> */
 
-
   const resetGame = () => {
     // torna al menu principale
     setMode(null);
@@ -268,17 +323,88 @@ function App() {
 
   const confirmSecretCode = () => {
     if (!tempCode.every((c) => c !== null)) return;
+    if (!socket || !opponentSocketId) {
+      alert("Errore: connessione non disponibile");
+      return;
+    }
+
     setSecretCode(tempCode);
     setIsSettingCode(false);
-    // Giocatore 2 inizia a giocare, nessun timer in 1 vs 1
+
+    // Invia il codice segreto al breaker via socket
+    socket.emit("send_secret_code", {
+      targetSocketId: opponentSocketId,
+      secretCode: tempCode,
+    });
+
+    console.log("Codice segreto inviato all'avversario:", tempCode);
   };
 
   const handleLoginSuccess = (user) => {
     console.log("Dati utenti ricevuti dal Login:", user);
     setLogged(true);
-    setCurrentUser(typeof user === "string" ? user : (user?.username || "Guest"));
+    setCurrentUser(typeof user === "string" ? user : user?.username || "Guest");
     setRegisterView(false); // Assicura di tornare alla vista di gioco
   };
+
+  // Funzione per calcolare i punti in base al risultato
+  const calculatePoints = (won, guessesCount) => {
+    if (!won) return 0;
+
+    // Formula: più tentativi = meno punti
+    // Esempio: 100 punti base - (tentativi * 5)
+    const basePoints = 100;
+    const penalty = guessesCount * 5;
+    return Math.max(10, basePoints - penalty); // Minimo 10 punti
+  };
+
+  // Funzione per aggiornare i punti via API
+  const updatePoints = async (username, pointsToAdd) => {
+    try {
+      const response = await fetch(`${API_BASE_URL}/points/update`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          username: username,
+          pointsToAdd: pointsToAdd,
+        }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        console.log("Punti aggiornati:", data);
+      } else {
+        console.error("Errore aggiornamento punti:", await response.text());
+      }
+    } catch (error) {
+      console.error("Errore chiamata API punti:", error);
+    }
+  };
+
+  // Notifica fine partita all'avversario (1vs1)
+  useEffect(() => {
+    if (mode !== "versus" || !socket || !opponentSocketId) return;
+    if (!gameWon && !gameOver) return;
+
+    socket.emit("game_ended", {
+      targetSocketId: opponentSocketId,
+      gameWon: gameWon,
+      guessesCount: guesses.length,
+      winner: gameWon ? currentUser : opponent,
+    });
+  }, [
+    gameWon,
+    gameOver,
+    mode,
+    socket,
+    opponentSocketId,
+    guesses.length,
+    currentUser,
+    opponent,
+  ]);
 
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const seconds = String(timeLeft % 60).padStart(2, "0");
@@ -296,7 +422,20 @@ function App() {
 
   // Mostra una schermata di caricamento mentre verifichiamo il cookie
   if (isLoading) {
-    return <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh', color: 'white', fontSize: '1.5rem' }}>Caricamento...</div>;
+    return (
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          color: "white",
+          fontSize: "1.5rem",
+        }}
+      >
+        Caricamento...
+      </div>
+    );
   }
 
   // Mostra la classifica se lo stato è attivo
@@ -326,12 +465,15 @@ function App() {
     <div className="page-wrapper">
       <div className="mode-menu">
         <h1 className="menu-title">MASTERMIND SCAM</h1>
-        <p className="menu-subtitle">Scegli la modalità o <Btn variant="simple" onClick={() => setIsRulesOfGame(true)}>IMPARA LE REGOLE DI GIOCO</Btn></p>
+        <p className="menu-subtitle">
+          Scegli la modalità o{" "}
+          <Btn variant="simple" onClick={() => setIsRulesOfGame(true)}>
+            IMPARA LE REGOLE DI GIOCO
+          </Btn>
+        </p>
 
         {/* REGOLE DEL GIOCO */}
-        {isRulesOfGame && (<RulesOfGameDefault onClose={handleCloseModal} />)}
-
-
+        {isRulesOfGame && <RulesOfGameDefault onClose={handleCloseModal} />}
 
         <button className="menu-btn" onClick={() => setMode("normal")}>
           Modalità Normale
@@ -345,7 +487,11 @@ function App() {
             }
             setMode("versus");
           }}
-          style={currentUser === "Guest" ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+          style={
+            currentUser === "Guest"
+              ? { opacity: 0.5, cursor: "not-allowed" }
+              : {}
+          }
         >
           1 vs 1 (Codemaker / Codebreaker) {currentUser === "Guest" && "🔒"}
         </button>
@@ -359,11 +505,15 @@ function App() {
               alert("This ranking is reserved to registered users only!");
               return;
             }
-            setIsLeaderboard(true)
+            setIsLeaderboard(true);
           }}
-          style={currentUser === "Guest" ? { opacity: 0.5, cursor: "not-allowed" } : {}}
+          style={
+            currentUser === "Guest"
+              ? { opacity: 0.5, cursor: "not-allowed" }
+              : {}
+          }
         >
-          Ranking { currentUser === "Guest" && "🔒"}
+          Ranking {currentUser === "Guest" && "🔒"}
         </button>
         <button
           className="menu-btn"
@@ -374,7 +524,7 @@ function App() {
             display: "flex",
             alignItems: "center",
             justifyContent: "center",
-            gap: "8px"
+            gap: "8px",
           }}
         >
           <LogoutIcon />
@@ -404,7 +554,7 @@ function App() {
           onBack={() => setMode(null)}
         />
 
-        <div style={{ color: 'white' }}>Setup contro {opponent} (WIP)</div>
+        <div style={{ color: "white" }}>Setup contro {opponent} (WIP)</div>
       </>
     )
   ) : (
@@ -417,8 +567,7 @@ function App() {
               ← Torna alla scelta modalità
             </button>
           </div>
-        )
-        }
+        )}
         <BombHeader
           minutes={minutes}
           seconds={seconds}
@@ -426,33 +575,31 @@ function App() {
           maxTurns={MAX_TURNS}
           mode={mode}
         />
-        {
-          (!gameWon && !gameOver) ? (
-            <GameBoard
-              guesses={guesses}
-              currentGuess={currentGuess}
-              colors={COLORS_BOMB}
-              canPlay={guesses.length < MAX_TURNS}
-              onPegClick={addPeg}
-              selectedColor={selectedColor}
-              onSelectColor={setSelectedColor}
-              mainButtonLabel={mainButtonLabel}
-              mainButtonDisabled={mainButtonDisabled}
-              mainButtonOnClick={mainButtonOnClick}
-            />
-          ) : (
-            <EndScreen
-              gameWon={gameWon}
-              gameOverReason={gameOverReason}
-              guessesCount={guesses.length}
-              secretCode={secretCode}
-              onReset={resetGame}
-              colors={COLORS_BOMB}
-            />
-          )
-        }
-      </div >
-    </div >
+        {!gameWon && !gameOver ? (
+          <GameBoard
+            guesses={guesses}
+            currentGuess={currentGuess}
+            colors={COLORS_BOMB}
+            canPlay={guesses.length < MAX_TURNS}
+            onPegClick={addPeg}
+            selectedColor={selectedColor}
+            onSelectColor={setSelectedColor}
+            mainButtonLabel={mainButtonLabel}
+            mainButtonDisabled={mainButtonDisabled}
+            mainButtonOnClick={mainButtonOnClick}
+          />
+        ) : (
+          <EndScreen
+            gameWon={gameWon}
+            gameOverReason={gameOverReason}
+            guessesCount={guesses.length}
+            secretCode={secretCode}
+            onReset={resetGame}
+            colors={COLORS_BOMB}
+          />
+        )}
+      </div>
+    </div>
   );
 }
 
