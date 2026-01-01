@@ -66,6 +66,7 @@ function App() {
   const [incomingChallenge, setIncomingChallenge] = useState(null);
   const [opponent, setOpponent] = useState(null);
   const [opponentSocketId, setOpponentSocketId] = useState(null); // SocketId dell'avversario per comunicazione 1vs1
+  const [userRole, setUserRole] = useState(null); // 'maker' | 'breaker' | null - ruolo nella partita 1vs1
   const [isRulesOfGame, setIsRulesOfGame] = useState(false); // apre la modale con la spiegazione delle regole di gioco
   const [isLeaderboard, setIsLeaderboard] = useState(false); // apre la classifica
 
@@ -141,17 +142,26 @@ function App() {
 
   // Listener Socket per ricevere il codice segreto (solo per breaker in modalità 1vs1)
   useEffect(() => {
-    if (!socket || mode !== "versus" || isSettingCode) return;
+    if (!socket || mode !== "versus") return;
 
     const handleSecretCodeReceived = (data) => {
-      console.log("Codice segreto ricevuto:", data.secretCode);
-      setSecretCode(data.secretCode);
-      // Il breaker può ora iniziare a giocare
+      // Solo il breaker riceve il codice segreto
+      if (userRole === "breaker" && !isSettingCode) {
+        console.log("Codice segreto ricevuto:", data.secretCode);
+        setSecretCode(data.secretCode);
+        // Il breaker può ora iniziare a giocare
+      }
     };
 
     const handleGameEnded = (data) => {
-      // Gestisci la fine partita (opzionale, per sincronizzazione)
+      // Gestisci la fine partita per entrambi i ruoli
       console.log("Partita terminata:", data);
+      if (userRole === "maker") {
+        // Il maker vede il risultato nella sua schermata di attesa
+        setGameWon(data.gameWon);
+        setGameOver(!data.gameWon);
+        setGameOverReason(data.gameWon ? "" : "turns");
+      }
     };
 
     socket.on("secret_code_received", handleSecretCodeReceived);
@@ -161,12 +171,13 @@ function App() {
       socket.off("secret_code_received", handleSecretCodeReceived);
       socket.off("game_ended_notification", handleGameEnded);
     };
-  }, [socket, mode, isSettingCode]);
+  }, [socket, mode, isSettingCode, userRole]);
 
   // Gestisce l'inizio della partita 1vs1 attivato da UserList
   const handleGameStart = (data) => {
     setOpponent(data.opponent);
     setOpponentSocketId(data.opponentSocketId); // Salva il socketId dell'avversario
+    setUserRole(data.role); // Salva il ruolo (maker o breaker)
     setMode("versus");
     // Se il ruolo è 'maker', devo impostare il codice (isSettingCode = true)
     // Se il ruolo è 'breaker', aspetto (isSettingCode = false)
@@ -175,7 +186,21 @@ function App() {
 
   // inizializza partita quando scelgo una modalità
   useEffect(() => {
-    if (!mode) return;
+    if (!mode) {
+      // Reset completo quando si torna al menu
+      setOpponent(null);
+      setOpponentSocketId(null);
+      setUserRole(null);
+      setGuesses([]);
+      setCurrentGuess(Array(4).fill(null));
+      setGameWon(false);
+      setGameOver(false);
+      setGameOverReason("");
+      setSecretCode([]);
+      setTempCode(Array(4).fill(null));
+      setIsSettingCode(false);
+      return;
+    }
 
     // reset stato comune
     setGuesses([]);
@@ -196,6 +221,7 @@ function App() {
         setSecretCode([]);
         setTimeLeft(0);
         setIsSettingCode(true);
+        setUserRole(null);
       } else {
         // Se ho già un avversario, il codice verrà gestito da handleGameStart
         setSecretCode([]);
@@ -210,6 +236,7 @@ function App() {
       );
       setTimeLeft(mode === "devil" ? 60 : 0);
       setIsSettingCode(false);
+      setUserRole(null);
     }
   }, [mode]);
 
@@ -310,8 +337,19 @@ function App() {
   /*  if (true) return <Modal /> */
 
   const resetGame = () => {
-    // torna al menu principale
+    // Reset completo dello stato del gioco
     setMode(null);
+    setOpponent(null);
+    setOpponentSocketId(null);
+    setUserRole(null);
+    setGuesses([]);
+    setCurrentGuess(Array(4).fill(null));
+    setGameWon(false);
+    setGameOver(false);
+    setGameOverReason("");
+    setSecretCode([]);
+    setTempCode(Array(4).fill(null));
+    setIsSettingCode(false);
   };
 
   // handler per impostare il codice in 1 vs 1
@@ -330,6 +368,8 @@ function App() {
 
     setSecretCode(tempCode);
     setIsSettingCode(false);
+    // Il maker non deve giocare, quindi mantiene isSettingCode=false ma userRole='maker'
+    // Questo permetterà di mostrare la schermata di attesa
 
     // Invia il codice segreto al breaker via socket
     socket.emit("send_secret_code", {
@@ -539,7 +579,7 @@ function App() {
       <UserList
         socket={socket}
         currentUser={currentUser}
-        onBack={() => setMode(null)}
+        onBack={resetGame}
         onGameStart={handleGameStart}
       />
     ) : (
@@ -551,19 +591,73 @@ function App() {
           onSelectColor={setSelectedColor}
           onSetCodePeg={setCodePeg}
           onConfirm={confirmSecretCode}
-          onBack={() => setMode(null)}
+          onBack={resetGame}
         />
 
-        <div style={{ color: "white" }}>Setup contro {opponent} (WIP)</div>
+        <div style={{ color: "white" }}>Setup contro {opponent}</div>
       </>
     )
+  ) : mode === "versus" && userRole === "maker" && !isSettingCode ? (
+    // Se il maker ha confermato il codice, mostra schermata di attesa
+    <div className="page-wrapper">
+      <div className="bomb-container">
+        <div style={{ padding: "12px 16px" }}>
+          <button className="back-menu-btn" onClick={resetGame}>
+            ← Torna alla scelta modalità
+          </button>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            padding: "60px 20px",
+            textAlign: "center",
+          }}
+        >
+          <h2 style={{ color: "#10b981", marginBottom: "20px" }}>
+            Codice Segreto Inviato!
+          </h2>
+          <p
+            style={{ color: "#d1d5db", marginBottom: "30px", fontSize: "18px" }}
+          >
+            Stai aspettando che{" "}
+            <strong style={{ color: "#60a5fa" }}>{opponent}</strong> indovini il
+            tuo codice...
+          </p>
+          {gameWon || gameOver ? (
+            <div style={{ marginTop: "20px" }}>
+              <p
+                style={{
+                  color: gameWon ? "#10b981" : "#ef4444",
+                  fontSize: "20px",
+                  marginBottom: "20px",
+                }}
+              >
+                {gameWon
+                  ? "🎉 Il tuo avversario ha vinto!"
+                  : "💥 Il tuo avversario ha perso!"}
+              </p>
+              <button className="defuse-btn" onClick={resetGame}>
+                NUOVA PARTITA
+              </button>
+            </div>
+          ) : (
+            <div style={{ color: "#9ca3af", fontSize: "14px" }}>
+              In attesa del risultato...
+            </div>
+          )}
+        </div>
+      </div>
+    </div>
   ) : (
     // Altrimenti, l'utente è loggato e in partita: mostra la schermata di gioco
     <div className="page-wrapper">
       <div className="bomb-container">
-        {guesses.length === 0 && !isSettingCode && (
+        {guesses.length === 0 && !isSettingCode && userRole !== "maker" && (
           <div style={{ padding: "12px 16px" }}>
-            <button className="back-menu-btn" onClick={() => setMode(null)}>
+            <button className="back-menu-btn" onClick={resetGame}>
               ← Torna alla scelta modalità
             </button>
           </div>
@@ -576,18 +670,38 @@ function App() {
           mode={mode}
         />
         {!gameWon && !gameOver ? (
-          <GameBoard
-            guesses={guesses}
-            currentGuess={currentGuess}
-            colors={COLORS_BOMB}
-            canPlay={guesses.length < MAX_TURNS}
-            onPegClick={addPeg}
-            selectedColor={selectedColor}
-            onSelectColor={setSelectedColor}
-            mainButtonLabel={mainButtonLabel}
-            mainButtonDisabled={mainButtonDisabled}
-            mainButtonOnClick={mainButtonOnClick}
-          />
+          // Solo il breaker può giocare, il maker vede la schermata di attesa
+          userRole === "breaker" || mode !== "versus" ? (
+            <GameBoard
+              guesses={guesses}
+              currentGuess={currentGuess}
+              colors={COLORS_BOMB}
+              canPlay={guesses.length < MAX_TURNS && secretCode.length > 0}
+              onPegClick={addPeg}
+              selectedColor={selectedColor}
+              onSelectColor={setSelectedColor}
+              mainButtonLabel={mainButtonLabel}
+              mainButtonDisabled={mainButtonDisabled || secretCode.length === 0}
+              mainButtonOnClick={mainButtonOnClick}
+            />
+          ) : (
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "60px 20px",
+                textAlign: "center",
+              }}
+            >
+              <p style={{ color: "#d1d5db", fontSize: "18px" }}>
+                In attesa che{" "}
+                <strong style={{ color: "#60a5fa" }}>{opponent}</strong>{" "}
+                indovini il tuo codice...
+              </p>
+            </div>
+          )
         ) : (
           <EndScreen
             gameWon={gameWon}
