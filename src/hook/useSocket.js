@@ -15,14 +15,20 @@ import { API_BASE_URL } from "../config";
 export const useSocket = (isLogged, currentUser) => {
   const [socket, setSocket] = useState(null);
 
+  // Crea il socket solo quando si fa login, non quando currentUser cambia
   useEffect(() => {
     if (isLogged && !socket) {
+      console.log("[useSocket] Creazione nuovo socket");
       const newSocket = io(API_BASE_URL);
 
       const registerUser = () => {
-        if (currentUser) {
-          console.log("[useSocket] Registro utente:", currentUser);
-          newSocket.emit("register_user", currentUser);
+        // Estrai username se currentUser è un oggetto
+        const username =
+          typeof currentUser === "string" ? currentUser : currentUser?.username;
+
+        if (username) {
+          console.log("[useSocket] Registro utente:", username);
+          newSocket.emit("register_user", username);
         }
       };
 
@@ -39,20 +45,31 @@ export const useSocket = (isLogged, currentUser) => {
       setSocket(newSocket);
 
       return () => {
-        console.log("[useSocket] Chiusura socket");
+        console.log("[useSocket] Chiusura socket (logout o unmount)");
         newSocket.close();
+        setSocket(null); // Reset dello stato quando il socket viene chiuso
       };
     }
-  }, [isLogged, currentUser]);
+
+    // Se si fa logout, chiudi il socket
+    if (!isLogged && socket) {
+      console.log("[useSocket] Logout rilevato, chiudo socket");
+      socket.close();
+      setSocket(null);
+    }
+  }, [isLogged]); // Solo isLogged nelle dipendenze, NON currentUser
 
   // Se currentUser cambia dopo che il socket è già stato creato, ri-registra l'utente
   useEffect(() => {
     if (socket && socket.connected && currentUser) {
-      console.log(
-        "[useSocket] currentUser cambiato, ri-registro:",
-        currentUser
-      );
-      socket.emit("register_user", currentUser);
+      // Estrai username se currentUser è un oggetto
+      const username =
+        typeof currentUser === "string" ? currentUser : currentUser?.username;
+
+      if (username) {
+        console.log("[useSocket] currentUser cambiato, ri-registro:", username);
+        socket.emit("register_user", username);
+      }
     }
   }, [socket, currentUser]);
 
