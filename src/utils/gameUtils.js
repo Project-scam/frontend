@@ -1,6 +1,6 @@
 //========================================================
 // File: gameUtils.js
-// Script che raccoglie le principali utility dell'app.
+// Script that collects the main utilities of the app.
 // @authror: "catalin.groppo@allievi.itsdigitalacademy.com"
 //           "mattia.zara@allievi.itsdigitalacademy.com"
 //           "sandu.batrincea@allievi.itsdigitalacademy.com"
@@ -10,7 +10,7 @@
 
 
 /**
- * Calcola il feedback per un tentativo (pallini neri e bianchi)
+ * Calculates feedback for a guess (black and white pegs)
  */
 export const calculateFeedback = (secret, guess) => {
   const secretCopy = [...secret];
@@ -18,7 +18,7 @@ export const calculateFeedback = (secret, guess) => {
   let black = 0;
   let white = 0;
 
-  // Pallini neri (posizione e colore corretti)
+  // Black pegs (correct position and color)
   secretCopy.forEach((val, i) => {
     if (val === guessCopy[i]) {
       black++;
@@ -26,7 +26,7 @@ export const calculateFeedback = (secret, guess) => {
     }
   });
 
-  // Pallini bianchi (colore corretto ma posizione sbagliata)
+  // White pegs (correct color but wrong position)
   secretCopy.forEach((val) => {
     if (val !== -1) {
       const idx = guessCopy.indexOf(val);
@@ -41,7 +41,7 @@ export const calculateFeedback = (secret, guess) => {
 };
 
 /**
- * Genera un codice segreto random
+ * Generates a random secret code
  */
 export const generateRandomCode = (colors, length = 4) => {
   return Array(length)
@@ -50,7 +50,7 @@ export const generateRandomCode = (colors, length = 4) => {
 };
 
 /**
- * Calcola i punti in base al risultato
+ * Calculates points based on the result
  */
 export const calculatePoints = (
   won,

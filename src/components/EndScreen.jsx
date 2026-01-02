@@ -12,7 +12,7 @@
       return () => clearTimeout(timer);
     }, []);
 
-    const title = gameWon ? '💣 BOMB 💣 DEFUSE! ' : '💥 YOU EXPLODED! 💥';
+    const title = gameWon ? '💣 BOMB DEFUSE! 💣' : '💥 YOU EXPLODED! 💥';
     const titleColor = gameWon ? '#10b981' : '#ef4444';
     const message = gameWon
       ? `In ${guessesCount} attempts`
@@ -64,7 +64,7 @@
                     '0 0 24px rgba(255,255,255,0.2) inset',
                   opacity: showSecretCode ? 1 : 0,
                   transform: showSecretCode ? "scale(1)" : "scale(0.8)",
-                  transition: `opacity 0.8s ${index * 0.15}s ease-out, transform 0.8s ${index * 0.15}s ease-out` // vengono fuori uno alla volta
+                  transition: `opacity 0.8s ${index * 0.15}s ease-out, transform 0.8s ${index * 0.15}s ease-out` // they come out one by one
                   }}
               />
               ))}

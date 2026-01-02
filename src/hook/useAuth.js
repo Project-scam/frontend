@@ -19,7 +19,7 @@ export const useAuth = () => {
   const [isRegisterView, setRegisterView] = useState(false);
 
   const handleLoginSuccess = (user) => {
-    console.log("Dati utenti ricevuti dal Login:", user);
+    console.log("User data received from Login:", user);
     setLogged(true);
     setCurrentUser(typeof user === "string" ? user : user?.username || "Guest");
     setRegisterView(false);
@@ -39,7 +39,7 @@ export const useAuth = () => {
           }
         }
       } catch (error) {
-        console.log("Nessuna sessione attiva o token scaduto");
+        console.log("No active session or expired token");
       } finally {
         setIsLoading(false);
       }
@@ -55,7 +55,7 @@ export const useAuth = () => {
         credentials: "include",
       });
     } catch (error) {
-      console.error("Errore logout:", error);
+      console.error("Logout error:", error);
     } finally {
       setLogged(false);
       setCurrentUser(null);

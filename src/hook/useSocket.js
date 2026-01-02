@@ -18,7 +18,7 @@ export const useSocket = (isLogged, currentUser) => {
   // Crea il socket solo quando si fa login, non quando currentUser cambia
   useEffect(() => {
     if (isLogged && !socket) {
-      console.log("[useSocket] Creazione nuovo socket");
+      console.log("[useSocket] Creating new socket");
       const newSocket = io(API_BASE_URL);
 
       const registerUser = () => {
@@ -27,13 +27,13 @@ export const useSocket = (isLogged, currentUser) => {
           typeof currentUser === "string" ? currentUser : currentUser?.username;
 
         if (username) {
-          console.log("[useSocket] Registro utente:", username);
+          console.log("[useSocket] Registering user:", username);
           newSocket.emit("register_user", username);
         }
       };
 
       newSocket.on("connect", () => {
-        console.log("[useSocket] Socket connesso:", newSocket.id);
+        console.log("[useSocket] Socket connected:", newSocket.id);
         registerUser();
       });
 
@@ -45,7 +45,7 @@ export const useSocket = (isLogged, currentUser) => {
       setSocket(newSocket);
 
       return () => {
-        console.log("[useSocket] Chiusura socket (logout o unmount)");
+        console.log("[useSocket] Closing socket (logout or unmount)");
         newSocket.close();
         setSocket(null); // Reset dello stato quando il socket viene chiuso
       };
@@ -53,7 +53,7 @@ export const useSocket = (isLogged, currentUser) => {
 
     // Se si fa logout, chiudi il socket
     if (!isLogged && socket) {
-      console.log("[useSocket] Logout rilevato, chiudo socket");
+      console.log("[useSocket] Logout detected, closing socket");
       socket.close();
       setSocket(null);
     }
@@ -67,7 +67,7 @@ export const useSocket = (isLogged, currentUser) => {
         typeof currentUser === "string" ? currentUser : currentUser?.username;
 
       if (username) {
-        console.log("[useSocket] currentUser cambiato, ri-registro:", username);
+        console.log("[useSocket] currentUser changed, re-registering:", username);
         socket.emit("register_user", username);
       }
     }

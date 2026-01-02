@@ -30,7 +30,7 @@ const RulesOfGameDefault = ({
       maxHeight={maxHeight}
       backgroundModal="darkblue"
     >
-      {/* Pulsante lingua */}
+      {/* Language button */}
       <button
         style={{
           position: "absolute", top: '80px', right: '450px', zIndex: 10, background: 'white', border: '2px solid #ddd',
@@ -50,7 +50,7 @@ const RulesOfGameDefault = ({
         <ModalSection colorText="white"><p>{t('desc1')}</p></ModalSection>
 
         <ModalSection colorText="white">
-          <img src="/modalità_normale.png" alt="img modalità normale" width={300} />
+          <img src="/modalità_normale.png" alt="Normal mode image" width={300} />
         </ModalSection>
 
         <CurvedArrow direction="up" size={120} reverse margin={"-45px 25px 0 0"} justify={"flex-end"} />
@@ -60,7 +60,7 @@ const RulesOfGameDefault = ({
         </ModalSection>
 
         <ModalSection colorText="white" align="flex-end">
-          <img src="/tentativi.png" alt="img modalità normale" width={300} />
+          <img src="/tentativi.png" alt="attempts mode image" width={300} />
         </ModalSection>
 
         <CurvedArrow direction="down" margin={"-40px 0 0 15px"} />
@@ -70,7 +70,7 @@ const RulesOfGameDefault = ({
         </ModalSection>
 
         <ModalSection colorText="white">
-          <img src="/colori.png" alt="img scelta dei colori" width={300} />
+          <img src="/colori.png" alt="color selection image" width={300} />
         </ModalSection>
 
         <CurvedArrow direction="up" reverse margin={"-45px 25px 0 0"} justify={"flex-end"} />
@@ -84,14 +84,14 @@ const RulesOfGameDefault = ({
         <ModalSection colorText="white" width={"100%"} marginBlockStart={"-20px"}>
           <JustifySection>
             <p>{t('black')}</p>
-            <img src="/peg_nero.png" alt="img con il peg nero" width={100} height={20} />
+            <img src="/peg_nero.png" alt="image with the black peg" width={100} height={20} />
           </JustifySection>
         </ModalSection>
 
         <ModalSection colorText="white" width={"100%"} marginBlockStart={"10px"} marginBlockEnd={"-40px"}>
           <JustifySection>
             <p>{t('white')}</p>
-            <img style={{ marginBlockStart: "10px" }} src="/peg_bianco.png" alt="img con il peg bianco" width={100} height={20} />
+            <img style={{ marginBlockStart: "10px" }} src="/peg_bianco.png" alt="image with the white peg" width={100} height={20} />
           </JustifySection>
         </ModalSection>
 
@@ -108,7 +108,7 @@ const RulesOfGameDefault = ({
         </ModalSection>
 
         <ModalSection>
-          <img src="/winner.png" alt="immagine di vittoria" width={300} />
+          <img src="/winner.png" alt="victory image" width={300} />
         </ModalSection>
       </div>
     </Modal>

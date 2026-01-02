@@ -18,14 +18,14 @@ export function Leaderboard({ onClose }) {
         });
 
         if (!response.ok) {
-          throw new Error("Errore nel caricamento della classifica");
+          throw new Error("Error loading leaderboard");
         }
 
         const data = await response.json();
         setRanking(data);
       } catch (err) {
-        console.error("Errore fetch ranking:", err);
-        setError("Impossibile caricare la classifica.");
+        console.error("Error fetching ranking:", err);
+        setError("Unable to load leaderboard.");
       } finally {
         setLoading(false);
       }

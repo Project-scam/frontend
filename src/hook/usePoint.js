@@ -24,14 +24,14 @@ export const usePoints = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log("Points updated:", data);
+        console.log("Points updated successfully:", data);
         return data;
       } else {
         console.error("Error updating points:", await response.text());
         return null;
       }
     } catch (error) {
-      console.error("Error API points call:", error);
+      console.error("API call error for points:", error);
       return null;
     }
   };

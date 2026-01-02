@@ -1,4 +1,6 @@
 import ColorPicker from './ColorPicker';
+import { useState } from "react";
+import Modal from "./Modal/Modal";
 
 function VersusSetup({
   tempCode,
@@ -9,13 +11,31 @@ function VersusSetup({
   onConfirm,
   onBack,
 }) {
+  const [showModal, setShowModal] = useState(false);
+  const [modalConfig, setModalConfig] = useState({
+    title: "",
+    message: "",
+    textColor: "black",
+    textColorSubtitle: "black"
+  });
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setModalConfig({
+      title: "",
+      message: "",
+      textColor: "black",
+      textColorSubtitle: "black"
+    });
+  };
+
   return (
     <div className="page-wrapper">
       <div className="bomb-container">
         <div className="setup-header">
-          <h2 className="setup-title">Giocatore 1: imposta il codice segreto</h2>
+          <h2 className="setup-title">  Player 1: Set the secret code </h2>
           <p className="setup-subtitle">
-            Scegli 4 colori. Il Giocatore 2 dovrà indovinarli.
+            Choose 4 colors. Player 2 will have to guess them.
           </p>
         </div>
 
@@ -45,10 +65,21 @@ function VersusSetup({
 
         <button
           className="defuse-btn"
-          onClick={onConfirm}
+          onClick={() => {
+            const result = onConfirm();
+            if (typeof result === "string") {
+              setModalConfig({
+                title: "Error",
+                message: result,
+                textColor: "red",
+                textColorSubtitle: "black",
+              });
+              setShowModal(true);
+            }
+          }}
           disabled={!tempCode.every(c => c !== null)}
         >
-          Conferma Codice per P2
+         Confirm code for P2
         </button>
 
         <div style={{ padding: '12px 16px' }}>
@@ -56,9 +87,19 @@ function VersusSetup({
             className="back-menu-btn"
             onClick={onBack}
           >
-            ← Torna alla scelta modalità
+            ← Back to mode selection
           </button>
         </div>
+
+        {showModal && (
+          <Modal
+            onClose={handleCloseModal}
+            title={modalConfig.title}
+            subtitle={modalConfig.message}
+            textColor={modalConfig.textColor}
+            textColorSubtitle={modalConfig.textColorSubtitle}
+          />
+        )}
       </div>
     </div>
   );

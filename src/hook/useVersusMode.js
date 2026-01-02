@@ -47,8 +47,8 @@ export const useVersusMode = (socket, mode, callbacks = {}) => {
   const confirmSecretCode = (onCodeSent) => {
     if (!tempCode.every((c) => c !== null)) return false;
     if (!socket || !opponentSocketId) {
-      alert("Errore: connessione non disponibile");
-      return false;
+      // alert("Errore: connessione non disponibile"); // Rimosso alert
+      return "Error: Connection not available"; // Ritorna messaggio di errore per il componente padre
     }
 
     setIsSettingCode(false);
@@ -78,7 +78,7 @@ export const useVersusMode = (socket, mode, callbacks = {}) => {
     const handleSecretCodeReceived = (data) => {
       // Solo il breaker riceve il codice segreto
       if (userRole === USER_ROLES.BREAKER && !isSettingCode) {
-        console.log("Codice segreto ricevuto:", data.secretCode);
+        console.log("Secret code received:", data.secretCode);
         // ✅ Chiama il callback per aggiornare secretCode in useGameMode
         // Usa callbacksRef.current per accedere ai callback più recenti
         const currentCallbacks = callbacksRef.current;
@@ -91,7 +91,7 @@ export const useVersusMode = (socket, mode, callbacks = {}) => {
     const handleGameEnded = (data) => {
       // Solo il maker riceve la notifica di fine partita
       if (userRole === USER_ROLES.MAKER) {
-        console.log("Partita terminata:", data);
+        console.log("Game ended:", data);
         // ✅ Chiama il callback per aggiornare gameWon/gameOver in useGameLogic
         // Usa callbacksRef.current per accedere ai callback più recenti
         const currentCallbacks = callbacksRef.current;

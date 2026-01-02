@@ -18,7 +18,7 @@ const COLORS_BOMB = [
   "#ec4899",
   "#06b6d4",
 ];
-const MAX_TURNS = 10; // Modificato in 10 turni che 12
+const MAX_TURNS = 10; // Changed to 10 turns from 12
 
 export default function MainMenu() {
   const [mode, setMode] = useState(null); // null | 'normal' | 'devil' | 'versus'
@@ -30,20 +30,20 @@ export default function MainMenu() {
   const [gameOverReason, setGameOverReason] = useState("");
   const [secretCode, setSecretCode] = useState([]);
   const [timeLeft, setTimeLeft] = useState(0);
-  const [hasStarted, setHasStarted] = useState(false); // per far partire il timer in Diavolo
-  const [isSettingCode, setIsSettingCode] = useState(false); // fase in cui P1 imposta il codice (1vs1)
-  const [tempCode, setTempCode] = useState(Array(4).fill(null)); // codice scelto da P1
-  const [showUserList, setShowUserList] = useState(true); // Gestisce la vista UserList vs VersusSetup
+  const [hasStarted, setHasStarted] = useState(false); // to start the timer in Devil mode
+  const [isSettingCode, setIsSettingCode] = useState(false); // phase where P1 sets the code (1vs1)
+  const [tempCode, setTempCode] = useState(Array(4).fill(null)); // code chosen by P1
+  const [showUserList, setShowUserList] = useState(true); // Manages the UserList vs VersusSetup view
 
   const [socket, setSocket] = useState(null);
   const [currentUser, setCurrentUser] = useState("");
 
   useEffect(() => {
-    // Inizializza la connessione (assumendo che il backend sia su localhost:3000)
+    // Initializes the connection (assuming the backend is on localhost:3000)
     const newSocket = io("https://pwscam-2.onrender.com");
     setSocket(newSocket);
 
-    // Genera un nome utente temporaneo (o recuperalo da un input di login)
+    // Generates a temporary username (or retrieves it from a login input)
     const user = "Player" + Math.floor(Math.random() * 1000);
     setCurrentUser(user);
 
@@ -54,11 +54,11 @@ export default function MainMenu() {
     return () => newSocket.disconnect();
   }, []);
 
-  // inizializza partita quando scelgo una modalità
+  // initializes game when a mode is chosen
   useEffect(() => {
     if (!mode) return;
 
-    // reset stato comune
+    // reset common state
     setGuesses([]);
     setCurrentGuess(Array(4).fill(null));
     setSelectedColor(0);
@@ -70,12 +70,12 @@ export default function MainMenu() {
     setShowUserList(true); // Reset della vista lista utenti
 
     if (mode === "versus") {
-      // in 1 vs 1 il codice viene scelto dal Giocatore 1
+      // in 1 vs 1 the code is chosen by Player 1
       setSecretCode([]);
       setTimeLeft(0);
       setIsSettingCode(true);
     } else {
-      // normal / devil → codice random
+      // normal / devil → random code
       setSecretCode(
         Array(4)
           .fill(0)
@@ -86,7 +86,7 @@ export default function MainMenu() {
     }
   }, [mode]);
 
-  // timer solo in modalità Diavolo e solo dopo Start
+  // timer only in Devil mode and only after Start
   useEffect(() => {
     if (mode !== "devil") return;
     if (!hasStarted) return;
@@ -118,13 +118,13 @@ export default function MainMenu() {
     setGuesses(newGuesses);
     setCurrentGuess(Array(4).fill(null));
 
-    // vittoria solo se il tentativo coincide col codice
+    // win only if the attempt matches the code
     if (currentGuess.every((val, idx) => val === secretCode[idx])) {
       setGameWon(true);
       return;
     }
 
-    // esplosione per tentativi finiti
+    // explosion for finished attempts
     if (newGuesses.length >= MAX_TURNS) {
       setGameOver(true);
       setGameOverReason("turns");
@@ -160,11 +160,11 @@ export default function MainMenu() {
   };
 
   const resetGame = () => {
-    // torna al menu principale
+    // returns to the main menu
     setMode(null);
   };
 
-  // handler per impostare il codice in 1 vs 1
+  // handler to set the code in 1 vs 1
   const setCodePeg = (index) => {
     setTempCode((prev) =>
       prev.map((v, i) => (i === index ? selectedColor : v))
@@ -175,31 +175,31 @@ export default function MainMenu() {
     if (!tempCode.every((c) => c !== null)) return;
     setSecretCode(tempCode);
     setIsSettingCode(false);
-    // Giocatore 2 inizia a giocare, nessun timer in 1 vs 1
+    // Player 2 starts playing, no timer in 1 vs 1
   };
 
-  // SCHERMATA MENU MODALITÀ
+  // MODE MENU SCREEN
   if (!mode) {
     return (
       <div className="page-wrapper">
         <div className="mode-menu">
           <h1 className="menu-title">MASTERMINDSCAM</h1>
-          <p className="menu-subtitle">Scegli la modalità di gioco</p>
+          <p className="menu-subtitle">Choose a game mode</p>
           <button className="menu-btn" onClick={() => setMode("normal")}>
-            Modalità Normale
+            Normal Mode
           </button>
           <button className="menu-btn" onClick={() => setMode("versus")}>
             1 vs 1 (Codemaker / Codebreaker)
           </button>
           <button className="menu-btn" onClick={() => setMode("devil")}>
-            Modalità Diavolo
+            Devil Mode
           </button>
         </div>
       </div>
     );
   }
 
-  // FASE SCELTA CODICE (1 vs 1)
+  // CODE SELECTION PHASE (1 vs 1)
   if (mode === "versus" && isSettingCode) {
     if (showUserList) {
       return (
@@ -225,9 +225,9 @@ export default function MainMenu() {
     }
   }
 
-  // da qui in poi: partita normale (secretCode pronto)
+  // from here on: normal game (secretCode ready)
 
-  if (!secretCode.length) return <div>Caricamento...</div>;
+  if (!secretCode.length) return <div>Loading...</div>;
 
   const minutes = String(Math.floor(timeLeft / 60)).padStart(2, "0");
   const seconds = String(timeLeft % 60).padStart(2, "0");
@@ -246,7 +246,7 @@ export default function MainMenu() {
   return (
     <div className="page-wrapper">
       <div className="bomb-container">
-        {/* Pulsante per tornare al menu se la partita NON è iniziata */}
+        {/* Button to return to menu if the game has NOT started */}
         {mode &&
           guesses.length === 0 &&
           !gameWon &&
@@ -254,7 +254,7 @@ export default function MainMenu() {
           !isSettingCode && (
             <div style={{ padding: "12px 16px" }}>
               <button className="back-menu-btn" onClick={() => setMode(null)}>
-                ← Torna alla scelta modalità
+                ← Back to mode selection
               </button>
             </div>
           )}
@@ -267,7 +267,7 @@ export default function MainMenu() {
           mode={mode}
         />
 
-        {/* gioco in corso */}
+        {/* game in progress */}
         {!gameWon && !gameOver && (
           <GameBoard
             guesses={guesses}
@@ -283,7 +283,7 @@ export default function MainMenu() {
           />
         )}
 
-        {/* fine partita */}
+        {/* end game */}
         {(gameWon || gameOver) && (
           <EndScreen
             gameWon={gameWon}

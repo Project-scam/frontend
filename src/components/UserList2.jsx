@@ -14,10 +14,6 @@ import "../index.css";
 export function UserList({ socket, currentUser, incomingChallenge, onAcceptChallenge, onBack }) {
     const [users, setUsers] = useState([]);
     const [outgoingChallenge, setOutgoingChallenge] = useState(null); // Username dell'utente sfidato
-    alert("socket" + socket);
-    alert("currentUser" + currentUser);
-    alert("incomingChallenge" + inocomingChallenge);
-    alert("onAcceptChallenge" + onAcceptChallenge);
     useEffect(() => {
         if (!socket) return;
 
@@ -78,7 +74,7 @@ export function UserList({ socket, currentUser, incomingChallenge, onAcceptChall
                                         <tr key={u.socketId} style={{ borderBottom: "1px solid rgba(255,255,255,0.05)" }}>
                                             <td style={{ padding: "12px 10px" }}>
                                                 <span style={{ fontWeight: isMe ? "bold" : "normal", color: isMe ? "#eab308" : "white" }}>
-                                                    {u.username} {isMe && "(Tu)"}
+                                                    {u.username} {isMe && "(You)"}
                                                 </span>
                                             </td>
                                             <td style={{ padding: "12px 10px", textAlign: "right" }}>
@@ -86,7 +82,7 @@ export function UserList({ socket, currentUser, incomingChallenge, onAcceptChall
                                                     <span style={{ fontSize: "12px", color: "#6b7280" }}>-</span>
                                                 ) : isChallenger ? (
                                                     <button className="menu-btn" style={{ padding: "6px 12px", fontSize: "12px", background: "linear-gradient(135deg, #10b981, #059669)" }} onClick={onAcceptChallenge}>
-                                                        ACCEPT THE CHALLANGE
+                                                        ACCEPT THE CHALLENGE
                                                     </button>
                                                 ) : isChallengedByMe ? (
                                                     <span style={{ fontSize: "12px", color: "#eab308" }}>Waiting...</span>

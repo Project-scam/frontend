@@ -33,6 +33,8 @@ import { useGameLogic } from "./hook/useGameLogic";
 import { useDevilMode } from "./hook/useDevilMode";
 import { useVersusMode } from "./hook/useVersusMode";
 import { usePoints } from "./hook/usePoint";
+import Modal from "./components/Modal/Modal";
+
 
 const LogoutIcon = () => (
   <svg
@@ -56,6 +58,23 @@ function App() {
   // UI State
   const [isRulesOfGame, setIsRulesOfGame] = useState(false);
   const [isLeaderboard, setIsLeaderboard] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalConfig, setModalConfig] = useState({
+    title: "",
+    message: "",
+    textColor: "black",
+    textColorSubtitle: "black"
+  });
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setModalConfig({
+      title: "",
+      message: "",
+      textColor: "black",
+      textColorSubtitle: "black"
+    });
+  };
 
   // Auth
   const {
@@ -227,20 +246,53 @@ function App() {
   // Rendering
   if (isLoading) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          color: "white",
-          fontSize: "1.5rem",
-        }}
-      >
-        Caricamento...
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            color: "white",
+            fontSize: "1.5rem",
+          }}
+        >
+          Loading...
+        </div>
+    );
+  }
+
+  /*
+  // TEMPORARY BYPASS: Display UserList  for testing
+  if (showUserListDirectlyForTest) {
+    return (
+      <div className="page-wrapper">
+        <button
+          onClick={() => setShowUserListDirectlyForTest(false)}
+          style={{
+            position: "absolute",
+            top: "10px",
+            left: "10px",
+            background: "#ef4444",
+            color: "white",
+            padding: "8px 12px",
+            borderRadius: "5px",
+            border: "none",
+            cursor: "pointer",
+            zIndex: 1000,
+          }}
+        >
+          Exit Test Mode
+        </button>
+        <UserList
+          socket={socket}
+          currentUser={currentUser || "GuestUserForTest"}
+          onBack={() => setShowUserListDirectlyForTest(false)}
+          onGameStart={handleGameStart}
+        />
       </div>
     );
   }
+  */
 
   if (isLeaderboard) {
     return <Leaderboard onClose={() => setIsLeaderboard(false)} />;
@@ -267,9 +319,9 @@ function App() {
         <div className="mode-menu">
           <h1 className="menu-title">MASTERMIND SCAM</h1>
           <p className="menu-subtitle">
-            Scegli la modalità o{" "}
+            Choose a game mode or{" "}
             <Btn variant="simple" onClick={() => setIsRulesOfGame(true)}>
-              IMPARA LE REGOLE DI GIOCO
+              LEARN THE GAME RULES
             </Btn>
           </p>
 
@@ -281,13 +333,19 @@ function App() {
             className="menu-btn"
             onClick={() => setMode(GAME_MODES.NORMAL)}
           >
-            Modalità Normale
+            Normal Mode
           </button>
           <button
             className="menu-btn"
             onClick={() => {
               if (currentUser === "Guest") {
-                alert("This mode is reserved to registered users only!");
+                setModalConfig({
+                  title: "Restricted Mode",
+                  message: "This mode is reserved for registered users only!",
+                  textColor: "red",
+                  textColorSubtitle: "black",
+                });
+                setShowModal(true);
                 return;
               }
               setMode(GAME_MODES.VERSUS);
@@ -304,13 +362,19 @@ function App() {
             className="menu-btn"
             onClick={() => setMode(GAME_MODES.DEVIL)}
           >
-            Modalità Diavolo
+            Devil Mode
           </button>
           <button
             className="menu-btn"
             onClick={() => {
               if (currentUser === "Guest") {
-                alert("This ranking is reserved to registered users only!");
+                setModalConfig({
+                  title: "Restricted Access",
+                  message: "This ranking is reserved for registered users only!",
+                  textColor: "red",
+                  textColorSubtitle: "black",
+                });
+                setShowModal(true);
                 return;
               }
               setIsLeaderboard(true);
@@ -321,7 +385,7 @@ function App() {
                 : {}
             }
           >
-            Ranking {currentUser === "Guest" && "🔒"}
+            Leaderboard {currentUser === "Guest" && "🔒"}
           </button>
           <button
             className="menu-btn"
@@ -368,7 +432,7 @@ function App() {
           onConfirm={confirmSecretCode}
           onBack={resetGame}
         />
-        <div style={{ color: "white" }}>Setup contro {opponent}</div>
+        <div style={{ color: "white" }}>Setup against {opponent}</div>
       </>
     );
   }
@@ -384,7 +448,7 @@ function App() {
         <div className="bomb-container">
           <div style={{ padding: "12px 16px" }}>
             <button className="back-menu-btn" onClick={resetGame}>
-              ← Torna alla scelta modalità
+              ← Back to mode selection
             </button>
           </div>
           <div
@@ -398,7 +462,7 @@ function App() {
             }}
           >
             <h2 style={{ color: "#10b981", marginBottom: "20px" }}>
-              Codice Segreto Inviato!
+              Secret Code Sent!
             </h2>
             <p
               style={{
@@ -407,9 +471,9 @@ function App() {
                 fontSize: "18px",
               }}
             >
-              Stai aspettando che{" "}
-              <strong style={{ color: "#60a5fa" }}>{opponent}</strong> indovini
-              il tuo codice...
+              You are waiting for{" "}
+              <strong style={{ color: "#60a5fa" }}>{opponent}</strong> to guess
+              your code...
             </p>
             {gameWon || gameOver ? (
               <div style={{ marginTop: "20px" }}>
@@ -421,16 +485,16 @@ function App() {
                   }}
                 >
                   {gameWon
-                    ? "🎉 Il tuo avversario ha vinto!"
-                    : "💥 Il tuo avversario ha perso!"}
+                    ? "🎉 Your opponent won!"
+                    : "💥 Your opponent lost!"}
                 </p>
                 <button className="defuse-btn" onClick={resetGame}>
-                  NUOVA PARTITA
+                  NEW GAME
                 </button>
               </div>
             ) : (
               <div style={{ color: "#9ca3af", fontSize: "14px" }}>
-                In attesa del risultato...
+                Waiting for the result...
               </div>
             )}
           </div>
@@ -448,7 +512,7 @@ function App() {
           userRole !== USER_ROLES.MAKER && (
             <div style={{ padding: "12px 16px" }}>
               <button className="back-menu-btn" onClick={resetGame}>
-                ← Torna alla scelta modalità
+                ← Back to mode selection
               </button>
             </div>
           )}
@@ -485,9 +549,9 @@ function App() {
               }}
             >
               <p style={{ color: "#d1d5db", fontSize: "18px" }}>
-                In attesa che{" "}
-                <strong style={{ color: "#60a5fa" }}>{opponent}</strong>{" "}
-                indovini il tuo codice...
+              Waiting for{" "}
+              <strong style={{ color: "#60a5fa" }}>{opponent}</strong>{" "}
+              to guess your code...
               </p>
             </div>
           )
@@ -502,6 +566,15 @@ function App() {
           />
         )}
       </div>
+      {showModal && (
+        <Modal
+          onClose={handleCloseModal}
+          title={modalConfig.title}
+          subtitle={modalConfig.message}
+          textColor={modalConfig.textColor}
+          textColorSubtitle={modalConfig.textColorSubtitle}
+        />
+      )}
     </div>
   );
 }
