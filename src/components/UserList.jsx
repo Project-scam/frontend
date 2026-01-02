@@ -1,15 +1,28 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
   const [users, setUsers] = useState([]);
   const [pendingChallenge, setPendingChallenge] = useState(null);
   const [incomingChallenge, setIncomingChallenge] = useState(null);
 
+  // Usa un ref per accedere al valore corrente di pendingChallenge nei callback
+  const pendingChallengeRef = useRef(pendingChallenge);
+
+  // Aggiorna il ref quando pendingChallenge cambia
+  useEffect(() => {
+    pendingChallengeRef.current = pendingChallenge;
+  }, [pendingChallenge]);
+
   useEffect(() => {
     if (!socket) {
       console.log("[UserList] Socket non disponibile");
       return;
     }
+
+    // Reset dello stato quando il componente viene montato
+    setUsers([]);
+    setPendingChallenge(null);
+    setIncomingChallenge(null);
 
     const handleUsersList = (list) => {
       console.log("[UserList] Lista utenti ricevuta:", list);
@@ -29,9 +42,9 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
     };
 
     const handleChallengeAccepted = (data) => {
-      // Se avevo una sfida in sospeso verso questo utente, sono io lo sfidante (Maker)
-      // Altrimenti, ho accettato io la sfida, quindi sono il Breaker
-      const isMyChallenge = pendingChallenge === data.opponentSocketId;
+      // Usa il ref per accedere al valore corrente di pendingChallenge
+      const isMyChallenge =
+        pendingChallengeRef.current === data.opponentSocketId;
       if (onGameStart)
         onGameStart({ ...data, role: isMyChallenge ? "maker" : "breaker" });
     };
@@ -53,8 +66,11 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
     };
 
     // Se il socket è già connesso, richiedi subito la lista
+    // Usa setTimeout per assicurarsi che i listener siano registrati prima
     if (socket.connected) {
-      requestUsersList();
+      setTimeout(() => {
+        requestUsersList();
+      }, 50);
     } else {
       // Altrimenti aspetta la connessione
       socket.once("connect", requestUsersList);
@@ -67,7 +83,7 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
       socket.off("challenge_accepted", handleChallengeAccepted);
       socket.off("connect", requestUsersList);
     };
-  }, [socket, currentUser, onGameStart, pendingChallenge]);
+  }, [socket, currentUser, onGameStart]); // Rimosso pendingChallenge dalle dipendenze
 
   const sendChallenge = (targetSocketId) => {
     socket.emit("send_challenge", { targetSocketId });
