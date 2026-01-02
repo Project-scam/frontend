@@ -343,16 +343,21 @@ function App() {
     );
   }
 
-  // Versus Setup
-  if (mode === GAME_MODES.VERSUS && isSettingCode) {
-    return !opponent ? (
+  // Versus Setup - mostra UserList se non c'è ancora un opponent
+  if (mode === GAME_MODES.VERSUS && !opponent) {
+    return (
       <UserList
         socket={socket}
         currentUser={currentUser}
         onBack={resetGame}
         onGameStart={handleGameStart}
       />
-    ) : (
+    );
+  }
+
+  // Versus Setup - mostra VersusSetup se c'è un opponent e isSettingCode è true
+  if (mode === GAME_MODES.VERSUS && opponent && isSettingCode) {
+    return (
       <>
         <VersusSetup
           tempCode={tempCode}
