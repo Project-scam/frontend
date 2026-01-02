@@ -1,11 +1,11 @@
-import CurvedArrow from "./Modal/Arrow/CurvedArrow"
-import Modal from "./Modal/Modal"
-import JustifySection from "./Modal/ModalSection/JustifySection"
-import ModalSection from "./Modal/ModalSection/ModalSection"
-import { translations } from "../language.js" // adatta path
+import CurvedArrow from "./Modal/Arrow/CurvedArrow.jsx"
+import Modal from "./Modal/Modal.jsx"
+import JustifySection from "./Modal/ModalSection/JustifySection.jsx"
+import ModalSection from "./Modal/ModalSection/ModalSection.jsx"
+import { translations } from "../language.js"
 import { useState } from "react"
 
-const RulesOfGame = ({
+const RulesOfGameDefault = ({
   classNameTitle = "title",
   onClose = () => { },
   maxHeight = "80vh"
@@ -22,7 +22,7 @@ const RulesOfGame = ({
 
   const t = (key) => translations[language][key] || key;
 
-  return (
+  return (  
     <Modal
       title={t('title')}
       classNameTitle={classNameTitle}
@@ -115,4 +115,4 @@ const RulesOfGame = ({
   )
 }
 
-export default RulesOfGame
+export default RulesOfGameDefault

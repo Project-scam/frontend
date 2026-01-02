@@ -15,12 +15,12 @@ function BombHeader({ minutes, seconds, guessesCount, maxTurns, mode }) {
 
       {mode === 'normal' && (
         <div className="timer-bomb" style={{ opacity: 0.4, fontSize: '18px' }}>
-          Modalità Normale
+         Normal Mode
         </div>
       )}
 
       <div className="urgency-meter">
-        Tentativi: {currentTurn}/{maxTurns}
+        Attempts: {currentTurn}/{maxTurns}
         <div className="meter-bar">
           <div className="meter-fill" style={{ width: `${progress}%` }} />
         </div>
