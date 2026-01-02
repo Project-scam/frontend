@@ -7,6 +7,7 @@
 //           "villari.andrea@allievi.itsdigitalacademy.com"
 // @version: "1.0.0 2026-01-01"
 //=========================================================
+
 import { useState, useEffect } from "react";
 import { generateRandomCode } from "../utils/gameUtils";
 import { COLORS_BOMB, GAME_MODES } from "../utils/constants";
