@@ -24,6 +24,46 @@ export const useVersusMode = (socket, mode, callbacks = {}) => {
   const [isSettingCode, setIsSettingCode] = useState(false);
   const [tempCode, setTempCode] = useState(Array(4).fill(null));
 
+  const handleGameStart = (data) => {
+    setOpponent(data.opponent);
+    setOpponentSocketId(data.opponentSocketId);
+    setUserRole(data.role);
+    setIsSettingCode(data.role === USER_ROLES.MAKER);
+  };
+
+  const setCodePeg = (index, selectedColor) => {
+    setTempCode((prev) =>
+      prev.map((v, i) => (i === index ? selectedColor : v))
+    );
+  };
+
+  const confirmSecretCode = (onCodeSent) => {
+    if (!tempCode.every((c) => c !== null)) return false;
+    if (!socket || !opponentSocketId) {
+      alert("Errore: connessione non disponibile");
+      return false;
+    }
+
+    setIsSettingCode(false);
+    socket.emit("send_secret_code", {
+      targetSocketId: opponentSocketId,
+      secretCode: tempCode,
+    });
+
+    if (onCodeSent) onCodeSent(tempCode);
+    return true;
+  };
+
+  const notifyGameEnd = (gameWon, guessesCount, currentUser, opponent) => {
+    if (mode !== "versus" || !socket || !opponentSocketId) return;
+    socket.emit("game_ended", {
+      targetSocketId: opponentSocketId,
+      gameWon,
+      guessesCount,
+      winner: gameWon ? currentUser : opponent,
+    });
+  };
+
   // Listener per codice segreto e fine partita
   useEffect(() => {
     if (!socket || mode !== "versus") return;
@@ -69,46 +109,6 @@ export const useVersusMode = (socket, mode, callbacks = {}) => {
     onSecretCodeReceived,
     onGameEnded,
   ]);
-
-  const handleGameStart = (data) => {
-    setOpponent(data.opponent);
-    setOpponentSocketId(data.opponentSocketId);
-    setUserRole(data.role);
-    setIsSettingCode(data.role === USER_ROLES.MAKER);
-  };
-
-  const setCodePeg = (index, selectedColor) => {
-    setTempCode((prev) =>
-      prev.map((v, i) => (i === index ? selectedColor : v))
-    );
-  };
-
-  const confirmSecretCode = (onCodeSent) => {
-    if (!tempCode.every((c) => c !== null)) return false;
-    if (!socket || !opponentSocketId) {
-      alert("Errore: connessione non disponibile");
-      return false;
-    }
-
-    setIsSettingCode(false);
-    socket.emit("send_secret_code", {
-      targetSocketId: opponentSocketId,
-      secretCode: tempCode,
-    });
-
-    if (onCodeSent) onCodeSent(tempCode);
-    return true;
-  };
-
-  const notifyGameEnd = (gameWon, guessesCount, currentUser, opponent) => {
-    if (mode !== "versus" || !socket || !opponentSocketId) return;
-    socket.emit("game_ended", {
-      targetSocketId: opponentSocketId,
-      gameWon,
-      guessesCount,
-      winner: gameWon ? currentUser : opponent,
-    });
-  };
 
   const resetVersusState = () => {
     setOpponent(null);
