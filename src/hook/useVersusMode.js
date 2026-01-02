@@ -9,7 +9,7 @@
 //=========================================================
 
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { USER_ROLES } from "../utils/constants";
 
 export const useVersusMode = (socket, mode, callbacks = {}) => {
@@ -24,12 +24,12 @@ export const useVersusMode = (socket, mode, callbacks = {}) => {
   const [isSettingCode, setIsSettingCode] = useState(false);
   const [tempCode, setTempCode] = useState(Array(4).fill(null));
 
-  const handleGameStart = (data) => {
+  const handleGameStart = useCallback((data) => {
     setOpponent(data.opponent);
     setOpponentSocketId(data.opponentSocketId);
     setUserRole(data.role);
     setIsSettingCode(data.role === USER_ROLES.MAKER);
-  };
+  }, []);
 
   const setCodePeg = (index, selectedColor) => {
     setTempCode((prev) =>
@@ -94,10 +94,12 @@ export const useVersusMode = (socket, mode, callbacks = {}) => {
       }
     };
 
+    socket.on("game_start", handleGameStart);
     socket.on("secret_code_received", handleSecretCodeReceived);
     socket.on("game_ended_notification", handleGameEnded);
 
     return () => {
+      socket.off("game_start", handleGameStart);
       socket.off("secret_code_received", handleSecretCodeReceived);
       socket.off("game_ended_notification", handleGameEnded);
     };
@@ -108,6 +110,7 @@ export const useVersusMode = (socket, mode, callbacks = {}) => {
     isSettingCode,
     onSecretCodeReceived,
     onGameEnded,
+    handleGameStart,
   ]);
 
   const resetVersusState = () => {
