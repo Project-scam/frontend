@@ -331,13 +331,17 @@ function App() {
 
           <button
             className="menu-btn"
-            onClick={() => setMode(GAME_MODES.NORMAL)}
+            onClick={() => {
+              handleCloseModal()
+              setMode(GAME_MODES.NORMAL)
+            }}
           >
             Normal Mode
           </button>
           <button
             className="menu-btn"
             onClick={() => {
+              console.log("👤 currentUser =", `"${currentUser}"`)
               if (currentUser === "Guest") {
                 setModalConfig({
                   title: "Restricted Mode",
@@ -360,7 +364,10 @@ function App() {
           </button>
           <button
             className="menu-btn"
-            onClick={() => setMode(GAME_MODES.DEVIL)}
+            onClick={()=>{
+              handleCloseModal()
+               setMode(GAME_MODES.DEVIL)
+            }}
           >
             Devil Mode
           </button>
@@ -402,6 +409,17 @@ function App() {
             <LogoutIcon />
             LOGOUT
           </button>
+
+          {showModal && (
+             <Modal
+               onClose={handleCloseModal}
+               title={modalConfig.title}
+               subtitle={modalConfig.message}
+               textColor={modalConfig.textColor}
+               textColorSubtitle={modalConfig.textColorSubtitle}
+             />
+          )}
+
         </div>
       </div>
     );
@@ -503,7 +521,7 @@ function App() {
     );
   }
 
-  // Game Screen
+  
   return (
     <div className="page-wrapper">
       <div className="bomb-container">
