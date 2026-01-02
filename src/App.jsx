@@ -8,8 +8,7 @@
 // @version: "1.0.0 2026-01-01"
 //=========================================================
 
-
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import "./index.css";
 import BombHeader from "./components/BombHeader";
 import GameBoard from "./components/GameBoard";
@@ -83,7 +82,14 @@ function App() {
     resetGame: resetGameMode,
   } = useGameMode();
 
-  // Callback per useVersusMode (stabilizzati con useCallback per evitare re-render)
+  // Callback per useVersusMode - definiti PRIMA ma useranno funzioni da hook successivi
+  // Usiamo useRef per memorizzare i setter che verranno definiti dopo
+  const gameLogicSettersRef = useRef({
+    setGameWon: null,
+    setGameOver: null,
+    setGameOverReason: null,
+  });
+
   const handleSecretCodeReceived = useCallback(
     (code) => {
       setSecretCode(code);
@@ -93,14 +99,21 @@ function App() {
 
   const handleGameEnded = useCallback(
     ({ gameWon, gameOver, gameOverReason }) => {
-      setGameWon(gameWon);
-      setGameOver(gameOver);
-      setGameOverReason(gameOverReason);
+      // Usa i setter dal ref che verranno aggiornati dopo useGameLogic
+      if (gameLogicSettersRef.current.setGameWon) {
+        gameLogicSettersRef.current.setGameWon(gameWon);
+      }
+      if (gameLogicSettersRef.current.setGameOver) {
+        gameLogicSettersRef.current.setGameOver(gameOver);
+      }
+      if (gameLogicSettersRef.current.setGameOverReason) {
+        gameLogicSettersRef.current.setGameOverReason(gameOverReason);
+      }
     },
-    [setGameWon, setGameOver, setGameOverReason]
+    []
   );
 
-  // Versus Mode con callback
+  // Versus Mode - chiamato con i callback (che useranno il ref per i setter)
   const {
     opponent,
     opponentSocketId,
@@ -113,12 +126,11 @@ function App() {
     notifyGameEnd,
     resetVersusState,
   } = useVersusMode(socket, mode, {
-    // ✅ Passa i callback per comunicare con gli altri hook
     onSecretCodeReceived: handleSecretCodeReceived,
     onGameEnded: handleGameEnded,
   });
 
-  // Game Logic
+  // Game Logic - chiamato DOPO useVersusMode per avere opponentSocketId e isSettingCode
   const {
     guesses,
     currentGuess,
@@ -132,6 +144,15 @@ function App() {
     setGameOver,
     setGameOverReason,
   } = useGameLogic(secretCode, mode, socket, opponentSocketId, isSettingCode);
+
+  // Aggiorna il ref con i setter da useGameLogic
+  useEffect(() => {
+    gameLogicSettersRef.current = {
+      setGameWon,
+      setGameOver,
+      setGameOverReason,
+    };
+  }, [setGameWon, setGameOver, setGameOverReason]);
 
   // Devil Mode
   const { timeLeft, hasStarted, startGame, getTimeExpired } = useDevilMode(

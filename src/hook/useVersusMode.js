@@ -8,11 +8,18 @@
 // @version: "1.0.0 2026-01-01"
 //=========================================================
 
-
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect, useCallback, useRef } from "react";
 import { USER_ROLES } from "../utils/constants";
 
 export const useVersusMode = (socket, mode, callbacks = {}) => {
+  // Usa ref per i callback così possono essere aggiornati dopo l'inizializzazione
+  const callbacksRef = useRef(callbacks);
+
+  // Aggiorna il ref quando i callback cambiano
+  useEffect(() => {
+    callbacksRef.current = callbacks;
+  }, [callbacks]);
+
   const {
     onSecretCodeReceived, // Callback per aggiornare secretCode quando il breaker riceve il codice
     onGameEnded, // Callback per aggiornare gameWon/gameOver quando il maker riceve la notifica
@@ -73,8 +80,10 @@ export const useVersusMode = (socket, mode, callbacks = {}) => {
       if (userRole === USER_ROLES.BREAKER && !isSettingCode) {
         console.log("Codice segreto ricevuto:", data.secretCode);
         // ✅ Chiama il callback per aggiornare secretCode in useGameMode
-        if (onSecretCodeReceived) {
-          onSecretCodeReceived(data.secretCode);
+        // Usa callbacksRef.current per accedere ai callback più recenti
+        const currentCallbacks = callbacksRef.current;
+        if (currentCallbacks?.onSecretCodeReceived) {
+          currentCallbacks.onSecretCodeReceived(data.secretCode);
         }
       }
     };
@@ -84,8 +93,10 @@ export const useVersusMode = (socket, mode, callbacks = {}) => {
       if (userRole === USER_ROLES.MAKER) {
         console.log("Partita terminata:", data);
         // ✅ Chiama il callback per aggiornare gameWon/gameOver in useGameLogic
-        if (onGameEnded) {
-          onGameEnded({
+        // Usa callbacksRef.current per accedere ai callback più recenti
+        const currentCallbacks = callbacksRef.current;
+        if (currentCallbacks?.onGameEnded) {
+          currentCallbacks.onGameEnded({
             gameWon: data.gameWon,
             gameOver: !data.gameWon,
             gameOverReason: data.gameWon ? "" : "turns",
@@ -108,9 +119,9 @@ export const useVersusMode = (socket, mode, callbacks = {}) => {
     mode,
     userRole,
     isSettingCode,
-    onSecretCodeReceived,
-    onGameEnded,
     handleGameStart,
+    // Non includere onSecretCodeReceived e onGameEnded nelle dipendenze
+    // perché usiamo callbacksRef.current che viene aggiornato automaticamente
   ]);
 
   const resetVersusState = () => {
