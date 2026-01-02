@@ -38,6 +38,10 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
 
     const handleUsersList = (list) => {
       console.log("[UserList] Lista utenti ricevuta:", list);
+      if (!Array.isArray(list)) {
+        console.error("[UserList] Lista utenti non è un array:", list);
+        return;
+      }
       // Filtra te stesso dalla lista
       const filteredUsers = list.filter((u) => u.username !== currentUser);
       console.log("[UserList] Utenti filtrati:", filteredUsers);
@@ -68,14 +72,12 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
       }
     };
 
-    // Pulisci eventuali listener precedenti prima di registrarne di nuovi
-    // IMPORTANTE: usa le stesse funzioni di riferimento per poterle rimuovere correttamente
-    socket.off("users_list_update");
-    socket.off("challenge_received");
-    socket.off("challenge_declined");
-    socket.off("challenge_accepted");
+    // IMPORTANTE: Non chiamare socket.off() senza specificare la funzione
+    // perché rimuoverebbe TUTTI i listener per quell'evento, inclusi quelli di altri componenti
+    // I listener verranno puliti correttamente nel cleanup usando le funzioni specifiche
 
     // Registra i listener PRIMA di emettere l'evento
+    // Socket.io permette più listener per lo stesso evento, quindi non c'è problema
     socket.on("users_list_update", handleUsersList);
     socket.on("challenge_received", handleChallengeReceived);
     socket.on("challenge_declined", handleChallengeDeclined);
@@ -87,6 +89,7 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
     const requestUsersList = () => {
       if (socket && socket.connected) {
         console.log("[UserList] Richiedo lista utenti...");
+        // Forza la richiesta anche se potrebbe essere già stata fatta
         socket.emit("get_users");
       } else {
         console.log("[UserList] Socket non ancora connesso, in attesa...");
@@ -102,9 +105,12 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
       console.log(
         "[UserList] Socket già connesso, richiedo lista dopo breve delay"
       );
+      // Richiedi immediatamente E dopo un delay per essere sicuri
+      requestUsersList();
       timeoutId = setTimeout(() => {
+        console.log("[UserList] Seconda richiesta lista utenti (backup)");
         requestUsersList();
-      }, 150);
+      }, 300);
     } else {
       // Altrimenti aspetta la connessione
       console.log("[UserList] Socket non connesso, aspetto evento connect");
