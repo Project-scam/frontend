@@ -8,6 +8,7 @@
 // @version: "1.0.0 2026-01-01"
 //=========================================================
 
+
 /**
  * Calcola il feedback per un tentativo (pallini neri e bianchi)
  */
