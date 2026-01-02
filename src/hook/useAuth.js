@@ -18,6 +18,13 @@ export const useAuth = () => {
   const [currentUser, setCurrentUser] = useState(null);
   const [isRegisterView, setRegisterView] = useState(false);
 
+  const handleLoginSuccess = (user) => {
+    console.log("Dati utenti ricevuti dal Login:", user);
+    setLogged(true);
+    setCurrentUser(typeof user === "string" ? user : user?.username || "Guest");
+    setRegisterView(false);
+  };
+
   // Verifica sessione al caricamento
   useEffect(() => {
     const checkSession = async () => {
@@ -39,13 +46,6 @@ export const useAuth = () => {
     };
     checkSession();
   }, []);
-
-  const handleLoginSuccess = (user) => {
-    console.log("Dati utenti ricevuti dal Login:", user);
-    setLogged(true);
-    setCurrentUser(typeof user === "string" ? user : user?.username || "Guest");
-    setRegisterView(false);
-  };
 
   const handleLogout = async () => {
     try {
