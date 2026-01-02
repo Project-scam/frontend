@@ -18,6 +18,7 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
     onGameStartRef.current = onGameStart;
   }, [onGameStart]);
 
+  // Effetto principale per registrare i listener e richiedere la lista
   useEffect(() => {
     if (!socket) {
       console.log("[UserList] Socket non disponibile");
@@ -72,12 +73,7 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
       }
     };
 
-    // IMPORTANTE: Non chiamare socket.off() senza specificare la funzione
-    // perché rimuoverebbe TUTTI i listener per quell'evento, inclusi quelli di altri componenti
-    // I listener verranno puliti correttamente nel cleanup usando le funzioni specifiche
-
     // Registra i listener PRIMA di emettere l'evento
-    // Socket.io permette più listener per lo stesso evento, quindi non c'è problema
     socket.on("users_list_update", handleUsersList);
     socket.on("challenge_received", handleChallengeReceived);
     socket.on("challenge_declined", handleChallengeDeclined);
@@ -89,7 +85,6 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
     const requestUsersList = () => {
       if (socket && socket.connected) {
         console.log("[UserList] Richiedo lista utenti...");
-        // Forza la richiesta anche se potrebbe essere già stata fatta
         socket.emit("get_users");
       } else {
         console.log("[UserList] Socket non ancora connesso, in attesa...");
@@ -97,20 +92,30 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
     };
 
     // Se il socket è già connesso, richiedi subito la lista
-    // Usa setTimeout per assicurarsi che i listener siano registrati prima
-    let timeoutId;
+    // Usa più tentativi per essere sicuri
+    let timeoutIds = [];
     let connectHandler;
 
     if (socket.connected) {
       console.log(
-        "[UserList] Socket già connesso, richiedo lista dopo breve delay"
+        "[UserList] Socket già connesso, richiedo lista con più tentativi"
       );
-      // Richiedi immediatamente E dopo un delay per essere sicuri
+      // Primo tentativo immediato
       requestUsersList();
-      timeoutId = setTimeout(() => {
-        console.log("[UserList] Seconda richiesta lista utenti (backup)");
-        requestUsersList();
-      }, 300);
+      // Secondo tentativo dopo 100ms
+      timeoutIds.push(
+        setTimeout(() => {
+          console.log("[UserList] Seconda richiesta lista utenti");
+          requestUsersList();
+        }, 100)
+      );
+      // Terzo tentativo dopo 500ms (backup)
+      timeoutIds.push(
+        setTimeout(() => {
+          console.log("[UserList] Terza richiesta lista utenti (backup)");
+          requestUsersList();
+        }, 500)
+      );
     } else {
       // Altrimenti aspetta la connessione
       console.log("[UserList] Socket non connesso, aspetto evento connect");
@@ -120,7 +125,7 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
 
     return () => {
       console.log("[UserList] Cleanup: rimuovo listener");
-      if (timeoutId) clearTimeout(timeoutId);
+      timeoutIds.forEach((id) => clearTimeout(id));
       if (connectHandler) socket.off("connect", connectHandler);
       socket.off("users_list_update", handleUsersList);
       socket.off("challenge_received", handleChallengeReceived);
@@ -128,6 +133,22 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
       socket.off("challenge_accepted", handleChallengeAccepted);
     };
   }, [socket, currentUser]); // Rimosso onGameStart dalle dipendenze, usiamo il ref
+
+  // Effetto separato per forzare il refresh quando il componente viene montato
+  // Questo assicura che anche se i listener sono già registrati, la lista viene richiesta
+  useEffect(() => {
+    if (!socket || !socket.connected) return;
+
+    // Forza una richiesta aggiuntiva dopo un breve delay quando il componente viene montato
+    const forceRefreshTimeout = setTimeout(() => {
+      console.log("[UserList] Forzo refresh lista utenti");
+      socket.emit("get_users");
+    }, 200);
+
+    return () => {
+      clearTimeout(forceRefreshTimeout);
+    };
+  }, [socket]); // Si attiva quando il socket cambia o quando il componente viene montato
 
   const sendChallenge = (targetSocketId) => {
     socket.emit("send_challenge", { targetSocketId });
@@ -152,6 +173,23 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
     <div className="page-wrapper">
       <div className="mode-menu" style={{ maxWidth: "600px" }}>
         <h2 className="menu-title">Challengers Online</h2>
+
+        <button
+          className="menu-btn"
+          onClick={() => {
+            if (socket && socket.connected) {
+              console.log("[UserList] Refresh manuale lista utenti");
+              socket.emit("get_users");
+            }
+          }}
+          style={{
+            marginBottom: "20px",
+            fontSize: "14px",
+            padding: "8px 16px",
+          }}
+        >
+          🔄 Refresh Lista
+        </button>
 
         {users.length === 0 ? (
           <p style={{ color: "#9ca3af", textAlign: "center" }}>
