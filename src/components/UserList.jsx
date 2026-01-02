@@ -5,19 +5,31 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
   const [pendingChallenge, setPendingChallenge] = useState(null);
   const [incomingChallenge, setIncomingChallenge] = useState(null);
 
-  // Usa un ref per accedere al valore corrente di pendingChallenge nei callback
+  // Usa ref per accedere ai valori correnti nei callback
   const pendingChallengeRef = useRef(pendingChallenge);
+  const onGameStartRef = useRef(onGameStart);
 
-  // Aggiorna il ref quando pendingChallenge cambia
+  // Aggiorna i ref quando i valori cambiano
   useEffect(() => {
     pendingChallengeRef.current = pendingChallenge;
   }, [pendingChallenge]);
+
+  useEffect(() => {
+    onGameStartRef.current = onGameStart;
+  }, [onGameStart]);
 
   useEffect(() => {
     if (!socket) {
       console.log("[UserList] Socket non disponibile");
       return;
     }
+
+    console.log(
+      "[UserList] Componente montato, socket:",
+      socket.id,
+      "connesso:",
+      socket.connected
+    );
 
     // Reset dello stato quando il componente viene montato
     setUsers([]);
@@ -33,21 +45,35 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
     };
 
     const handleChallengeReceived = (data) => {
+      console.log("[UserList] Sfida ricevuta:", data);
       setIncomingChallenge(data);
     };
 
     const handleChallengeDeclined = () => {
+      console.log("[UserList] Sfida rifiutata");
       setPendingChallenge(null);
       alert("The challenge is refused or the user is disconnected.");
     };
 
     const handleChallengeAccepted = (data) => {
+      console.log("[UserList] Sfida accettata:", data);
       // Usa il ref per accedere al valore corrente di pendingChallenge
       const isMyChallenge =
         pendingChallengeRef.current === data.opponentSocketId;
-      if (onGameStart)
-        onGameStart({ ...data, role: isMyChallenge ? "maker" : "breaker" });
+      if (onGameStartRef.current) {
+        onGameStartRef.current({
+          ...data,
+          role: isMyChallenge ? "maker" : "breaker",
+        });
+      }
     };
+
+    // Pulisci eventuali listener precedenti prima di registrarne di nuovi
+    // IMPORTANTE: usa le stesse funzioni di riferimento per poterle rimuovere correttamente
+    socket.off("users_list_update");
+    socket.off("challenge_received");
+    socket.off("challenge_declined");
+    socket.off("challenge_accepted");
 
     // Registra i listener PRIMA di emettere l'evento
     socket.on("users_list_update", handleUsersList);
@@ -55,10 +81,12 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
     socket.on("challenge_declined", handleChallengeDeclined);
     socket.on("challenge_accepted", handleChallengeAccepted);
 
+    console.log("[UserList] Listener registrati");
+
     // Funzione per richiedere la lista utenti
     const requestUsersList = () => {
-      if (socket.connected) {
-        console.log("[UserList] Socket connesso, richiedo lista utenti");
+      if (socket && socket.connected) {
+        console.log("[UserList] Richiedo lista utenti...");
         socket.emit("get_users");
       } else {
         console.log("[UserList] Socket non ancora connesso, in attesa...");
@@ -67,23 +95,33 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
 
     // Se il socket è già connesso, richiedi subito la lista
     // Usa setTimeout per assicurarsi che i listener siano registrati prima
+    let timeoutId;
+    let connectHandler;
+
     if (socket.connected) {
-      setTimeout(() => {
+      console.log(
+        "[UserList] Socket già connesso, richiedo lista dopo breve delay"
+      );
+      timeoutId = setTimeout(() => {
         requestUsersList();
-      }, 50);
+      }, 150);
     } else {
       // Altrimenti aspetta la connessione
-      socket.once("connect", requestUsersList);
+      console.log("[UserList] Socket non connesso, aspetto evento connect");
+      connectHandler = requestUsersList;
+      socket.once("connect", connectHandler);
     }
 
     return () => {
+      console.log("[UserList] Cleanup: rimuovo listener");
+      if (timeoutId) clearTimeout(timeoutId);
+      if (connectHandler) socket.off("connect", connectHandler);
       socket.off("users_list_update", handleUsersList);
       socket.off("challenge_received", handleChallengeReceived);
       socket.off("challenge_declined", handleChallengeDeclined);
       socket.off("challenge_accepted", handleChallengeAccepted);
-      socket.off("connect", requestUsersList);
     };
-  }, [socket, currentUser, onGameStart]); // Rimosso pendingChallenge dalle dipendenze
+  }, [socket, currentUser]); // Rimosso onGameStart dalle dipendenze, usiamo il ref
 
   const sendChallenge = (targetSocketId) => {
     socket.emit("send_challenge", { targetSocketId });
