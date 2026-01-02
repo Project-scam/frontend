@@ -174,23 +174,6 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
       <div className="mode-menu" style={{ maxWidth: "600px" }}>
         <h2 className="menu-title">Challengers Online</h2>
 
-        <button
-          className="menu-btn"
-          onClick={() => {
-            if (socket && socket.connected) {
-              console.log("[UserList] Refresh manuale lista utenti");
-              socket.emit("get_users");
-            }
-          }}
-          style={{
-            marginBottom: "20px",
-            fontSize: "14px",
-            padding: "8px 16px",
-          }}
-        >
-          🔄 Refresh Lista
-        </button>
-
         {users.length === 0 ? (
           <p style={{ color: "#9ca3af", textAlign: "center" }}>
             No Users online.
