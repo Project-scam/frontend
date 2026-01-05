@@ -261,39 +261,6 @@ function App() {
     );
   }
 
-  /*
-  // TEMPORARY BYPASS: Display UserList  for testing
-  if (showUserListDirectlyForTest) {
-    return (
-      <div className="page-wrapper">
-        <button
-          onClick={() => setShowUserListDirectlyForTest(false)}
-          style={{
-            position: "absolute",
-            top: "10px",
-            left: "10px",
-            background: "#ef4444",
-            color: "white",
-            padding: "8px 12px",
-            borderRadius: "5px",
-            border: "none",
-            cursor: "pointer",
-            zIndex: 1000,
-          }}
-        >
-          Exit Test Mode
-        </button>
-        <UserList
-          socket={socket}
-          currentUser={currentUser || "GuestUserForTest"}
-          onBack={() => setShowUserListDirectlyForTest(false)}
-          onGameStart={handleGameStart}
-        />
-      </div>
-    );
-  }
-  */
-
   if (isLeaderboard) {
     return <Leaderboard onClose={() => setIsLeaderboard(false)} />;
   }
@@ -540,6 +507,7 @@ function App() {
           guessesCount={guesses.length}
           maxTurns={MAX_TURNS}
           mode={mode}
+          hideAttempts={gameOver || gameWon}
         />
         {!gameWon && !gameOver ? (
           userRole === USER_ROLES.BREAKER || mode !== GAME_MODES.VERSUS ? (

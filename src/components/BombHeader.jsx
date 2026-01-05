@@ -1,4 +1,4 @@
-function BombHeader({ minutes, seconds, guessesCount, maxTurns, mode }) {
+function BombHeader({ minutes, seconds, guessesCount, maxTurns, mode, hideAttempts }) {
   const currentTurn = Math.min(guessesCount + 1, maxTurns);
   const progress = (currentTurn / maxTurns) * 100;
 
@@ -19,12 +19,16 @@ function BombHeader({ minutes, seconds, guessesCount, maxTurns, mode }) {
         </div>
       )}
 
-      <div className="urgency-meter">
-        Attempts: {currentTurn}/{maxTurns}
-        <div className="meter-bar">
-          <div className="meter-fill" style={{ width: `${progress}%` }} />
-        </div>
-      </div>
+      {!hideAttempts && (
+       <div className="urgency-meter">
+         Attempts: {currentTurn}/{maxTurns}
+          <div className="meter-bar">
+           <div className="meter-fill" style={{ width: `${progress}%` }} />
+          </div>
+        </div>     
+      )}
+
+
     </div>
   );
 }
