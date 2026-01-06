@@ -149,7 +149,7 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
             textColor="green" // O un altro colore appropriato per una notifica positiva/neutra
             textColorSubtitle="black"
           >
-            <button className="menu-btn" onClick={handleAcceptChallenge} style={{ marginBottom: "10px" }}>ACCEPT</button>
+            <button className="menu-btn" onClick={handleAcceptChallenge} style={{ marginBottom: "10px" , marginBlockStart:"20px"}}>ACCEPT</button>
             <button className="menu-btn" onClick={handleDeclineChallenge} style={{ backgroundColor: "#ef4444" }}>DENY</button>
           </Modal>
         )}
