@@ -143,7 +143,6 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
         {/* Modale per Sfida in Arrivo */}
         {incomingChallenge && (
           <Modal
-            onClose={handleCloseModal}
             title="Challenge Received!"
             subtitle={`${incomingChallenge.username} wants to play with you.`}
             textColor="green" // O un altro colore appropriato per una notifica positiva/neutra
