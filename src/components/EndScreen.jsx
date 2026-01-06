@@ -12,7 +12,7 @@
       return () => clearTimeout(timer);
     }, []);
 
-    const title = gameWon ? '💣 BOMB DEFUSE! 💣' : '💥 YOU EXPLODED! 💥';
+    const title = gameWon ? '💣 BOMB DEFUSE! 💣' : '💥YOU EXPLODED!💥';
     const titleColor = gameWon ? '#10b981' : '#ef4444';
     const message = gameWon
       ? `In ${guessesCount} attempts`
