@@ -129,7 +129,7 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
                 <span style={{ color: "#fff", fontWeight: "bold" }}>{user.username}</span>
                 <button
                   className="menu-btn"
-                  style={{ width: "auto", padding: "8px 16px", fontSize: "14px", margin: 0, color:"black", backgroundColor:"rgba(239, 239, 239, 0.3)" }}
+                  style={{ width: "auto", padding: "8px 16px", fontSize: "14px", margin: 0, backgroundColor:"rgba(239, 239, 239, 0.3)" }}
                   onClick={() => sendChallenge(user.socketId)}
                   disabled={!!pendingChallenge}
                 >
