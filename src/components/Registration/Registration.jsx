@@ -167,7 +167,7 @@ const Registration = ({
         </form>
 
         <button type="button" className="back-menu-btn" onClick={onShowLogin}>
-          Back to Login
+          ← Back to Login
         </button>
       </div>
     </div>
