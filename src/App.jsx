@@ -507,22 +507,34 @@ function App() {
           guessesCount={guesses.length}
           maxTurns={MAX_TURNS}
           mode={mode}
-          hideAttempts={gameOver || gameWon}
+          hideAttempts={gameOver || gameWon || (mode === GAME_MODES.DEVIL && !hasStarted)}
         />
         {!gameWon && !gameOver ? (
           userRole === USER_ROLES.BREAKER || mode !== GAME_MODES.VERSUS ? (
-            <GameBoard
-              guesses={guesses}
-              currentGuess={currentGuess}
-              colors={COLORS_BOMB}
-              canPlay={guesses.length < MAX_TURNS && secretCode.length > 0}
-              onPegClick={(index) => addPeg(index, selectedColor)}
-              selectedColor={selectedColor}
-              onSelectColor={setSelectedColor}
-              mainButtonLabel={mainButtonLabel}
-              mainButtonDisabled={mainButtonDisabled}
-              mainButtonOnClick={mainButtonOnClick}
-            />
+            // In modalità Devil, mostra solo il pulsante START finché non si preme
+            mode === GAME_MODES.DEVIL && !hasStarted ? (
+              <div style={{ display: "flex", justifyContent: "center", padding: "40px 20px" }}>
+                <button
+                  className="defuse-btn"
+                  onClick={startGame}
+                >
+                  START
+                </button>
+              </div>
+            ) : (
+              <GameBoard
+                guesses={guesses}
+                currentGuess={currentGuess}
+                colors={COLORS_BOMB}
+                canPlay={guesses.length < MAX_TURNS && secretCode.length > 0}
+                onPegClick={(index) => addPeg(index, selectedColor)}
+                selectedColor={selectedColor}
+                onSelectColor={setSelectedColor}
+                mainButtonLabel={mainButtonLabel}
+                mainButtonDisabled={mainButtonDisabled}
+                mainButtonOnClick={mainButtonOnClick}
+              />
+            )
           ) : (
             <div
               style={{
