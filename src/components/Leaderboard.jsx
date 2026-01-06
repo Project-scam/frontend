@@ -58,7 +58,7 @@ export function Leaderboard({ onClose }) {
             <table style={{ width: "100%", borderCollapse: "collapse", color: "white" }}>
               <thead>
                 <tr style={{ borderBottom: "1px solid #374151", textAlign: "left" }}>
-                  <th style={{ padding: "10px", width: "50px" }}>#</th>
+                  <th style={{ padding: "10px", width: "50px" }}>Ranking</th>
                   <th style={{ padding: "10px", textAlign: "center" }}>Users</th>
                   <th style={{ padding: "10px", textAlign: "right" }}>Scores</th>
                 </tr>
