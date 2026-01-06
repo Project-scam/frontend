@@ -55,6 +55,7 @@ const Modal = ({
             <div style={styleModal.modalContent}>
                 <h1 className={classNameTitle}>{title}</h1>
                 {subtitle && (<h3 style={{ color: textColorSubtitle, marginBlockStart: "10px" }}>{subtitle}</h3>)}
+                <p></p>
                 {children}
             </div>
             <div style={styleModal.modalFooter}>
