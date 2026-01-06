@@ -507,7 +507,7 @@ function App() {
           guessesCount={guesses.length}
           maxTurns={MAX_TURNS}
           mode={mode}
-          hideAttempts={gameOver || gameWon || (mode === GAME_MODES.DEVIL && !hasStarted)}
+          hideAttempts={gameOver || gameWon || (mode === GAME_MODES.DEVIL && !hasStarted) || (mode === GAME_MODES.VERSUS && !hasStarted)}
         />
         {!gameWon && !gameOver ? (
           userRole === USER_ROLES.BREAKER || mode !== GAME_MODES.VERSUS ? (
