@@ -126,12 +126,12 @@ body {
 
 /* Secondo pulsante (1 vs 1) – sfumatura blu */
 .mode-menu .menu-btn:nth-child(4) {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
 }
 
 /* Terzo pulsante (Diavolo) – rosso */
 .mode-menu .menu-btn:nth-child(5) {
-  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
 }
 
 /* Quarto pulsante (Diavolo) – rosso */
