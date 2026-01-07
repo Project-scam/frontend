@@ -36,7 +36,7 @@ export function Leaderboard({ onClose }) {
 
   return (
     <div className="page-wrapper">
-      <div className="mode-menu" style={{ width: "500px", maxHeight: "80vh" }}>
+      <div className="mode-menu" style={{ width: "500px", maxHeight: "90vh" }}>
         <h2 className="menu-title">TOP PLAYERS</h2>
 
         {loading ? (
@@ -47,7 +47,7 @@ export function Leaderboard({ onClose }) {
           <div
             style={{
               overflowY: "auto",
-              maxHeight: "300px",
+              maxHeight: "400px",
               background: "rgba(0,0,0,0.3)",
               borderRadius: "12px",
               padding: "10px",
