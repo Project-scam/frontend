@@ -28,7 +28,7 @@ const RulesOfGameDefault = ({
       classNameTitle={classNameTitle}
       onClose={onClose}
       maxHeight={maxHeight}
-      backgroundModal="darkblue"
+      backgroundModal="rgba(15, 15, 35, 0.9)"
     >
       {/* Language button */}
       <button
@@ -66,7 +66,7 @@ const RulesOfGameDefault = ({
         <CurvedArrow direction="down" margin={"-40px 0 0 15px"} />
 
         <ModalSection colorText="white" marginBlockStart={"-20"}>
-          <p style={{ color: "blue" }}>{t('turn')}</p>
+          <p>{t('turn')}</p>
         </ModalSection>
 
         <ModalSection colorText="white">
