@@ -47,7 +47,7 @@ export function Leaderboard({ onClose }) {
           <div
             style={{
               overflowY: "auto",
-              maxHeight: "420px",
+              maxHeight: "450px",
               background: "rgba(0,0,0,0.3)",
               borderRadius: "12px",
               padding: "10px",
