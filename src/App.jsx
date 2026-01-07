@@ -305,6 +305,17 @@ function App() {
           >
             Single Player
           </button>
+
+          <button
+            className="menu-btn"
+            onClick={()=>{
+              handleCloseModal()
+               setMode(GAME_MODES.DEVIL)
+            }}
+          >
+            Devil Mode
+          </button>
+
           <button
             className="menu-btn"
             onClick={() => {
@@ -329,15 +340,7 @@ function App() {
           >
             1 vs 1 (Codemaker / Codebreaker) {currentUser === "Guest" && "🔒"}
           </button>
-          <button
-            className="menu-btn"
-            onClick={()=>{
-              handleCloseModal()
-               setMode(GAME_MODES.DEVIL)
-            }}
-          >
-            Devil Mode
-          </button>
+          
           <button
             className="menu-btn"
             onClick={() => {
