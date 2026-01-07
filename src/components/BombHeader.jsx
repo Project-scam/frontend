@@ -15,7 +15,7 @@ function BombHeader({ minutes, seconds, guessesCount, maxTurns, mode, hideAttemp
 
       {mode === 'normal' && (
         <div className="timer-bomb" style={{ opacity: 0.4, fontSize: '18px' }}>
-         Normal Mode
+         Single Player
         </div>
       )}
 

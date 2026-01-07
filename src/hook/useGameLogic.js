@@ -58,7 +58,7 @@ export const useGameLogic = (
       }
 
       // Controlla vittoria
-      if (guessToSubmit.every((val, idx) => val === secretCode[idx])) {
+      if (guessToSubmit.every((item, index) => item === secretCode[index])) {
         setGameWon(true);
         if (onGameEnd) onGameEnd(true, newGuesses.length);
         return;

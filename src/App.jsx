@@ -303,7 +303,7 @@ function App() {
               setMode(GAME_MODES.NORMAL)
             }}
           >
-            Normal Mode
+            Single Player
           </button>
           <button
             className="menu-btn"
