@@ -19,10 +19,10 @@ export const useAuth = () => {
   const [isRegisterView, setRegisterView] = useState(false);
 
   const handleLoginSuccess = (user) => {
-    console.log("User data received from Login:", user);
-    setLogged(true);
-    setCurrentUser(typeof user === "string" ? user : user?.username || "Guest");
-    setRegisterView(false);
+    console.log("User data received from Login:", user)
+    setLogged(true)
+    setCurrentUser(typeof user === "string" ? user : user?.username || "Guest")
+    setRegisterView(false)
   };
 
   // Verifica sessione al caricamento

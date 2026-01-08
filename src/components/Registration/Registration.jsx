@@ -1,6 +1,6 @@
 // src/components/Registration/Registration.jsx
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Modal from "../Modal/Modal.jsx";
 import { API_URLS } from "../../config.js";
 
@@ -98,9 +98,23 @@ const Registration = ({
         setShowModal(true)
         return
 
+      } else {
+          setModalConfig({
+            title: "Success!",
+            message: "Account created! Now login with your credentials.",
+            textColor: "green",
+            textColorSubtitle: "black"
+          });
+          setShowModal(true);
+
+          setTimeout(() => {
+             if (onShowLogin) onShowLogin(); // setRegisterView is false in app 
+          }, 2000);
+
       }
 
-      onRegisterSuccess();
+      
+      
     } catch (error) {
       setModalConfig({ 
         title: "Attention!",
