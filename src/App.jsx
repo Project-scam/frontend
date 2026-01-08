@@ -84,7 +84,6 @@ function App() {
     isRegisterView,
     setIsGuest,
     setLogged,
-    setCurrentUser,
     setRegisterView,
     handleLoginSuccess,
     handleLogout,
@@ -376,7 +375,6 @@ function App() {
               if (currentUser == "Guest") {
                 setIsGuest(false);
                 setLogged(false);
-                setCurrentUser(null);
               } else {
                 handleLogout();
               }
