@@ -17,6 +17,9 @@ export const useSocket = (isLogged, currentUser) => {
 
   // Crea il socket solo quando si fa login, non quando currentUser cambia
   useEffect(() => {
+    if (!isLogged || currentUser === "Guest") {
+      return;
+    }
     if (isLogged && !socket) {
       console.log("[useSocket] Creating new socket");
       const newSocket = io(API_BASE_URL);
@@ -67,7 +70,10 @@ export const useSocket = (isLogged, currentUser) => {
         typeof currentUser === "string" ? currentUser : currentUser?.username;
 
       if (username) {
-        console.log("[useSocket] currentUser changed, re-registering:", username);
+        console.log(
+          "[useSocket] currentUser changed, re-registering:",
+          username
+        );
         socket.emit("register_user", username);
       }
     }
