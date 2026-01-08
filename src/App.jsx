@@ -89,9 +89,8 @@ function App() {
   } = useAuth();
 
   // Socket
-  if (isLogged) {
-    var socket = useSocket(isLogged, currentUser);
-  }
+
+  var socket = useSocket(isLogged, currentUser);
   // Game Mode
   const {
     mode,

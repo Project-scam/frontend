@@ -13,6 +13,9 @@ import { io } from "socket.io-client";
 import { API_BASE_URL } from "../config";
 
 export const useSocket = (isLogged, currentUser) => {
+  if (currentUser == "Guest") {
+    return;
+  }
   const [socket, setSocket] = useState(null);
 
   // Crea il socket solo quando si fa login, non quando currentUser cambia
