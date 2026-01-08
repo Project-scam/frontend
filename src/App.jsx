@@ -371,15 +371,15 @@ function App() {
 
           <button
             className="menu-btn"
-            onClick={
-              currentUser == "Guest"
-                ? () => {
-                    setIsGuest(false);
-                    setLogged(false);
-                    setMode(true);
-                  }
-                : { handleLogout }
-            }
+            onClick={() => {
+              if (currentUser === "Guest") {
+                setIsGuest(false);
+                setLogged(false);
+                setMode(null);
+              } else {
+                handleLogout();
+              }
+            }}
             style={{
               marginTop: "24px",
               background: "linear-gradient(135deg, #4b5563, #374151)",
