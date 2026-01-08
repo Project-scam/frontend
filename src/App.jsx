@@ -174,7 +174,7 @@ function App() {
       setGameOver,
       setGameOverReason,
     };
-  }, [setGameWon, setGameOver, setGameOverReason]);
+  }, [mode, setGameWon, setGameOver, setGameOverReason]);
 
   // Devil Mode
   const { timeLeft, hasStarted, startGame, getTimeExpired } = useDevilMode(
@@ -373,7 +373,7 @@ function App() {
             className="menu-btn"
             onClick={() => {
               if (currentUser === "Guest") {
-                handleLoginGuest();  
+                setIsGuest(false);
               } else {
                 handleLogout();
               }
