@@ -84,6 +84,8 @@ function App() {
     isRegisterView,
     setLogged,
     setIsGuest,
+    setLogged,
+    setIsGuest,
     setRegisterView,
     handleLoginSuccess,
     handleLogout,
