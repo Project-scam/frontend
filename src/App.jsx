@@ -82,6 +82,8 @@ function App() {
     isLoading,
     currentUser,
     isRegisterView,
+    setLogged,
+    setIsGuest,
     setRegisterView,
     handleLoginSuccess,
     handleLogout,
@@ -366,9 +368,18 @@ function App() {
           >
             Leaderboard {currentUser === "Guest" && "🔒"}
           </button>
+
           <button
             className="menu-btn"
-            onClick={handleLogout}
+            onClick={
+              currentUser == "Guest"
+                ? () => {
+                    setIsGuest(false);
+                    setLogged(false);
+                    setMode(true);
+                  }
+                : { handleLogout }
+            }
             style={{
               marginTop: "24px",
               background: "linear-gradient(135deg, #4b5563, #374151)",
@@ -379,7 +390,7 @@ function App() {
             }}
           >
             <LogoutIcon />
-            LOGOUT
+            {currentUser === "Guest" ? "Login" : "Logout"}
           </button>
 
           {showModal && (
