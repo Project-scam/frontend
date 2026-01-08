@@ -175,6 +175,7 @@ function App() {
       setGameOverReason,
     };
   }, [mode, setGameWon, setGameOver, setGameOverReason]);
+  }, [mode, setGameWon, setGameOver, setGameOverReason]);
 
   // Devil Mode
   const { timeLeft, hasStarted, startGame, getTimeExpired } = useDevilMode(
