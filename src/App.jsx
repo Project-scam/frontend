@@ -83,6 +83,8 @@ function App() {
     currentUser,
     isRegisterView,
     setIsGuest,
+    setLogged,
+    setCurrentUser,
     setRegisterView,
     handleLoginSuccess,
     handleLogout,
@@ -371,8 +373,10 @@ function App() {
           <button
             className="menu-btn"
             onClick={() => {
-              if (currentUser === "Guest") {
+              if (currentUser == "Guest") {
                 setIsGuest(false);
+                setLogged(false);
+                setCurrentUser(null);
               } else {
                 handleLogout();
               }
