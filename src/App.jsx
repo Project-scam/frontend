@@ -34,6 +34,7 @@ import { useDevilMode } from "./hook/useDevilMode";
 import { useVersusMode } from "./hook/useVersusMode";
 import { usePoints } from "./hook/usePoint";
 import Modal from "./components/Modal/Modal";
+import ProfileUser from "./components/ProfileUser/ProfileUser";
 
 const LogoutIcon = () => (
   <svg
@@ -464,7 +465,7 @@ function App() {
             <h2 style={{ color: "#10b981", marginBottom: "20px" }}>
               Secret Code Sent!
             </h2>
-            <p
+            <p  
               style={{
                 color: "#d1d5db",
                 marginBottom: "30px",
@@ -507,10 +508,11 @@ function App() {
         {guesses.length === 0 &&
           !isSettingCode &&
           userRole !== USER_ROLES.MAKER && (
-            <div style={{ padding: "12px 16px" }}>
+            <div style={{ padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
               <button className="back-menu-btn" onClick={resetGame}>
                 ← Back to mode selection
               </button>
+              <ProfileUser backgroundColor="red" width="40px" height="40px"/>
             </div>
           )}
         <BombHeader
