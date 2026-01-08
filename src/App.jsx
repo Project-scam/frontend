@@ -378,7 +378,7 @@ function App() {
                 ? () => {
                     setIsGuest(false);
                     setLogged(false);
-                    setMode(true);
+                    setMode(null);
                   }
                 : { handleLogout }
             }
