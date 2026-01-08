@@ -82,7 +82,6 @@ function App() {
     isLoading,
     currentUser,
     isRegisterView,
-    setLogged,
     setIsGuest,
     setRegisterView,
     handleLoginSuccess,
@@ -174,7 +173,7 @@ function App() {
       setGameOver,
       setGameOverReason,
     };
-  }, [mode, setGameWon, setGameOver, setGameOverReason]);
+  }, [setGameWon, setGameOver, setGameOverReason]);
 
   // Devil Mode
   const { timeLeft, hasStarted, startGame, getTimeExpired } = useDevilMode(
