@@ -82,8 +82,8 @@ function App() {
     isLoading,
     currentUser,
     isRegisterView,
-    setLogged,
     setIsGuest,
+    setLogged,
     setRegisterView,
     handleLoginSuccess,
     handleLogout,
@@ -372,10 +372,10 @@ function App() {
           <button
             className="menu-btn"
             onClick={() => {
-              if (currentUser === "Guest") {
+              if (currentUser == "Guest") {
                 setIsGuest(false);
                 setLogged(false);
-                setMode(null);
+                console.log("Tornato alla schermata di Login");
               } else {
                 handleLogout();
               }
