@@ -35,7 +35,6 @@ import { useVersusMode } from "./hook/useVersusMode";
 import { usePoints } from "./hook/usePoint";
 import Modal from "./components/Modal/Modal";
 
-
 const LogoutIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -63,7 +62,7 @@ function App() {
     title: "",
     message: "",
     textColor: "black",
-    textColorSubtitle: "black"
+    textColorSubtitle: "black",
   });
 
   const handleCloseModal = () => {
@@ -72,12 +71,13 @@ function App() {
       title: "",
       message: "",
       textColor: "black",
-      textColorSubtitle: "black"
+      textColorSubtitle: "black",
     });
   };
 
   // Auth
   const {
+    isGuest,
     isLogged,
     isLoading,
     currentUser,
@@ -85,6 +85,7 @@ function App() {
     setRegisterView,
     handleLoginSuccess,
     handleLogout,
+    handleLoginGuest,
   } = useAuth();
 
   // Socket
@@ -246,18 +247,18 @@ function App() {
   // Rendering
   if (isLoading) {
     return (
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-            height: "100vh",
-            color: "white",
-            fontSize: "1.5rem",
-          }}
-        >
-          Loading...
-        </div>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+          color: "white",
+          fontSize: "1.5rem",
+        }}
+      >
+        Loading...
+      </div>
     );
   }
 
@@ -265,7 +266,7 @@ function App() {
     return <Leaderboard onClose={() => setIsLeaderboard(false)} />;
   }
 
-  if (!isLogged) {
+  if (!isLogged && !isGuest) {
     return isRegisterView ? (
       <Registration
         onRegisterSuccess={handleLoginSuccess}
@@ -275,7 +276,7 @@ function App() {
       <Login
         onLoginSuccess={handleLoginSuccess}
         onShowRegister={() => setRegisterView(true)}
-        onGuestLogin={handleLoginSuccess}
+        onGuestLogin={handleLoginGuest}
       />
     );
   }
@@ -299,8 +300,8 @@ function App() {
           <button
             className="menu-btn"
             onClick={() => {
-              handleCloseModal()
-              setMode(GAME_MODES.NORMAL)
+              handleCloseModal();
+              setMode(GAME_MODES.NORMAL);
             }}
           >
             Single Player
@@ -308,9 +309,9 @@ function App() {
 
           <button
             className="menu-btn"
-            onClick={()=>{
-              handleCloseModal()
-               setMode(GAME_MODES.DEVIL)
+            onClick={() => {
+              handleCloseModal();
+              setMode(GAME_MODES.DEVIL);
             }}
           >
             Devil Mode
@@ -319,7 +320,7 @@ function App() {
           <button
             className="menu-btn"
             onClick={() => {
-              console.log("👤 currentUser =", `"${currentUser}"`)
+              console.log("👤 currentUser =", `"${currentUser}"`);
               if (currentUser === "Guest") {
                 setModalConfig({
                   title: "Restricted Mode",
@@ -340,14 +341,15 @@ function App() {
           >
             1 vs 1 (Codemaker / Codebreaker) {currentUser === "Guest" && "🔒"}
           </button>
-          
+
           <button
             className="menu-btn"
             onClick={() => {
               if (currentUser === "Guest") {
                 setModalConfig({
                   title: "Restricted Access",
-                  message: "This ranking is reserved for registered users only!",
+                  message:
+                    "This ranking is reserved for registered users only!",
                   textColor: "red",
                   textColorSubtitle: "black",
                 });
@@ -381,15 +383,14 @@ function App() {
           </button>
 
           {showModal && (
-             <Modal
-               onClose={handleCloseModal}
-               title={modalConfig.title}
-               subtitle={modalConfig.message}
-               textColor={modalConfig.textColor}
-               textColorSubtitle={modalConfig.textColorSubtitle}
-             />
+            <Modal
+              onClose={handleCloseModal}
+              title={modalConfig.title}
+              subtitle={modalConfig.message}
+              textColor={modalConfig.textColor}
+              textColorSubtitle={modalConfig.textColorSubtitle}
+            />
           )}
-
         </div>
       </div>
     );
@@ -472,9 +473,7 @@ function App() {
                     marginBottom: "20px",
                   }}
                 >
-                  {gameWon
-                    ? "🎉 Your opponent won!"
-                    : "💥 Your opponent lost!"}
+                  {gameWon ? "🎉 Your opponent won!" : "💥 Your opponent lost!"}
                 </p>
                 <button className="defuse-btn" onClick={resetGame}>
                   NEW GAME
@@ -491,7 +490,6 @@ function App() {
     );
   }
 
-  
   return (
     <div className="page-wrapper">
       <div className="bomb-container">
@@ -510,17 +508,25 @@ function App() {
           guessesCount={guesses.length}
           maxTurns={MAX_TURNS}
           mode={mode}
-          hideAttempts={gameOver || gameWon || (mode === GAME_MODES.DEVIL && !hasStarted) || (mode === GAME_MODES.VERSUS && !hasStarted)}
+          hideAttempts={
+            gameOver ||
+            gameWon ||
+            (mode === GAME_MODES.DEVIL && !hasStarted) ||
+            (mode === GAME_MODES.VERSUS && !hasStarted)
+          }
         />
         {!gameWon && !gameOver ? (
           userRole === USER_ROLES.BREAKER || mode !== GAME_MODES.VERSUS ? (
             // In modalità Devil, mostra solo il pulsante START finché non si preme
             mode === GAME_MODES.DEVIL && !hasStarted ? (
-              <div style={{ display: "flex", justifyContent: "center", padding: "40px 20px" }}>
-                <button
-                  className="defuse-btn"
-                  onClick={startGame}
-                >
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  padding: "40px 20px",
+                }}
+              >
+                <button className="defuse-btn" onClick={startGame}>
                   START
                 </button>
               </div>
@@ -550,9 +556,9 @@ function App() {
               }}
             >
               <p style={{ color: "#d1d5db", fontSize: "18px" }}>
-              Waiting for{" "}
-              <strong style={{ color: "#60a5fa" }}>{opponent}</strong>{" "}
-              to guess your code...
+                Waiting for{" "}
+                <strong style={{ color: "#60a5fa" }}>{opponent}</strong> to
+                guess your code...
               </p>
             </div>
           )

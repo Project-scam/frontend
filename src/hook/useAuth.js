@@ -8,21 +8,28 @@
 // @version: "1.0.0 2026-01-01"
 //=========================================================
 
-
 import { useState, useEffect } from "react";
 import { API_URLS } from "../config";
 
 export const useAuth = () => {
   const [isLogged, setLogged] = useState(false);
+  const [isGuest, setIsGuest] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
   const [isRegisterView, setRegisterView] = useState(false);
 
   const handleLoginSuccess = (user) => {
-    console.log("User data received from Login:", user)
-    setLogged(true)
-    setCurrentUser(typeof user === "string" ? user : user?.username || "Guest")
-    setRegisterView(false)
+    console.log("User data received from Login:", user);
+    setLogged(true);
+    setCurrentUser(typeof user === "string" ? user : user?.username || "Guest");
+    setRegisterView(false);
+  };
+  const handleLoginGuest = () => {
+    console.log("User logged in as Guest");
+    setLogged(false);
+    setIsGuest(true);
+    setCurrentUser("Guest");
+    setRegisterView(false);
   };
 
   // Verifica sessione al caricamento
@@ -64,11 +71,13 @@ export const useAuth = () => {
 
   return {
     isLogged,
+    isGuest,
     isLoading,
     currentUser,
     isRegisterView,
     setRegisterView,
     handleLoginSuccess,
+    handleLoginGuest,
     handleLogout,
   };
 };
