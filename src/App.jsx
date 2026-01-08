@@ -373,7 +373,7 @@ function App() {
             className="menu-btn"
             onClick={() => {
               if (currentUser === "Guest") {
-                handleLoginGuest();  // ← Usa questo invece di setIsGuest/setLogged
+                handleLoginGuest();  
               } else {
                 handleLogout();
               }
