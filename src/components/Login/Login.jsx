@@ -1,16 +1,39 @@
-import { useState } from "react";
-import Input from "../Input.jsx";
-import { API_URLS } from "../../config.js";
+import { useState } from "react"
+import Input from "../Input.jsx"
+import { API_URLS } from "../../config.js"
+import Modal from "../Modal/Modal.jsx"
 
 
 export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState(null);
+  const [username, setUsername] = useState("")
+  const [password, setPassword] = useState("")
+  const [showModal, setShowModal] = useState(false)
+  const [modalConfig, setModalConfig] = useState({ // stato per mostrare la modal con il messaggio
+    title: "",
+    message: "",
+    textColor: "black",
+    textColorSubtitle: "black"
+  });
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setModalConfig({
+      title: "",
+      message: "",
+      textColor: "black",
+      textColorSubtitle: "black"
+    }) // pulisco l'errore quando esco/chiudo dalla modal
+  }
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setError(null);
+    setModalConfig({ // resetto i messaggi
+      title: "",
+      message: "",
+      textColor: "black",
+      textColorSubtitle: "black"
+    })
+    setShowModal(false); // prima di fare la richiesta, chiudo la modal
 
     try {
       const response = await fetch(
@@ -32,18 +55,37 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) 
 
       if (!response.ok) {
         // Se la risposta non è OK (es. 401, 404, 500), lancia un errore con il messaggio del backend
-        throw new Error(risposta.error || "Errore durante il login");
+        const messageError = risposta.error || "Error logging in"
+        setModalConfig({
+          title: "Error login",
+          message: messageError,
+          textColor: "black",
+          textColorSubtitle: "red"
+        })
+        setShowModal(true)
+        return
+        
       }
 
       // Il token è ora gestito automaticamente dal browser tramite cookie HttpOnly
       // Non è necessario (e non è possibile) salvarlo manualmente
-
       onLoginSuccess(risposta.user); // Comunica il successo al componente App passando i dati utente
+
     } catch (err) {
+
       console.error(err.message);
-      setError(err.message);
+      setModalConfig({
+        title: "Error login",
+        message: err.message,
+        textColor: "black",
+        textColorSubtitle: "red"
+      })
+      setShowModal(true);
+      return
+
     }
   };
+
 
   return (
     <div className="page-login">
@@ -63,7 +105,14 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) 
           setInputValue={setPassword}
         />
 
-        {error && <p className="error-message">{error}</p>}
+        {showModal && (
+          <Modal 
+          title={modalConfig.title} 
+          subtitle={modalConfig.message}
+          textColor={modalConfig.textColor} 
+          textColorSubtitle={modalConfig.textColorSubtitle}
+          onClose={handleCloseModal}  />
+        )}
 
         <button type="submit">
           Login
@@ -73,14 +122,14 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) 
           type="button"
           onClick={onShowRegister}
         >
-          Registrati
+          Register
         </button>
 
         <button
           type="button"
           onClick={onGuestLogin}
         >
-          Accedi come Ospite
+          Login as Guest
         </button>
       </form>
     </div>

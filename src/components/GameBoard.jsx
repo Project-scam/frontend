@@ -26,6 +26,7 @@ function GameBoard({
             isCurrent={false}
             colors={colors}
             onPegClick={() => {}}
+            turnNumber={i + 1}
           />
         ))}
 
@@ -36,6 +37,7 @@ function GameBoard({
             isCurrent
             colors={colors}
             onPegClick={onPegClick}
+            turnNumber={guesses.length + 1}
           />
         )}
       </div>

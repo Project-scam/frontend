@@ -1,9 +1,30 @@
+
 import React, { useState, useEffect, useRef } from "react";
+import Modal from "./Modal/Modal";
+
 
 export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
   const [users, setUsers] = useState([]);
   const [pendingChallenge, setPendingChallenge] = useState(null);
   const [incomingChallenge, setIncomingChallenge] = useState(null);
+
+  const [showModal, setShowModal] = useState(false);
+  const [modalConfig, setModalConfig] = useState({
+    title: "",
+    message: "",
+    textColor: "black",
+    textColorSubtitle: "black"
+  });
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setModalConfig({
+      title: "",
+      message: "",
+      textColor: "black",
+      textColorSubtitle: "black"
+    });
+  };
 
   // Usa ref per accedere ai valori correnti nei callback
   const pendingChallengeRef = useRef(pendingChallenge);
@@ -18,137 +39,52 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
     onGameStartRef.current = onGameStart;
   }, [onGameStart]);
 
-  // Effetto principale per registrare i listener e richiedere la lista
   useEffect(() => {
-    if (!socket) {
-      console.log("[UserList] Socket non disponibile");
-      return;
-    }
+    if (!socket) return;
 
-    console.log(
-      "[UserList] Componente montato, socket:",
-      socket.id,
-      "connesso:",
-      socket.connected
-    );
-
-    // Reset dello stato quando il componente viene montato
-    setUsers([]);
-    setPendingChallenge(null);
-    setIncomingChallenge(null);
+    // Richiedi la lista utenti appena il componente viene montato
+    socket.emit("get_users");
 
     const handleUsersList = (list) => {
-      console.log("[UserList] Lista utenti ricevuta:", list);
-      if (!Array.isArray(list)) {
-        console.error("[UserList] Lista utenti non è un array:", list);
-        return;
-      }
       // Filtra te stesso dalla lista
-      const filteredUsers = list.filter((u) => u.username !== currentUser);
-      console.log("[UserList] Utenti filtrati:", filteredUsers);
-      setUsers(filteredUsers);
+      setUsers(list.filter((u) => u.username !== currentUser));
     };
 
     const handleChallengeReceived = (data) => {
-      console.log("[UserList] Sfida ricevuta:", data);
       setIncomingChallenge(data);
     };
 
     const handleChallengeDeclined = () => {
-      console.log("[UserList] Sfida rifiutata");
+      console.log("[UserList] Challenge declined");
       setPendingChallenge(null);
-      alert("The challenge is refused or the user is disconnected.");
+      setModalConfig({
+        title: "Challenge Update",
+        message: "The challenge was refused or the user disconnected.",
+        textColor: "red",
+        textColorSubtitle: "black"
+      });
+      setShowModal(true);
     };
 
     const handleChallengeAccepted = (data) => {
-      console.log("[UserList] Sfida accettata:", data);
-      // Usa il ref per accedere al valore corrente di pendingChallenge
-      const isMyChallenge =
-        pendingChallengeRef.current === data.opponentSocketId;
-      if (onGameStartRef.current) {
-        onGameStartRef.current({
-          ...data,
-          role: isMyChallenge ? "maker" : "breaker",
-        });
-      }
+      // Se avevo una sfida in sospeso verso questo utente, sono io lo sfidante (Maker)
+      // Altrimenti, ho accettato io la sfida, quindi sono il Breaker
+      const isMyChallenge = pendingChallenge === data.opponentSocketId;
+      if (onGameStart) onGameStart({ ...data, role: isMyChallenge ? 'maker' : 'breaker' });
     };
 
-    // Registra i listener PRIMA di emettere l'evento
     socket.on("users_list_update", handleUsersList);
     socket.on("challenge_received", handleChallengeReceived);
     socket.on("challenge_declined", handleChallengeDeclined);
     socket.on("challenge_accepted", handleChallengeAccepted);
 
-    console.log("[UserList] Listener registrati");
-
-    // Funzione per richiedere la lista utenti
-    const requestUsersList = () => {
-      if (socket && socket.connected) {
-        console.log("[UserList] Richiedo lista utenti...");
-        socket.emit("get_users");
-      } else {
-        console.log("[UserList] Socket non ancora connesso, in attesa...");
-      }
-    };
-
-    // Se il socket è già connesso, richiedi subito la lista
-    // Usa più tentativi per essere sicuri
-    let timeoutIds = [];
-    let connectHandler;
-
-    if (socket.connected) {
-      console.log(
-        "[UserList] Socket già connesso, richiedo lista con più tentativi"
-      );
-      // Primo tentativo immediato
-      requestUsersList();
-      // Secondo tentativo dopo 100ms
-      timeoutIds.push(
-        setTimeout(() => {
-          console.log("[UserList] Seconda richiesta lista utenti");
-          requestUsersList();
-        }, 100)
-      );
-      // Terzo tentativo dopo 500ms (backup)
-      timeoutIds.push(
-        setTimeout(() => {
-          console.log("[UserList] Terza richiesta lista utenti (backup)");
-          requestUsersList();
-        }, 500)
-      );
-    } else {
-      // Altrimenti aspetta la connessione
-      console.log("[UserList] Socket non connesso, aspetto evento connect");
-      connectHandler = requestUsersList;
-      socket.once("connect", connectHandler);
-    }
-
     return () => {
-      console.log("[UserList] Cleanup: rimuovo listener");
-      timeoutIds.forEach((id) => clearTimeout(id));
-      if (connectHandler) socket.off("connect", connectHandler);
       socket.off("users_list_update", handleUsersList);
       socket.off("challenge_received", handleChallengeReceived);
       socket.off("challenge_declined", handleChallengeDeclined);
       socket.off("challenge_accepted", handleChallengeAccepted);
     };
-  }, [socket, currentUser]); // Rimosso onGameStart dalle dipendenze, usiamo il ref
-
-  // Effetto separato per forzare il refresh quando il componente viene montato
-  // Questo assicura che anche se i listener sono già registrati, la lista viene richiesta
-  useEffect(() => {
-    if (!socket || !socket.connected) return;
-
-    // Forza una richiesta aggiuntiva dopo un breve delay quando il componente viene montato
-    const forceRefreshTimeout = setTimeout(() => {
-      console.log("[UserList] Forzo refresh lista utenti");
-      socket.emit("get_users");
-    }, 200);
-
-    return () => {
-      clearTimeout(forceRefreshTimeout);
-    };
-  }, [socket]); // Si attiva quando il socket cambia o quando il componente viene montato
+  }, [socket, currentUser, onGameStart, pendingChallenge]);
 
   const sendChallenge = (targetSocketId) => {
     socket.emit("send_challenge", { targetSocketId });
@@ -157,9 +93,7 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
 
   const handleAcceptChallenge = () => {
     if (incomingChallenge) {
-      socket.emit("accept_challenge", {
-        challengerId: incomingChallenge.socketId,
-      });
+      socket.emit("accept_challenge", { challengerId: incomingChallenge.socketId });
       setIncomingChallenge(null);
       // Qui potresti aggiungere una callback onGameStart() se gestita dal genitore
     }
@@ -172,22 +106,14 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
   return (
     <div className="page-wrapper">
       <div className="mode-menu" style={{ maxWidth: "600px" }}>
-        <h2 className="menu-title">Challengers Online</h2>
+        <h2 className="menu-title">Online Challengers</h2>
 
         {users.length === 0 ? (
           <p style={{ color: "#9ca3af", textAlign: "center" }}>
-            No Users online.
+            No users online.
           </p>
         ) : (
-          <div
-            className="user-list"
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "10px",
-              width: "100%",
-            }}
-          >
+          <div className="user-list" style={{ display: "flex", flexDirection: "column", gap: "10px", width: "100%" }}>
             {users.map((user) => (
               <div
                 key={user.socketId}
@@ -197,26 +123,17 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
                   alignItems: "center",
                   background: "rgba(255,255,255,0.1)",
                   padding: "10px 15px",
-                  borderRadius: "8px",
+                  borderRadius: "8px"
                 }}
               >
-                <span style={{ color: "#fff", fontWeight: "bold" }}>
-                  {user.username}
-                </span>
+                <span style={{ color: "#fff", fontWeight: "bold" }}>{user.username}</span>
                 <button
                   className="menu-btn"
-                  style={{
-                    width: "auto",
-                    padding: "8px 16px",
-                    fontSize: "14px",
-                    margin: 0,
-                  }}
+                  style={{ width: "auto", padding: "8px 16px", fontSize: "14px", margin: 0, backgroundColor:"rgba(239, 239, 239, 0.3)" }}
                   onClick={() => sendChallenge(user.socketId)}
                   disabled={!!pendingChallenge}
                 >
-                  {pendingChallenge === user.socketId
-                    ? "Waiting..."
-                    : "Challenge"}
+                  {pendingChallenge === user.socketId ? "Waiting..." : "Challenge"}
                 </button>
               </div>
             ))}
@@ -225,63 +142,29 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
 
         {/* Modale per Sfida in Arrivo */}
         {incomingChallenge && (
-          <div
-            style={{
-              position: "fixed",
-              top: 0,
-              left: 0,
-              right: 0,
-              bottom: 0,
-              backgroundColor: "rgba(0,0,0,0.8)",
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              zIndex: 1000,
-            }}
+          <Modal
+            title="Challenge Received!"
+            subtitle={`${incomingChallenge.username} wants to play with you.`}
+            textColor="green" // O un altro colore appropriato per una notifica positiva/neutra
+            textColorSubtitle="black"
           >
-            <div
-              style={{
-                background: "#1f2937",
-                padding: "20px",
-                borderRadius: "10px",
-                textAlign: "center",
-                border: "1px solid #374151",
-                minWidth: "300px",
-              }}
-            >
-              <h3 style={{ color: "#fff", marginBottom: "15px" }}>
-                Challenge received!
-              </h3>
-              <p style={{ color: "#d1d5db", marginBottom: "20px" }}>
-                <strong style={{ color: "#60a5fa" }}>
-                  {incomingChallenge.username}
-                </strong>{" "}
-                wants to play with you.
-              </p>
-              <button
-                className="menu-btn"
-                onClick={handleAcceptChallenge}
-                style={{ marginBottom: "10px" }}
-              >
-                ACCEPT
-              </button>
-              <button
-                className="menu-btn"
-                onClick={handleDeclineChallenge}
-                style={{ backgroundColor: "#ef4444" }}
-              >
-                DENAY
-              </button>
-            </div>
-          </div>
+            <button className="menu-btn" onClick={handleAcceptChallenge} style={{ marginBottom: "10px" , marginTop:"20px"}}>ACCEPT</button>
+            <button className="menu-btn" onClick={handleDeclineChallenge} style={{ backgroundColor: "#ef4444" }}>DENY</button>
+          </Modal>
         )}
 
-        <button
-          className="back-menu-btn"
-          onClick={onBack}
-          style={{ marginTop: "20px" }}
-        >
-          ← Turn back to Menu
+        {showModal && (
+          <Modal
+            onClose={handleCloseModal}
+            title={modalConfig.title}
+            subtitle={modalConfig.message}
+            textColor={modalConfig.textColor}
+            textColorSubtitle={modalConfig.textColorSubtitle}
+          />
+        )}
+
+        <button className="back-menu-btn" onClick={onBack} style={{ marginTop: "20px" }}>
+          ← Back to Menu
         </button>
       </div>
     </div>

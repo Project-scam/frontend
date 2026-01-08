@@ -33,6 +33,8 @@ import { useGameLogic } from "./hook/useGameLogic";
 import { useDevilMode } from "./hook/useDevilMode";
 import { useVersusMode } from "./hook/useVersusMode";
 import { usePoints } from "./hook/usePoint";
+import Modal from "./components/Modal/Modal";
+
 
 const LogoutIcon = () => (
   <svg
@@ -56,6 +58,23 @@ function App() {
   // UI State
   const [isRulesOfGame, setIsRulesOfGame] = useState(false);
   const [isLeaderboard, setIsLeaderboard] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [modalConfig, setModalConfig] = useState({
+    title: "",
+    message: "",
+    textColor: "black",
+    textColorSubtitle: "black"
+  });
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+    setModalConfig({
+      title: "",
+      message: "",
+      textColor: "black",
+      textColorSubtitle: "black"
+    });
+  };
 
   // Auth
   const {
@@ -227,18 +246,18 @@ function App() {
   // Rendering
   if (isLoading) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          color: "white",
-          fontSize: "1.5rem",
-        }}
-      >
-        Caricamento...
-      </div>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            color: "white",
+            fontSize: "1.5rem",
+          }}
+        >
+          Loading...
+        </div>
     );
   }
 
@@ -267,9 +286,9 @@ function App() {
         <div className="mode-menu">
           <h1 className="menu-title">MASTERMIND SCAM</h1>
           <p className="menu-subtitle">
-            Scegli la modalità o{" "}
+            Choose a game mode or{" "}
             <Btn variant="simple" onClick={() => setIsRulesOfGame(true)}>
-              IMPARA LE REGOLE DI GIOCO
+              LEARN THE GAME RULES
             </Btn>
           </p>
 
@@ -279,15 +298,36 @@ function App() {
 
           <button
             className="menu-btn"
-            onClick={() => setMode(GAME_MODES.NORMAL)}
+            onClick={() => {
+              handleCloseModal()
+              setMode(GAME_MODES.NORMAL)
+            }}
           >
-            Modalità Normale
+            Single Player
           </button>
+
+          <button
+            className="menu-btn"
+            onClick={()=>{
+              handleCloseModal()
+               setMode(GAME_MODES.DEVIL)
+            }}
+          >
+            Devil Mode
+          </button>
+
           <button
             className="menu-btn"
             onClick={() => {
+              console.log("👤 currentUser =", `"${currentUser}"`)
               if (currentUser === "Guest") {
-                alert("This mode is reserved to registered users only!");
+                setModalConfig({
+                  title: "Restricted Mode",
+                  message: "This mode is reserved for registered users only!",
+                  textColor: "red",
+                  textColorSubtitle: "black",
+                });
+                setShowModal(true);
                 return;
               }
               setMode(GAME_MODES.VERSUS);
@@ -300,17 +340,18 @@ function App() {
           >
             1 vs 1 (Codemaker / Codebreaker) {currentUser === "Guest" && "🔒"}
           </button>
-          <button
-            className="menu-btn"
-            onClick={() => setMode(GAME_MODES.DEVIL)}
-          >
-            Modalità Diavolo
-          </button>
+          
           <button
             className="menu-btn"
             onClick={() => {
               if (currentUser === "Guest") {
-                alert("This ranking is reserved to registered users only!");
+                setModalConfig({
+                  title: "Restricted Access",
+                  message: "This ranking is reserved for registered users only!",
+                  textColor: "red",
+                  textColorSubtitle: "black",
+                });
+                setShowModal(true);
                 return;
               }
               setIsLeaderboard(true);
@@ -321,7 +362,7 @@ function App() {
                 : {}
             }
           >
-            Ranking {currentUser === "Guest" && "🔒"}
+            Leaderboard {currentUser === "Guest" && "🔒"}
           </button>
           <button
             className="menu-btn"
@@ -338,6 +379,17 @@ function App() {
             <LogoutIcon />
             LOGOUT
           </button>
+
+          {showModal && (
+             <Modal
+               onClose={handleCloseModal}
+               title={modalConfig.title}
+               subtitle={modalConfig.message}
+               textColor={modalConfig.textColor}
+               textColorSubtitle={modalConfig.textColorSubtitle}
+             />
+          )}
+
         </div>
       </div>
     );
@@ -368,7 +420,7 @@ function App() {
           onConfirm={confirmSecretCode}
           onBack={resetGame}
         />
-        <div style={{ color: "white" }}>Setup contro {opponent}</div>
+        <div style={{ color: "white" }}>Setup against {opponent}</div>
       </>
     );
   }
@@ -384,7 +436,7 @@ function App() {
         <div className="bomb-container">
           <div style={{ padding: "12px 16px" }}>
             <button className="back-menu-btn" onClick={resetGame}>
-              ← Torna alla scelta modalità
+              ← Back to mode selection
             </button>
           </div>
           <div
@@ -398,7 +450,7 @@ function App() {
             }}
           >
             <h2 style={{ color: "#10b981", marginBottom: "20px" }}>
-              Codice Segreto Inviato!
+              Secret Code Sent!
             </h2>
             <p
               style={{
@@ -407,9 +459,9 @@ function App() {
                 fontSize: "18px",
               }}
             >
-              Stai aspettando che{" "}
-              <strong style={{ color: "#60a5fa" }}>{opponent}</strong> indovini
-              il tuo codice...
+              You are waiting for{" "}
+              <strong style={{ color: "#60a5fa" }}>{opponent}</strong> to guess
+              your code...
             </p>
             {gameWon || gameOver ? (
               <div style={{ marginTop: "20px" }}>
@@ -421,16 +473,16 @@ function App() {
                   }}
                 >
                   {gameWon
-                    ? "🎉 Il tuo avversario ha vinto!"
-                    : "💥 Il tuo avversario ha perso!"}
+                    ? "🎉 Your opponent won!"
+                    : "💥 Your opponent lost!"}
                 </p>
                 <button className="defuse-btn" onClick={resetGame}>
-                  NUOVA PARTITA
+                  NEW GAME
                 </button>
               </div>
             ) : (
               <div style={{ color: "#9ca3af", fontSize: "14px" }}>
-                In attesa del risultato...
+                Waiting for the result...
               </div>
             )}
           </div>
@@ -439,7 +491,7 @@ function App() {
     );
   }
 
-  // Game Screen
+  
   return (
     <div className="page-wrapper">
       <div className="bomb-container">
@@ -448,7 +500,7 @@ function App() {
           userRole !== USER_ROLES.MAKER && (
             <div style={{ padding: "12px 16px" }}>
               <button className="back-menu-btn" onClick={resetGame}>
-                ← Torna alla scelta modalità
+                ← Back to mode selection
               </button>
             </div>
           )}
@@ -458,21 +510,34 @@ function App() {
           guessesCount={guesses.length}
           maxTurns={MAX_TURNS}
           mode={mode}
+          hideAttempts={gameOver || gameWon || (mode === GAME_MODES.DEVIL && !hasStarted) || (mode === GAME_MODES.VERSUS && !hasStarted)}
         />
         {!gameWon && !gameOver ? (
           userRole === USER_ROLES.BREAKER || mode !== GAME_MODES.VERSUS ? (
-            <GameBoard
-              guesses={guesses}
-              currentGuess={currentGuess}
-              colors={COLORS_BOMB}
-              canPlay={guesses.length < MAX_TURNS && secretCode.length > 0}
-              onPegClick={(index) => addPeg(index, selectedColor)}
-              selectedColor={selectedColor}
-              onSelectColor={setSelectedColor}
-              mainButtonLabel={mainButtonLabel}
-              mainButtonDisabled={mainButtonDisabled}
-              mainButtonOnClick={mainButtonOnClick}
-            />
+            // In modalità Devil, mostra solo il pulsante START finché non si preme
+            mode === GAME_MODES.DEVIL && !hasStarted ? (
+              <div style={{ display: "flex", justifyContent: "center", padding: "40px 20px" }}>
+                <button
+                  className="defuse-btn"
+                  onClick={startGame}
+                >
+                  START
+                </button>
+              </div>
+            ) : (
+              <GameBoard
+                guesses={guesses}
+                currentGuess={currentGuess}
+                colors={COLORS_BOMB}
+                canPlay={guesses.length < MAX_TURNS && secretCode.length > 0}
+                onPegClick={(index) => addPeg(index, selectedColor)}
+                selectedColor={selectedColor}
+                onSelectColor={setSelectedColor}
+                mainButtonLabel={mainButtonLabel}
+                mainButtonDisabled={mainButtonDisabled}
+                mainButtonOnClick={mainButtonOnClick}
+              />
+            )
           ) : (
             <div
               style={{
@@ -485,9 +550,9 @@ function App() {
               }}
             >
               <p style={{ color: "#d1d5db", fontSize: "18px" }}>
-                In attesa che{" "}
-                <strong style={{ color: "#60a5fa" }}>{opponent}</strong>{" "}
-                indovini il tuo codice...
+              Waiting for{" "}
+              <strong style={{ color: "#60a5fa" }}>{opponent}</strong>{" "}
+              to guess your code...
               </p>
             </div>
           )
@@ -502,6 +567,15 @@ function App() {
           />
         )}
       </div>
+      {showModal && (
+        <Modal
+          onClose={handleCloseModal}
+          title={modalConfig.title}
+          subtitle={modalConfig.message}
+          textColor={modalConfig.textColor}
+          textColorSubtitle={modalConfig.textColorSubtitle}
+        />
+      )}
     </div>
   );
 }

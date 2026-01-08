@@ -1,6 +1,21 @@
-function GuessRow({ guess, feedback, isCurrent, colors, onPegClick }) {
+function GuessRow({ guess, feedback, isCurrent, colors, onPegClick, turnNumber }) {
   return (
     <div className="row-bomb">
+      {turnNumber && (
+        <div style={{ 
+          minWidth: '10px', 
+          textAlign: 'start', 
+          color: isCurrent ? '#eab308' : '#9ca3af',
+          fontWeight: isCurrent ? '700' : '500',
+          fontSize: '16px',
+          display: 'flex',
+          alignItems: 'flext-start',
+          justifyContent: 'center',
+          paddingRight: '8px'
+        }}>
+          {turnNumber}
+        </div>
+      )}
       <div className="guess-grid">
         {guess.map((colorIndex, j) => (
           <div

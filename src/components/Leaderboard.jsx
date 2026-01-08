@@ -18,14 +18,14 @@ export function Leaderboard({ onClose }) {
         });
 
         if (!response.ok) {
-          throw new Error("Errore nel caricamento della classifica");
+          throw new Error("Error loading leaderboard");
         }
 
         const data = await response.json();
         setRanking(data);
       } catch (err) {
-        console.error("Errore fetch ranking:", err);
-        setError("Impossibile caricare la classifica.");
+        console.error("Error fetching ranking:", err);
+        setError("Unable to load leaderboard.");
       } finally {
         setLoading(false);
       }
@@ -36,7 +36,7 @@ export function Leaderboard({ onClose }) {
 
   return (
     <div className="page-wrapper">
-      <div className="mode-menu" style={{ width: "500px", maxHeight: "80vh" }}>
+      <div className="mode-menu" style={{ width: "500px", maxHeight: "650px" }}>
         <h2 className="menu-title">TOP PLAYERS</h2>
 
         {loading ? (
@@ -47,7 +47,7 @@ export function Leaderboard({ onClose }) {
           <div
             style={{
               overflowY: "auto",
-              maxHeight: "400px",
+              maxHeight: "450px",
               background: "rgba(0,0,0,0.3)",
               borderRadius: "12px",
               padding: "10px",
@@ -58,7 +58,7 @@ export function Leaderboard({ onClose }) {
             <table style={{ width: "100%", borderCollapse: "collapse", color: "white" }}>
               <thead>
                 <tr style={{ borderBottom: "1px solid #374151", textAlign: "left" }}>
-                  <th style={{ padding: "10px", width: "50px" }}>#</th>
+                  <th style={{ padding: "10px", width: "50px" }}>Ranking</th>
                   <th style={{ padding: "10px", textAlign: "center" }}>Users</th>
                   <th style={{ padding: "10px", textAlign: "right" }}>Scores</th>
                 </tr>

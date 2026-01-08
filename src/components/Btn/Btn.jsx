@@ -69,7 +69,7 @@ const Btn = ({
     },
   };
 
-  // Funzione per unire gli stili (default + variante)  
+  // Function to merge styles (default + variant)  
   const mergeStyles= (variantKey) => {
     const variant= variants[variantKey] || {};
     return {

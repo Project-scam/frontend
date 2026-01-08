@@ -1,7 +1,7 @@
 // src/components/Registration/Registration.jsx
 
-import { useState } from "react";
-import Message from "../Message";
+import { useEffect, useState } from "react";
+import Modal from "../Modal/Modal.jsx";
 import { API_URLS } from "../../config.js";
 
 const Registration = ({
@@ -11,24 +11,66 @@ const Registration = ({
   onRegisterSuccess,
   onShowLogin,
 }) => {
-  const [messageError, setMessageError] = useState(null); // stato per messaggio errore
+  const [showModal, setShowModal] = useState(false); // stato per messaggio errore
+  const [modalConfig, setModalConfig] = useState({ // stato per mostrare la modal
+    title: "",
+    message: "",
+    textColor: "black",
+    textColorSubtitle: "black"
+  }); 
+
+  // FUNZIONE PER CHIUDERE LA MODAL
+  const handleCloseModal = () => {
+    setShowModal(false);
+   
+    setModalConfig({ // resettare i messaggi
+      title: "",
+      message: "",
+      textColor: "black",
+      textColorSubtitle: "black"
+    });
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault(); // qui blocco per inviare i dati nel formato json con fetch
 
-    setMessageError(null); // vado così a cancellare possibili errori se c'è ne sono stati a una richiesta di registrazione precedente rimpostanto lo stato a null
+    setModalConfig({ // resettare i messaggi
+      title: "",
+      message: "",
+      textColor: "black",
+      textColorSubtitle: "black"
+    });
 
+    setShowModal(false); // prima di fare la richiesta, chiudo la modal
     const username = event.target.elements.username.value; // prendo i valori dell' username
     const password = event.target.elements.password.value; // prendo i valori della password
     const rewritePassword = event.target.elements.passwordReconfirm.value; // prendo i valori della seconda password
 
     // CONTROLLO DATI INSERITI DALL'UTENTE
     if (username.includes(" ")) {
-      return setMessageError("Non puoi lasciare spazi vuoti");
+  
+      setModalConfig({ 
+        title: "Attention!",
+        message: "You can't leave blank spaces",
+        textColor: "red",
+        textColorSubtitle: "black"
+      })
+      setShowModal(true)
+      return
+
     }
+
     if (password !== rewritePassword) {
       // se le password non coincidono
-      return setMessageError("Le password non coincidono!");
+      setModalConfig({ 
+        title: "Attention!",
+        message: "The passwords don't match!",
+        textColor: "red",
+        textColorSubtitle: "black"
+      })
+      setShowModal(true)
+      return
+
     }
 
     try {
@@ -45,12 +87,43 @@ const Registration = ({
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.error || "Registrazione non riuscita");
+
+        const messageError = data.error || "Registration failed"
+        setModalConfig({ 
+          title: "Attention!",
+          message: messageError,
+          textColor: "red",
+          textColorSubtitle: "black"
+        })
+        setShowModal(true)
+        return
+
+      } else {
+          setModalConfig({
+            title: "Success!",
+            message: "Account created! Now login with your credentials.",
+            textColor: "green",
+            textColorSubtitle: "black"
+          });
+          setShowModal(true);
+
+          setTimeout(() => {
+             if (onShowLogin) onShowLogin(); // setRegisterView is false in app 
+          }, 2000);
+
       }
 
-      onRegisterSuccess();
+      
+      
     } catch (error) {
-      setMessageError(error.message);
+      setModalConfig({ 
+        title: "Attention!",
+        message: error.message,
+        textColor: "red",
+        textColorSubtitle: "black"
+      })
+      setShowModal(true);
+     
     }
   };
 
@@ -77,8 +150,7 @@ const Registration = ({
             placeholder="Write your password"
             required
           />
-          <br />
-          <Message textColor="#d83924">{messageError}</Message>
+          
 
           <label htmlFor="passwordReconfirm">{inputPasswordReconfirm}:</label>
           <input
@@ -88,6 +160,17 @@ const Registration = ({
             placeholder="Rewrite your password "
             required
           />
+          
+          {showModal && (
+
+          <Modal 
+            title={modalConfig.title} 
+            subtitle={modalConfig.message}
+            textColor={modalConfig.textColor} 
+            textColorSubtitle={modalConfig.textColorSubtitle}
+            onClose={handleCloseModal}  />
+            
+          )}
 
           <button
             type="submit"
@@ -96,8 +179,9 @@ const Registration = ({
             CREATE ACCOUNT
           </button>
         </form>
-        <button type="button" className="back-btn" onClick={onShowLogin}>
-          Back to Login
+
+        <button type="button" className="back-menu-btn" onClick={onShowLogin}>
+          ← Back to Login
         </button>
       </div>
     </div>

@@ -6,7 +6,7 @@ export default function Input({ id, label, value, setInputValue, type }) {
       <label htmlFor={id} className="menu-title">{label}</label>
 
       <input
-        id= {id} // serve un id se no da errore in ispeziona codice perchè la label non è collegata
+        id= {id} // an id is needed otherwise it gives an error in code inspection because the label is not connected
         type={type}
         value={value}
         onChange={(e) => setInputValue(e.target.value)}

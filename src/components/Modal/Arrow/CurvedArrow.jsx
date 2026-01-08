@@ -2,18 +2,18 @@
 const CurvedArrow = ({
   justify,
   margin,
-  color= "orange",  // colore della freccia
-  direction, // rotazione della freccia (del contenitore)
-  size= 120, // rappresenta la larghezza e l'altezzza del quadrato (120 come valore default)
-  reverse= false, // booleano se passato al padre diventa "true"
+  color= "orange",  // arrow color
+  direction, // arrow rotation (of the container)
+  size= 120, // represents the width and height of the square (120 as default value)
+  reverse= false, // boolean if passed to parent becomes "true"
   selectAngle
 }) => {
   
-  // PROPORZIONE PER COLLEGARE LA FRECCIA CON LE DIMENSIONI DEL CORPO
-  const baseSize= 120 // valori normali dimensioni freccia che corrispondono anche alla grandezza della punta di default
-  const scale= size / baseSize // formula da utilizzare nella punta della freccia alla modifica di size per tenere le stesse proporzioni
+  // PROPORTION TO CONNECT THE ARROW WITH THE BODY DIMENSIONS
+  const baseSize= 120 // normal arrow dimensions values that also correspond to the default tip size
+  const scale= size / baseSize // formula to use in the arrow tip when changing size to maintain the same proportions
 
-  // PARAMETRI PER LA ROTAZIONE DELLA FRECCIA IN GRADI 
+  // PARAMETERS FOR ARROW ROTATION IN DEGREES
   const rotationMap = {
     right: "0deg",
     down: "90deg",
@@ -21,36 +21,36 @@ const CurvedArrow = ({
     up: "270deg"
   }
 
-  const angle = rotationMap[direction] || selectAngle || "0deg" // rota in base alla prop direction
+  const angle = rotationMap[direction] || selectAngle || "0deg" // rotates based on the direction prop
   const container = {
-    width: size,          // grandezza orrizzontale dipende dal parametro size passato
-    height: size,         // grandezza verticale dipende dal parametro size passato
+    width: size,          // horizontal size depends on the passed size parameter
+    height: size,         // vertical size depends on the passed size parameter
     position: "relative",
     transform: `rotate( ${angle} )`       
   };
 
-  // parte curva (un quarto di cerchio con solo un bordo colorato)
+  // curved part (a quarter circle with only one colored border)
   const curve = {
     width: "100%",
     height: "100%",
-    borderRadius: "50%",                 // cerchio
-    border: "20px solid transparent",     // tutti trasparenti
-    borderLeftColor: "transparent",            // solo il bordo sinistro visibile
-    borderBottomColor: color,          // e il bordo sotto -> crea la curva
-    transform: `rotate(${reverse ? -45 : 45}deg)`,          // lo ruoto un po' per dare movimento
+    borderRadius: "50%",                 // circle
+    border: "20px solid transparent",     // all transparent
+    borderLeftColor: "transparent",            // only the left border visible
+    borderBottomColor: color,          // and the bottom border -> creates the curve
+    transform: `rotate(${reverse ? -45 : 45}deg)`,          // rotate it a bit to give movement
     boxSizing: "border-box",
   };
 
-  // punta della freccia
+  // arrow tip
   const head = {
     position: "absolute",
-    left: reverse ? 30 * scale : 60 * scale, // riposiono la punta con la variazione di grandezza data da scale
-    bottom: -10 * scale, // riposiono la punta con la variazione di grandezza data da scale
+    left: reverse ? 30 * scale : 60 * scale, // reposition the tip with the size variation given by scale
+    bottom: -10 * scale, // reposition the tip with the size variation given by scale
     width: 0,
     height: 0,
     borderTop: `${20 * scale}px solid transparent`,
     borderBottom: `${20* scale}px solid transparent`,
-    borderLeft: reverse ? `0` :`${30 * scale}px solid ${color}`, // mostrandolo vediamo la forma di un triangolo verso destra
+    borderLeft: reverse ? `0` :`${30 * scale}px solid ${color}`, // showing it we see the shape of a triangle to the right
     borderRight: reverse ? `${30 * scale}px solid ${color}` : "0"
   };
 

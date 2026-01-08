@@ -126,12 +126,12 @@ body {
 
 /* Secondo pulsante (1 vs 1) – sfumatura blu */
 .mode-menu .menu-btn:nth-child(4) {
-  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
+  background: linear-gradient(135deg, #ef4444, #b91c1c);
 }
 
 /* Terzo pulsante (Diavolo) – rosso */
 .mode-menu .menu-btn:nth-child(5) {
-  background: linear-gradient(135deg, #ef4444, #b91c1c);
+  background: linear-gradient(135deg, #3b82f6, #1d4ed8);
 }
 
 /* Quarto pulsante (Diavolo) – rosso */
@@ -160,6 +160,8 @@ body {
 /* Pulsante torna al menu */
 
 .back-menu-btn {
+  font-family: Orbitron;
+  margin: 15px 0 15px 0;
   background: transparent;
   border: 1px solid #4b5563;
   color: #e5e7eb;
@@ -276,7 +278,7 @@ body {
 .row-bomb {
   display: flex;
   align-items: center;
-  gap: 24px;
+  gap: 16px;
   padding: 10px 0;
   border-bottom: 1px solid rgba(239, 68, 68, 0.2);
 }

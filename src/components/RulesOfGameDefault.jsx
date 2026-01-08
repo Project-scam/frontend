@@ -1,11 +1,11 @@
-import CurvedArrow from "./Modal/Arrow/CurvedArrow"
-import Modal from "./Modal/Modal"
-import JustifySection from "./Modal/ModalSection/JustifySection"
-import ModalSection from "./Modal/ModalSection/ModalSection"
-import { translations } from "../language.js" // adatta path
+import CurvedArrow from "./Modal/Arrow/CurvedArrow.jsx"
+import Modal from "./Modal/Modal.jsx"
+import JustifySection from "./Modal/ModalSection/JustifySection.jsx"
+import ModalSection from "./Modal/ModalSection/ModalSection.jsx"
+import { translations } from "../language.js"
 import { useState } from "react"
 
-const RulesOfGame = ({
+const RulesOfGameDefault = ({
   classNameTitle = "title",
   onClose = () => { },
   maxHeight = "80vh"
@@ -22,15 +22,15 @@ const RulesOfGame = ({
 
   const t = (key) => translations[language][key] || key;
 
-  return (
+  return (  
     <Modal
       title={t('title')}
       classNameTitle={classNameTitle}
       onClose={onClose}
       maxHeight={maxHeight}
-      backgroundModal="darkblue"
+      backgroundModal="rgba(15, 15, 35, 0.9)"
     >
-      {/* Pulsante lingua */}
+      {/* Language button */}
       <button
         style={{
           position: "absolute", top: '80px', right: '450px', zIndex: 10, background: 'white', border: '2px solid #ddd',
@@ -50,7 +50,7 @@ const RulesOfGame = ({
         <ModalSection colorText="white"><p>{t('desc1')}</p></ModalSection>
 
         <ModalSection colorText="white">
-          <img src="/modalità_normale.png" alt="img modalità normale" width={300} />
+          <img src="/modalità_normale.png" alt="Normal mode image" width={300} />
         </ModalSection>
 
         <CurvedArrow direction="up" size={120} reverse margin={"-45px 25px 0 0"} justify={"flex-end"} />
@@ -60,17 +60,17 @@ const RulesOfGame = ({
         </ModalSection>
 
         <ModalSection colorText="white" align="flex-end">
-          <img src="/tentativi.png" alt="img modalità normale" width={300} />
+          <img src="/tentativi.png" alt="attempts mode image" width={300} />
         </ModalSection>
 
         <CurvedArrow direction="down" margin={"-40px 0 0 15px"} />
 
         <ModalSection colorText="white" marginBlockStart={"-20"}>
-          <p style={{ color: "blue" }}>{t('turn')}</p>
+          <p>{t('turn')}</p>
         </ModalSection>
 
         <ModalSection colorText="white">
-          <img src="/colori.png" alt="img scelta dei colori" width={300} />
+          <img src="/colori.png" alt="color selection image" width={300} />
         </ModalSection>
 
         <CurvedArrow direction="up" reverse margin={"-45px 25px 0 0"} justify={"flex-end"} />
@@ -84,14 +84,14 @@ const RulesOfGame = ({
         <ModalSection colorText="white" width={"100%"} marginBlockStart={"-20px"}>
           <JustifySection>
             <p>{t('black')}</p>
-            <img src="/peg_nero.png" alt="img con il peg nero" width={100} height={20} />
+            <img src="/peg_nero.png" alt="image with the black peg" width={100} height={20} />
           </JustifySection>
         </ModalSection>
 
         <ModalSection colorText="white" width={"100%"} marginBlockStart={"10px"} marginBlockEnd={"-40px"}>
           <JustifySection>
             <p>{t('white')}</p>
-            <img style={{ marginBlockStart: "10px" }} src="/peg_bianco.png" alt="img con il peg bianco" width={100} height={20} />
+            <img style={{ marginBlockStart: "10px" }} src="/peg_bianco.png" alt="image with the white peg" width={100} height={20} />
           </JustifySection>
         </ModalSection>
 
@@ -108,11 +108,11 @@ const RulesOfGame = ({
         </ModalSection>
 
         <ModalSection>
-          <img src="/winner.png" alt="immagine di vittoria" width={300} />
+          <img src="/winner.png" alt="victory image" width={300} />
         </ModalSection>
       </div>
     </Modal>
   )
 }
 
-export default RulesOfGame
+export default RulesOfGameDefault
