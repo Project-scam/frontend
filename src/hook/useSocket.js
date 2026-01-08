@@ -67,7 +67,10 @@ export const useSocket = (isLogged, currentUser) => {
         typeof currentUser === "string" ? currentUser : currentUser?.username;
 
       if (username) {
-        console.log("[useSocket] currentUser changed, re-registering:", username);
+        console.log(
+          "[useSocket] currentUser changed, re-registering:",
+          username
+        );
         socket.emit("register_user", username);
       }
     }

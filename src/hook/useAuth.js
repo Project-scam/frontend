@@ -26,7 +26,6 @@ export const useAuth = () => {
   };
   const handleLoginGuest = () => {
     console.log("User logged in as Guest");
-    setLogged(false);
     setIsGuest(true);
     setCurrentUser("Guest");
     setRegisterView(false);

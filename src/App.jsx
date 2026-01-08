@@ -89,8 +89,9 @@ function App() {
   } = useAuth();
 
   // Socket
-  const socket = useSocket(isLogged, currentUser);
-
+  if (isLogged) {
+    var socket = useSocket(isLogged, currentUser);
+  }
   // Game Mode
   const {
     mode,
@@ -266,7 +267,7 @@ function App() {
     return <Leaderboard onClose={() => setIsLeaderboard(false)} />;
   }
 
-  if (!isLogged && !isGuest) {
+  if (!isGuest && !isLogged) {
     return isRegisterView ? (
       <Registration
         onRegisterSuccess={handleLoginSuccess}
