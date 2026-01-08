@@ -74,6 +74,8 @@ export const useAuth = () => {
     isLoading,
     currentUser,
     isRegisterView,
+    setIsGuest,
+    setLogged,
     setRegisterView,
     handleLoginSuccess,
     handleLoginGuest,
