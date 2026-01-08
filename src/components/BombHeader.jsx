@@ -1,12 +1,9 @@
-import ProfileUser from "./ProfileUser/ProfileUser";
-
 function BombHeader({ minutes, seconds, guessesCount, maxTurns, mode, hideAttempts }) {
   const currentTurn = Math.min(guessesCount + 1, maxTurns);
   const progress = (currentTurn / maxTurns) * 100;
 
   return (
     <div className="header-bomb">
-      <ProfileUser />
       <div className="badge-scam">MASTERMIND SCAM</div>
       <h1 className="title">DEFUSE THE BOMB</h1>
 

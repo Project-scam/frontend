@@ -1,13 +1,15 @@
 const ProfileUser = ({
-    user = "G", display, position
+    user = "G", display ="flex", position, margin , justify= "center", align= "center",
+    backgroundColor= "red", width="20px", height= "20px"
 })=> {
 
     return(
         <div style={{
-            display: display, position: position,
-            width: "width", height: "height", border: "none", borderRadius: "50%"
+            display: display, position: position, margin: margin, justifyContent: justify,
+            alignItems: align, backgroundColor: backgroundColor, width: width, 
+            height: height, border: "none", borderRadius: "50%"
         }}>
-            {user}
+            <strong>{user}</strong>
         </div>
     )
 }
