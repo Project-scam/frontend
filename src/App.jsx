@@ -84,8 +84,6 @@ function App() {
     isRegisterView,
     setLogged,
     setIsGuest,
-    setLogged,
-    setIsGuest,
     setRegisterView,
     handleLoginSuccess,
     handleLogout,
@@ -373,15 +371,13 @@ function App() {
 
           <button
             className="menu-btn"
-            onClick={
+            onClick={() => {
               currentUser == "Guest"
                 ? () => {
-                    setIsGuest(false);
-                    setLogged(false);
-                    setMode(null);
+                    return setIsGuest(false), setLogged(false), setMode(null);
                   }
-                : { handleLogout }
-            }
+                : { handleLogout };
+            }}
             style={{
               marginTop: "24px",
               background: "linear-gradient(135deg, #4b5563, #374151)",
