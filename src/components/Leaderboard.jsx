@@ -25,6 +25,7 @@ export function Leaderboard({ onClose }) {
         setRanking(data);
       } catch (err) {
         console.error("Error fetching ranking:", err);
+        alert(err)
         setError("Unable to load leaderboard.");
       } finally {
         setLoading(false);
