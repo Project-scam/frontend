@@ -71,9 +71,9 @@ function App() {
     const handleResize = () => {
       setWindowWidth (window.innerWidth);
     };
-    window.addEventLister("resize", handleResize);
+    window.addEventListner("resize", handleResize);
     return () => {
-      window.removeEventLister("resize", hadleResize);
+      window.removeEventListner("resize", hadleResize);
     };
   }, []); // array vuoto  assicurea che l'effect venga eseguito solo al mount e al unmount
 
