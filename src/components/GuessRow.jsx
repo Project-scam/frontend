@@ -1,4 +1,4 @@
-function GuessRow({ guess, feedback, isCurrent, colors, onPegClick, turnNumber }) {
+function GuessRow({ guess, feedback, isCurrent, colors, onPegClick, turnNumber, windowWidth}) {
   return (
     <div className="row-bomb">
       {turnNumber && (

@@ -138,6 +138,7 @@ body {
 .mode-menu .menu-btn:nth-child(6) {
   background: linear-gradient(135deg, #163566, #05214e)
 }
+
 .menu-btn:hover {
   transform: translateY(-1px);
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);

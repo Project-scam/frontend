@@ -65,6 +65,17 @@ function App() {
     textColor: "black",
     textColorSubtitle: "black",
   });
+  const [windowWidth, setWindoWidth] =
+  useState(window.innerWidth);
+  useEffect(()=> {
+    const handleResize = () => {
+      setWindowWidth (window.innerWidth);
+    };
+    window.addEventLister("resize", handleResize);
+    return () => {
+      window.removeEventLister("resize", hadleResize);
+    };
+  }, []); // array vuoto  assicurea che l'effect venga eseguito solo al mount e al unmount
 
   const handleCloseModal = () => {
     setShowModal(false);
@@ -555,6 +566,7 @@ function App() {
                 mainButtonLabel={mainButtonLabel}
                 mainButtonDisabled={mainButtonDisabled}
                 mainButtonOnClick={mainButtonOnClick}
+                windowWidth={windowWidth}
               />
             )
           ) : (
