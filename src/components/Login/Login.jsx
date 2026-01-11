@@ -3,6 +3,16 @@ import Input from "../Input.jsx"
 import { API_URLS } from "../../config.js"
 import Modal from "../Modal/Modal.jsx"
 
+/**
+ * Validates if a string is a valid email format.
+ * @param {string} email - The email string to validate.
+ * @returns {boolean} True if valid email format, false otherwise.
+ */
+const isValidEmail = (email) => {
+  // RFC 5322 compliant email regex
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  return emailRegex.test(email);
+};
 
 export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) {
   const [username, setUsername] = useState("")
@@ -35,6 +45,18 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) 
     })
     setShowModal(false); // prima di fare la richiesta, chiudo la modal
 
+    // Validate that username is a valid email
+    if (!isValidEmail(username)) {
+      setModalConfig({
+        title: "Error login",
+        message: "Please enter a valid email address",
+        textColor: "black",
+        textColorSubtitle: "red"
+      })
+      setShowModal(true)
+      return
+    }
+
     try {
       const response = await fetch(
         API_URLS.LOGIN,
@@ -64,7 +86,7 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) 
         })
         setShowModal(true)
         return
-        
+
       }
 
       // Il token è ora gestito automaticamente dal browser tramite cookie HttpOnly
@@ -91,8 +113,9 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) 
     <div className="page-login">
       <form className="form-login" onSubmit={handleSubmit}>
         <Input
-          id= {"Username"} // aggiunto id per la label
-          label={"Username"}
+          id={"Email"} // aggiunto id per la label
+          label={"Email"}
+          type="email"
           value={username}
           setInputValue={setUsername}
         />
@@ -106,12 +129,12 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) 
         />
 
         {showModal && (
-          <Modal 
-          title={modalConfig.title} 
-          subtitle={modalConfig.message}
-          textColor={modalConfig.textColor} 
-          textColorSubtitle={modalConfig.textColorSubtitle}
-          onClose={handleCloseModal}  />
+          <Modal
+            title={modalConfig.title}
+            subtitle={modalConfig.message}
+            textColor={modalConfig.textColor}
+            textColorSubtitle={modalConfig.textColorSubtitle}
+            onClose={handleCloseModal} />
         )}
 
         <button type="submit">

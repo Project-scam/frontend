@@ -4,8 +4,19 @@ import { useEffect, useState } from "react";
 import Modal from "../Modal/Modal.jsx";
 import { API_URLS } from "../../config.js";
 
+/**
+ * Validates if a string is a valid email format.
+ * @param {string} email - The email string to validate.
+ * @returns {boolean} True if valid email format, false otherwise.
+ */
+const isValidEmail = (email) => {
+  // RFC 5322 compliant email regex
+  const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/;
+  return emailRegex.test(email);
+};
+
 const Registration = ({
-  inputName = "Username", // defaul cambiabile liv. visivo
+  inputName = "Email", // defaul cambiabile liv. visivo
   inputPassword = "Password", // defaut cambiabile liv. visivo
   inputPasswordReconfirm = "Rewrite Password", // default cambiabile liv. visivo
   onRegisterSuccess,
@@ -17,12 +28,12 @@ const Registration = ({
     message: "",
     textColor: "black",
     textColorSubtitle: "black"
-  }); 
+  });
 
   // FUNZIONE PER CHIUDERE LA MODAL
   const handleCloseModal = () => {
     setShowModal(false);
-   
+
     setModalConfig({ // resettare i messaggi
       title: "",
       message: "",
@@ -48,8 +59,8 @@ const Registration = ({
 
     // CONTROLLO DATI INSERITI DALL'UTENTE
     if (username.includes(" ")) {
-  
-      setModalConfig({ 
+
+      setModalConfig({
         title: "Attention!",
         message: "You can't leave blank spaces",
         textColor: "red",
@@ -60,9 +71,21 @@ const Registration = ({
 
     }
 
+    // Validate that username is a valid email
+    if (!isValidEmail(username)) {
+      setModalConfig({
+        title: "Attention!",
+        message: "Please enter a valid email address",
+        textColor: "red",
+        textColorSubtitle: "black"
+      })
+      setShowModal(true)
+      return
+    }
+
     if (password !== rewritePassword) {
       // se le password non coincidono
-      setModalConfig({ 
+      setModalConfig({
         title: "Attention!",
         message: "The passwords don't match!",
         textColor: "red",
@@ -89,7 +112,7 @@ const Registration = ({
       if (!response.ok) {
 
         const messageError = data.error || "Registration failed"
-        setModalConfig({ 
+        setModalConfig({
           title: "Attention!",
           message: messageError,
           textColor: "red",
@@ -99,31 +122,31 @@ const Registration = ({
         return
 
       } else {
-          setModalConfig({
-            title: "Success!",
-            message: "Account created! Now login with your credentials.",
-            textColor: "green",
-            textColorSubtitle: "black"
-          });
-          setShowModal(true);
+        setModalConfig({
+          title: "Success!",
+          message: "Account created! Now login with your credentials.",
+          textColor: "green",
+          textColorSubtitle: "black"
+        });
+        setShowModal(true);
 
-          setTimeout(() => {
-             if (onShowLogin) onShowLogin(); // setRegisterView is false in app 
-          }, 2000);
+        setTimeout(() => {
+          if (onShowLogin) onShowLogin(); // setRegisterView is false in app 
+        }, 2000);
 
       }
 
-      
-      
+
+
     } catch (error) {
-      setModalConfig({ 
+      setModalConfig({
         title: "Attention!",
         message: error.message,
         textColor: "red",
         textColorSubtitle: "black"
       })
       setShowModal(true);
-     
+
     }
   };
 
@@ -137,8 +160,8 @@ const Registration = ({
           <input
             id="username"
             name="username"
-            type="text"
-            placeholder="Write your username"
+            type="email"
+            placeholder="Write your email address"
             required
           />
 
@@ -150,7 +173,7 @@ const Registration = ({
             placeholder="Write your password"
             required
           />
-          
+
 
           <label htmlFor="passwordReconfirm">{inputPasswordReconfirm}:</label>
           <input
@@ -160,16 +183,16 @@ const Registration = ({
             placeholder="Rewrite your password "
             required
           />
-          
+
           {showModal && (
 
-          <Modal 
-            title={modalConfig.title} 
-            subtitle={modalConfig.message}
-            textColor={modalConfig.textColor} 
-            textColorSubtitle={modalConfig.textColorSubtitle}
-            onClose={handleCloseModal}  />
-            
+            <Modal
+              title={modalConfig.title}
+              subtitle={modalConfig.message}
+              textColor={modalConfig.textColor}
+              textColorSubtitle={modalConfig.textColorSubtitle}
+              onClose={handleCloseModal} />
+
           )}
 
           <button
