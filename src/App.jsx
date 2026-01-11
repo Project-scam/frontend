@@ -66,8 +66,8 @@ function App() {
     textColorSubtitle: "black",
   });
   const [windowWidth, setWindowWidth] =
-  useState(window.innerWidth);
-  useEffect(()=> {
+    useState(window.innerWidth);
+  useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
     };
@@ -248,9 +248,9 @@ function App() {
     mode === GAME_MODES.DEVIL && !hasStarted
       ? false
       : gameWon ||
-        gameOver ||
-        !currentGuess.every((c) => c !== null) ||
-        secretCode.length === 0;
+      gameOver ||
+      !currentGuess.every((c) => c !== null) ||
+      secretCode.length === 0;
 
   const mainButtonLabel =
     mode === GAME_MODES.DEVIL && !hasStarted ? "START" : "DEFUSE NOW";
@@ -476,7 +476,7 @@ function App() {
             <h2 style={{ color: "#10b981", marginBottom: "20px" }}>
               Secret Code Sent!
             </h2>
-            <p  
+            <p
               style={{
                 color: "#d1d5db",
                 marginBottom: "30px",
@@ -523,7 +523,7 @@ function App() {
               <button className="back-menu-btn" onClick={resetGame}>
                 ← Back to mode selection
               </button>
-              <ProfileUser backgroundColor="red" width="40px" height="40px"/>
+              <ProfileUser backgroundColor="red" width="40px" height="40px" />
             </div>
           )}
         <BombHeader
@@ -595,6 +595,7 @@ function App() {
             secretCode={secretCode}
             onReset={resetGame}
             colors={COLORS_BOMB}
+            windowWidth={windowWidth}
           />
         )}
       </div>

@@ -1,6 +1,6 @@
   import { useState ,useEffect } from "react";
 
-  function EndScreen({ gameWon, gameOverReason, guessesCount, secretCode, colors, onReset }) {
+  function EndScreen({ gameWon, gameOverReason, guessesCount, secretCode, colors, onReset, windowWidth}) {
 
     const [showSecretCode, setShowSecretCode] = useState(false)
 
@@ -64,7 +64,9 @@
                     '0 0 24px rgba(255,255,255,0.2) inset',
                   opacity: showSecretCode ? 1 : 0,
                   transform: showSecretCode ? "scale(1)" : "scale(0.8)",
-                  transition: `opacity 0.8s ${index * 0.15}s ease-out, transform 0.8s ${index * 0.15}s ease-out` // they come out one by one
+                  transition: `opacity 0.8s ${index * 0.15}s ease-out, transform 0.8s ${index * 0.15}s ease-out`, // they come out one by one
+                  width: windowWidth > 900 ? '64px' : '50px',
+                  height: windowWidth > 900 ? '64px' : '50px'
                   }}
               />
               ))}
