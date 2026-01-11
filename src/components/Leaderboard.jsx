@@ -77,9 +77,10 @@ export function Leaderboard({ onClose }) {
                       <td style={{ padding: "12px 10px", fontWeight: "bold", color: index < 3 ? "#eab308" : "white" }}>
                         {index + 1}
                       </td>
-                      <td style={{ padding: "12px 10px",
-                      overflowX: hidden
-                       }}>{user.username}</td>
+                      <td style={{
+                        padding: "12px 10px",
+                        overflowX: "hidden"
+                      }}>{user.username}</td>
                       <td style={{ padding: "12px 10px", textAlign: "right", fontFamily: "monospace", fontSize: "1.1em" }}>
                         {user.punti}
                       </td>
