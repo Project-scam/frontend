@@ -126,10 +126,18 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
                   borderRadius: "8px"
                 }}
               >
-                <span style={{ color: "#fff", fontWeight: "bold" }}>{user.username}</span>
+                <span style={{
+                  color: "#fff",
+                  fontWeight: "bold",
+                  maxWidth: "200px",
+                  overflowX: "hidden",
+                  textOverflow: "ellipsis",
+                  whiteSpace: "nowrap",
+                  display: "inline-block"
+                }}>{user.username}</span>
                 <button
                   className="menu-btn"
-                  style={{ width: "auto", padding: "8px 16px", fontSize: "14px", margin: 0, backgroundColor:"rgba(239, 239, 239, 0.3)" }}
+                  style={{ width: "auto", padding: "8px 16px", fontSize: "14px", margin: 0, backgroundColor: "rgba(239, 239, 239, 0.3)" }}
                   onClick={() => sendChallenge(user.socketId)}
                   disabled={!!pendingChallenge}
                 >
@@ -148,7 +156,7 @@ export const UserList = ({ socket, currentUser, onBack, onGameStart }) => {
             textColor="green" // O un altro colore appropriato per una notifica positiva/neutra
             textColorSubtitle="black"
           >
-            <button className="menu-btn" onClick={handleAcceptChallenge} style={{ marginBottom: "10px" , marginTop:"20px"}}>ACCEPT</button>
+            <button className="menu-btn" onClick={handleAcceptChallenge} style={{ marginBottom: "10px", marginTop: "20px" }}>ACCEPT</button>
             <button className="menu-btn" onClick={handleDeclineChallenge} style={{ backgroundColor: "#ef4444" }}>DENY</button>
           </Modal>
         )}
