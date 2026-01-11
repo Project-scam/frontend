@@ -206,7 +206,7 @@ body {
 
 .title {
   font-family: 'Orbitron', monospace;
-  font-size: 40px;
+  font-size: 35px;
   font-weight: 900;
   background: linear-gradient(45deg, #eab308, #f59e0b, #ef4444);
   -webkit-background-clip: text;
@@ -432,7 +432,7 @@ body {
 }
 
 .registration-card {
-  max-width: 420px;
+  max-width: 400px;
   margin: 0 auto;
   background: #0f172a;
   border-radius: 12px;

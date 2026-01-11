@@ -65,15 +65,15 @@ function App() {
     textColor: "black",
     textColorSubtitle: "black",
   });
-  const [windowWidth, setWindoWidth] =
+  const [windowWidth, setWindowWidth] =
   useState(window.innerWidth);
   useEffect(()=> {
     const handleResize = () => {
-      setWindowWidth (window.innerWidth);
+      setWindowWidth(window.innerWidth);
     };
     window.addEventListener("resize", handleResize);
     return () => {
-      window.removeEventListener("resize", hadleResize);
+      window.removeEventListener("resize", handleResize);
     };
   }, []); // array vuoto  assicurea che l'effect venga eseguito solo al mount e al unmount
 
