@@ -279,7 +279,7 @@ body {
 .row-bomb {
   display: flex;
   align-items: center;
-  gap: px;
+  gap: 20px;
   padding: 10px 0;
   border-bottom: 1px solid rgba(239, 68, 68, 0.2);
 }
