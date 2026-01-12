@@ -1,4 +1,4 @@
-function GuessRow({ guess, feedback, isCurrent, colors, onPegClick, turnNumber, windowWidth }) {
+function GuessRow({ guess, feedback, isCurrent, colors, onPegClick, turnNumber }) {
   return (
     <div className="row-bomb">
       {turnNumber && (
@@ -23,10 +23,7 @@ function GuessRow({ guess, feedback, isCurrent, colors, onPegClick, turnNumber, 
             className={`peg-bomb ${colorIndex === null ? 'empty' : ''}`}
             style={{
               backgroundColor:
-                colorIndex !== null ? colors[colorIndex] : '',
-              width: windowWidth > 900 ? '64px' : '35px',
-              height: windowWidth > 900 ? '64px' : '35px',
-              borderRadius: windowWidth > 900 ? '18px' : '10px'
+                colorIndex !== null ? colors[colorIndex] : ''
             }}
             onClick={() => isCurrent && onPegClick(j)}
           />

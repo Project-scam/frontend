@@ -286,7 +286,7 @@ body {
 
 .guess-grid {
   display: grid;
-  grid-template-columns: repeat(4, 64px);
+  grid-template-columns: repeat(4, auto);
   gap: 12px;
 }
 
