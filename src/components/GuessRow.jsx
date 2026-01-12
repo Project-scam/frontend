@@ -1,4 +1,4 @@
-function GuessRow({ guess, feedback, isCurrent, colors, onPegClick, turnNumber, windowWidth }) {
+function GuessRow({ guess, feedback, isCurrent, colors, onPegClick, turnNumber }) {
   return (
     <div className="row-bomb">
       {turnNumber && (
@@ -9,7 +9,7 @@ function GuessRow({ guess, feedback, isCurrent, colors, onPegClick, turnNumber, 
           fontWeight: isCurrent ? '700' : '500',
           fontSize: '16px',
           display: 'flex',
-          alignItems: 'flext-start',
+          alignItems: 'flex-start',
           justifyContent: 'center',
           paddingRight: '8px'
         }}>
@@ -20,12 +20,10 @@ function GuessRow({ guess, feedback, isCurrent, colors, onPegClick, turnNumber, 
         {guess.map((colorIndex, j) => (
           <div
             key={j}
-            className={`peg-bomb ${colorIndex === null ? 'empty' : ''}`}
+            className={`peg-bomb ${colorIndex === null ? 'empty' : ''} ${isCurrent ? 'current' : ''}`}
             style={{
               backgroundColor:
                 colorIndex !== null ? colors[colorIndex] : '',
-              width: windowWidth > 900 ? '64px' : '50px',
-              height: windowWidth > 900 ? '64px' : '50px',
             }}
             onClick={() => isCurrent && onPegClick(j)}
           />

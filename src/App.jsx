@@ -604,7 +604,6 @@ function App() {
                 mainButtonLabel={mainButtonLabel}
                 mainButtonDisabled={mainButtonDisabled}
                 mainButtonOnClick={mainButtonOnClick}
-                windowWidth={windowWidth}
               />
             )
           ) : (

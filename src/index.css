@@ -273,13 +273,13 @@ body {
 /* BOARD */
 
 .board-bomb {
-  padding: 24px 36px 16px;
+  padding: 24px 16px 16px;
 }
 
 .row-bomb {
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: px;
   padding: 10px 0;
   border-bottom: 1px solid rgba(239, 68, 68, 0.2);
 }
@@ -296,14 +296,14 @@ body {
   display: grid;
   grid-template-columns: repeat(2, 20px);
   grid-auto-rows: 20px;
-  gap: 4px;
+  gap: 5px;
 }
 
 /* PEG PRINCIPALI */
 
 .peg-bomb {
-  /*width: 64px;
-  height: 64px;*/
+  width: 55px;
+  height: 55px;
   border-radius: 18px;
   border: 2px solid rgba(255, 255, 255, 0.2);
   cursor: pointer;
@@ -312,6 +312,24 @@ body {
   background: rgba(15, 15, 35, 0.8);
   backdrop-filter: blur(10px);
   box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+}
+
+/* Responsive peg-bomb per schermi medi */
+@media (max-width: 900px) {
+  .peg-bomb {
+    width: 48px;
+    height: 48px;
+    border-radius: 14px;
+  }
+}
+
+/* Responsive peg-bomb per schermi piccoli */
+@media (max-width: 600px) {
+  .peg-bomb {
+    width: 35px;
+    height: 35px;
+    border-radius: 10px;
+  }
 }
 
 .peg-bomb.empty {

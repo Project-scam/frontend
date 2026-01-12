@@ -11,8 +11,7 @@ function GameBoard({
   onSelectColor,
   mainButtonLabel,
   mainButtonDisabled,
-  mainButtonOnClick,
-  windowWidth
+  mainButtonOnClick
 }) {
   if (!canPlay && guesses.length === 0) return null;
 
@@ -26,9 +25,8 @@ function GameBoard({
             feedback={g.feedback}
             isCurrent={false}
             colors={colors}
-            onPegClick={() => {}}
+            onPegClick={() => { }}
             turnNumber={i + 1}
-            windowWidth={windowWidth}
           />
         ))}
 
@@ -40,8 +38,6 @@ function GameBoard({
             colors={colors}
             onPegClick={onPegClick}
             turnNumber={guesses.length + 1}
-            windowWidth={windowWidth}
-
           />
         )}
       </div>
