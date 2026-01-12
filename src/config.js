@@ -4,8 +4,9 @@ export const API_BASE_URL = isDevelopment
   ? "http://localhost:3000"
   : "https://backend-21ia.onrender.com";
 
-  
+
 export const API_URLS = {
+  BASE: API_BASE_URL,
   LOGIN: `${API_BASE_URL}/login`,
   VERIFY: `${API_BASE_URL}/login/verify`,
   REGISTER: `${API_BASE_URL}/register`,
@@ -13,4 +14,6 @@ export const API_URLS = {
   LOGOUT: `${API_BASE_URL}/logout`,
   POINTS_UPDATE: `${API_BASE_URL}/points/update`,
   POINTS_GET: `${API_BASE_URL}/points`,
+  PASSWORD_RESET_REQUEST: `${API_BASE_URL}/password-reset/request`,
+  PASSWORD_RESET_CONFIRM: `${API_BASE_URL}/password-reset/confirm`,
 };

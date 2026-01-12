@@ -35,6 +35,9 @@ import { useVersusMode } from "./hook/useVersusMode";
 import { usePoints } from "./hook/usePoint";
 import Modal from "./components/Modal/Modal";
 import ProfileUser from "./components/ProfileUser/ProfileUser";
+import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
+import ResetPassword from "./components/ResetPassword/ResetPassword";
+
 
 const LogoutIcon = () => (
   <svg
@@ -101,6 +104,18 @@ function App() {
     handleLogout,
     handleLoginGuest,
   } = useAuth();
+
+  // Password Reset Views
+  const [isForgotPasswordView, setIsForgotPasswordView] = useState(false);
+  const [isResetPasswordView, setIsResetPasswordView] = useState(false);
+
+  // Verifica URL per reset password all'avvio
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("token") && urlParams.has("email")) {
+      setIsResetPasswordView(true);
+    }
+  }, []);
 
   // Socket
 
@@ -281,6 +296,28 @@ function App() {
   }
 
   if (!isGuest && !isLogged) {
+    // Se l'URL contiene token e email, mostra ResetPassword
+    if (isResetPasswordView) {
+      return (
+        <ResetPassword
+          onBackToLogin={() => {
+            setIsResetPasswordView(false);
+            window.history.replaceState({}, document.title, "/"); // Pulisce URL
+          }}
+        />
+      );
+    }
+
+    // Se l'utente ha cliccato "Forgot Password"
+    if (isForgotPasswordView) {
+      return (
+        <ForgotPassword
+          onBackToLogin={() => setIsForgotPasswordView(false)}
+        />
+      );
+    }
+
+    // Rendering normale Login/Registration
     return isRegisterView ? (
       <Registration
         onRegisterSuccess={handleLoginSuccess}
@@ -291,6 +328,7 @@ function App() {
         onLoginSuccess={handleLoginSuccess}
         onShowRegister={() => setRegisterView(true)}
         onGuestLogin={handleLoginGuest}
+        onForgotPassword={() => setIsForgotPasswordView(true)}
       />
     );
   }

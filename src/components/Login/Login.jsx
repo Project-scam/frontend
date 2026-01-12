@@ -14,7 +14,7 @@ const isValidEmail = (email) => {
   return emailRegex.test(email);
 };
 
-export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) {
+export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin, onForgotPassword }) {
   const [username, setUsername] = useState("")
   const [password, setPassword] = useState("")
   const [showModal, setShowModal] = useState(false)
@@ -154,6 +154,7 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin }) 
         >
           Login as Guest
         </button>
+        <button type="button" onClick={onForgotPassword}>Forgot Password</button>
       </form>
     </div>
   );
