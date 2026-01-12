@@ -350,6 +350,7 @@ body {
 .feedback-peg-bomb {
   width: 18px;
   height: 18px;
+  border-radius: 50%;
   border: 2px solid #ffffff;
   background-color: transparent;
   box-shadow: 0 0 4px rgba(0, 0, 0, 0.6);
