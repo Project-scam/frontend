@@ -68,7 +68,7 @@ export default function ForgotPassword({ onBackToLogin }) {
   return (
     <div className="page-login">
       <form className="form-login" onSubmit={handleSubmit}>
-        <h2>Forgot Password</h2>
+        <h2 style={{ color: "white" }}>Forgot Password</h2>
         <p style={{ fontSize: "14px", color: "#666", marginBottom: "20px" }}>
           Enter your email and we'll send you a link to reset your password.
         </p>
