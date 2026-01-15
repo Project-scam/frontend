@@ -50,7 +50,7 @@ const RulesOfGameDefault = ({
         <ModalSection colorText="white"><p>{t('desc1')}</p></ModalSection>
 
         <ModalSection colorText="white">
-          <img src="/modalità_normale.png" alt="Normal mode image" width={300} />
+          <img src="/modalità_normale.png" alt="Normal mode image" width={230} />
         </ModalSection>
 
         <CurvedArrow direction="up" size={120} reverse margin={"-45px 25px 0 0"} justify={"flex-end"} />
@@ -60,7 +60,7 @@ const RulesOfGameDefault = ({
         </ModalSection>
 
         <ModalSection colorText="white" align="flex-end">
-          <img src="/tentativi.png" alt="attempts mode image" width={300} />
+          <img src="/tentativi.png" alt="attempts mode image" width={230} />
         </ModalSection>
 
         <CurvedArrow direction="down" margin={"-40px 0 0 15px"} />
@@ -70,7 +70,7 @@ const RulesOfGameDefault = ({
         </ModalSection>
 
         <ModalSection colorText="white">
-          <img src="/colori.png" alt="color selection image" width={300} />
+          <img src="/colori.png" alt="color selection image" width={230} />
         </ModalSection>
 
         <CurvedArrow direction="up" reverse margin={"-45px 25px 0 0"} justify={"flex-end"} />
@@ -79,7 +79,7 @@ const RulesOfGameDefault = ({
           <p>{t('feedback')}</p>
         </ModalSection>
 
-        <CurvedArrow direction="down" margin={"-40px 0 0 25px"} />
+        <CurvedArrow  margin={"-35px 0 20px -15px"} selectAngle={"60deg"}  />
 
         <ModalSection colorText="white" width={"100%"} marginBlockStart={"-20px"}>
           <JustifySection>
@@ -95,20 +95,20 @@ const RulesOfGameDefault = ({
           </JustifySection>
         </ModalSection>
 
-        <CurvedArrow selectAngle={"-30deg"} reverse justify={"flex-end"} margin={"20px -10px 0 0"} />
+        <CurvedArrow selectAngle={"-50deg"} reverse justify={"flex-end"} margin={"20px -10px 40px 0"} />
 
         <ModalSection colorText="white" align="center" marginBlockStart={"-50px"}>
           <p style={{ textAlign: "center" }}>{t('ps')}</p>
         </ModalSection>
 
-        <CurvedArrow selectAngle={"70deg"} margin={"-60px 0 0 0"} />
+        <CurvedArrow selectAngle={"70deg"} margin={"-20px 0 0 0"} />
 
         <ModalSection  colorText={"white"} align="flex-start">
           <p>{t('end')}</p>
         </ModalSection>
 
         <ModalSection>
-          <img src="/winner.png" alt="victory image" width={300} />
+          <img src="/explosion.png" alt="lose image" width={230} />
         </ModalSection>
       </div>
     </Modal>

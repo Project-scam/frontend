@@ -34,7 +34,6 @@ import { useDevilMode } from "./hook/useDevilMode";
 import { useVersusMode } from "./hook/useVersusMode";
 import { usePoints } from "./hook/usePoint";
 import Modal from "./components/Modal/Modal";
-import ProfileUser from "./components/ProfileUser/ProfileUser";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 import ResetPassword from "./components/ResetPassword/ResetPassword";
 
@@ -557,11 +556,10 @@ function App() {
         {guesses.length === 0 &&
           !isSettingCode &&
           userRole !== USER_ROLES.MAKER && (
-            <div style={{ padding: "12px 16px", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <div style={{ padding: "12px 16px" }}>
               <button className="back-menu-btn" onClick={resetGame}>
                 ← Back to mode selection
               </button>
-              <ProfileUser backgroundColor="red" width="40px" height="40px" />
             </div>
           )}
         <BombHeader
