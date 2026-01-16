@@ -67,7 +67,7 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin, on
           },
           credentials: "include", // FONDAMENTALE: Permette al browser di salvare il cookie
           body: JSON.stringify({
-            email, // Invia 'username' come richiesto dal backend
+            email, // Invia 'email' come richiesto dal backend
             password,
           }),
         }
