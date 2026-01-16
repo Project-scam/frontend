@@ -53,12 +53,12 @@ const Registration = ({
     });
 
     setShowModal(false); // prima di fare la richiesta, chiudo la modal
-    const username = event.target.elements.username.value; // prendo i valori dell' username
+    const email = event.target.elements.email.value; // prendo i valori dell' email
     const password = event.target.elements.password.value; // prendo i valori della password
     const rewritePassword = event.target.elements.passwordReconfirm.value; // prendo i valori della seconda password
 
     // CONTROLLO DATI INSERITI DALL'UTENTE
-    if (username.includes(" ")) {
+    if (email.includes(" ")) {
 
       setModalConfig({
         title: "Attention!",
@@ -71,8 +71,8 @@ const Registration = ({
 
     }
 
-    // Validate that username is a valid email
-    if (!isValidEmail(username)) {
+    // Validate that email is a valid email
+    if (!isValidEmail(email)) {
       setModalConfig({
         title: "Attention!",
         message: "Please enter a valid email address",
@@ -103,7 +103,7 @@ const Registration = ({
         {
           method: "POST", // il metodo è post
           headers: { "Content-Type": "application/json" }, // gli dico quali dati sta ricevendo in questo caso json
-          body: JSON.stringify({ username: username, password: password }), // inserico i dati che voglio spedirgli in json trasformati in stringa da stringify
+          body: JSON.stringify({ username: username, email: email, password: password }), // inserico i dati che voglio spedirgli in json trasformati in stringa da stringify
         }
       );
 
@@ -156,10 +156,10 @@ const Registration = ({
         <h1 className="title">REGISTRATION</h1>
 
         <form onSubmit={handleSubmit} className="registration-form">
-          <label htmlFor="username">{inputName}:</label>
+          <label htmlFor="email">{inputName}:</label>
           <input
-            id="username"
-            name="username"
+            id="email"
+            name="email"
             type="email"
             placeholder="Write your email address"
             required
