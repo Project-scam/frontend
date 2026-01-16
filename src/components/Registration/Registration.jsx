@@ -17,6 +17,7 @@ const isValidEmail = (email) => {
 };
 
 const Registration = ({
+  inputUsername = "Username",
   inputName = "Email", // defaul cambiabile liv. visivo
   inputPassword = "Password", // defaut cambiabile liv. visivo
   inputPasswordReconfirm = "Rewrite Password", // default cambiabile liv. visivo
@@ -152,7 +153,7 @@ const Registration = ({
         <h1 className="title">REGISTRATION</h1>
 
         <form onSubmit={handleSubmit} className="registration-form">
-          <label htmlFor="username">{inputName}:</label>
+          <label htmlFor="username">{inputUsername}:</label>
           <input
             id="username"
             name="username"
