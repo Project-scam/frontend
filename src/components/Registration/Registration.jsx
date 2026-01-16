@@ -57,21 +57,13 @@ const Registration = ({
     });
 
     setShowModal(false); // prima di fare la richiesta, chiudo la modal
-<<<<<<< HEAD
-    const email = event.target.elements.email.value; // prendo i valori dell' email
-=======
     const username = event.target.elements.username.value; // prendo i valori dell' username
-    const email = event.target.elements.email.value; // prendo i valori dell' username
->>>>>>> bd87167485fef5f8e779ccca47092a464818f2b7
+    const email = event.target.elements.email.value; // prendo i valori dell' email
     const password = event.target.elements.password.value; // prendo i valori della password
     const rewritePassword = event.target.elements.passwordReconfirm.value; // prendo i valori della seconda password
 
     // CONTROLLO DATI INSERITI DALL'UTENTE
     if (email.includes(" ")) {
-<<<<<<< HEAD
-
-=======
->>>>>>> bd87167485fef5f8e779ccca47092a464818f2b7
       setModalConfig({
         title: "Attention!",
         message: "You can't leave blank spaces",
@@ -108,16 +100,6 @@ const Registration = ({
 
     try {
       /* RICHIESTA AL SERVER TRAMITE FETCH */
-<<<<<<< HEAD
-      const response = await fetch(
-        API_URLS.REGISTER,
-        {
-          method: "POST", // il metodo è post
-          headers: { "Content-Type": "application/json" }, // gli dico quali dati sta ricevendo in questo caso json
-          body: JSON.stringify({ username: username, email: email, password: password }), // inserico i dati che voglio spedirgli in json trasformati in stringa da stringify
-        }
-      );
-=======
       const response = await fetch(API_URLS.REGISTER, {
         method: "POST", // il metodo è post
         headers: { "Content-Type": "application/json" }, // gli dico quali dati sta ricevendo in questo caso json
@@ -127,7 +109,6 @@ const Registration = ({
           password: password,
         }), // inserico i dati che voglio spedirgli in json trasformati in stringa da stringify
       });
->>>>>>> bd87167485fef5f8e779ccca47092a464818f2b7
 
       const data = await response.json();
 
@@ -173,16 +154,6 @@ const Registration = ({
         <form onSubmit={handleSubmit} className="registration-form">
           <label htmlFor="email">{inputName}:</label>
           <input
-<<<<<<< HEAD
-=======
-            id="username"
-            name="username"
-            type="text"
-            placeholder="Write your username"
-            required
-          />
-          <input
->>>>>>> bd87167485fef5f8e779ccca47092a464818f2b7
             id="email"
             name="email"
             type="email"
