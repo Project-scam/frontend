@@ -158,7 +158,7 @@ const Registration = ({
             id="username"
             name="username"
             type="username"
-            placeholder="Write your username address"
+            placeholder="Write your username"
             required
           />
 

@@ -113,8 +113,8 @@ export default function Login({
     <div className="page-login">
       <form className="form-login" onSubmit={handleSubmit}>
         <Input
-          id={"Email"} // aggiunto id per la label
-          label={"Email"}
+          id={"email"} // aggiunto id per la label
+          label={"email"}
           type="email"
           value={email}
           setInputValue={setEmail}
