@@ -152,6 +152,15 @@ const Registration = ({
         <h1 className="title">REGISTRATION</h1>
 
         <form onSubmit={handleSubmit} className="registration-form">
+          <label htmlFor="username">{inputName}:</label>
+          <input
+            id="username"
+            name="username"
+            type="username"
+            placeholder="Write your username address"
+            required
+          />
+
           <label htmlFor="email">{inputName}:</label>
           <input
             id="email"
