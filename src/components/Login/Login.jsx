@@ -114,7 +114,7 @@ export default function Login({
       <form className="form-login" onSubmit={handleSubmit}>
         <Input
           id={"email"} // aggiunto id per la label
-          label={"email"}
+          label={"Email"}
           type="email"
           value={email}
           setInputValue={setEmail}
