@@ -157,7 +157,7 @@ const Registration = ({
           <input
             id="username"
             name="username"
-            type="username"
+            type="text"
             placeholder="Write your username"
             required
           />
