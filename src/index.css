@@ -478,57 +478,65 @@ body {
   font-size: 13px;
 }
 
+
 .registration-card {
   max-width: 400px;
   margin: 0 auto;
-  background: #0f172a;
-  border-radius: 12px;
-  padding: 24px 28px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
-  border: 1px solid #1f2937;
+  background: rgba(15, 15, 35, 0.9); /* come login */
+  border-radius: 24px;              /* stesso rounding */
+  padding: 40px 32px;               /* stesso padding */
+  box-shadow: 0 0 80px rgba(239, 68, 68, 0.4);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   color: #e5e7eb;
 }
 
 .registration-form {
   display: flex;
   flex-direction: column;
-  gap: 10px;
 }
 
 .registration-form label {
-  font-size: 1rem;
-  margin-top: 4px;
+  font-size: 14px;
+  margin-bottom: 6px;
+  color: #e5e7eb;
 }
 
+/* INPUT: stessi del login */
 .registration-form input {
-  border-radius: 6px;
-  border: 1px solid #4b5563;
-  background: #020617;
-  color: #e5e7eb;
-  padding: 10px;
-  font-size: 1rem;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border: none;
+  border-radius: 8px;
+  background: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 16px;
 }
 
 .registration-form input:focus {
   outline: none;
-  box-shadow: 0 1px 0 0 #f97316;
+  box-shadow: 0 5px 0 0 #eab308;
 }
 
+/* BUTTON: stesso feeling login */
 .registration-btn {
-  margin-top: 16px;
-  padding: 10px;
-  border-radius: 12px;
+  width: 100%;
+  height: 44px;
+  margin-top: 10px;
+  border-radius: 9999px;
   border: none;
-  background: linear-gradient(200deg, #fd8027, #ea580c);
+  background: linear-gradient(135deg, #efb044, #ec9603);
   color: white;
-  font-weight: 600;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
 }
 
 .registration-btn:hover {
-  box-shadow: 0 5px 20px 0 rgba(234, 88, 12, 0.5);
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.4);
 }
 
 .registration-btn:active {
-  box-shadow: none;
-  background: linear-gradient(200deg, #d86f24, #c74e0d);
+  transform: scale(0.97);
 }
