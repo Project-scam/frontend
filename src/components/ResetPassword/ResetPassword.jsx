@@ -121,10 +121,7 @@ export default function ResetPassword({ onBackToLogin }) {
   return (
     <div className="page-login">
       <form className="form-login" onSubmit={handleSubmit}>
-        <h2>Reset Password</h2>
-        <p style={{ fontSize: "14px", color: "#666", marginBottom: "20px" }}>
-          Enter your new password below.
-        </p>
+        <h2 className="title">Reset Password</h2>
 
         <Input
           id={"NewPassword"}
