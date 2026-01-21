@@ -67,7 +67,7 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin, on
           },
           credentials: "include", // FONDAMENTALE: Permette al browser di salvare il cookie
           body: JSON.stringify({
-            email, // Invia 'email' come richiesto dal backend
+            email: username, // Invia 'email' come richiesto dal backend
             password,
           }),
         }
@@ -116,7 +116,7 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin, on
           id={"Email"} // aggiunto id per la label
           label={"Email"}
           type="email"
-          value={email}
+          value={username}
           setInputValue={setUsername}
         />
 
@@ -155,8 +155,8 @@ export default function Login({ onLoginSuccess, onShowRegister, onGuestLogin, on
         >
           Login as Guest
         </button>
-        <button 
-          type="button" 
+        <button
+          type="button"
           onClick={onForgotPassword}
           className="btn-blue"
         >Forgot Password
