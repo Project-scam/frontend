@@ -1,18 +1,39 @@
 import { useState, useEffect } from "react";
 import { ViewMode } from "gantt-task-react";
 import { GanttTaskReact } from "../components/GanttTaskReact";
-import { 
-  parseCSVToGanttTaskReact, 
-  calculateTaskStats, 
-  filterTasksByResource 
+import {
+  parseCSVToGanttTaskReact,
+  calculateTaskStats,
+  filterTasksByResource
 } from "../utils/ganttTaskReactParser";
 
 // Dati CSV importati direttamente
 const CSV_DATA = `Task Name,Start Date,Duration,Resources
+CALL di Google Meet con il team per discutere del progetto,2025-11-28,2.5h,Sandu/Mattia/Catalin/Andrea
+CALL di Google Meet con il team per discutere del progetto,2025-12-11,2h,Sandu/Mattia/Catalin/Andrea
+CALL di Google Meet con il team per discutere del progetto,2025-12-13,2h,Sandu/Mattia/Catalin/Andrea
 creazione schema analisi SWOT,2025-12-15,4h,Sandu
 creazione WBS,2025-12-15,3h,Andrea
-creazione Mokup,2025-12-15,4h,Mattia
-creazione schema GANTT,2025-12-16,5h,Catalin
+creazione Mokup,2025-12-15,8h,Catalin
+creazione Schema GANTT,2025-12-15,8h,Andrea
+CALL di Google Meet con il team per discutere del progetto,2025-12-15,1.5h,Sandu/Mattia/Catalin/Andrea
+configurazione repository fronend in GitHub,2025-12-15,3h,Sandu/Mattia/Catalin/Andrea
+installazione progetto React/Vite,2025-12-16,1h,Sandu/Mattia/Catalin/Andrea
+configurazione piattaforma cloud Vercel per deploy progetto frontend con React/Vite,2025-12-17,2h,Sandu/Mattia/Catalin/Andrea
+creazione EndScreen.jsx: schermata di fine partita.,2025-12-17,2h,Catalin
+creazione VersusSetup.jsx: componente per configurazione partita in modalità 1 VS 1,2025-12-18,2h,Catalin
+creazione ColorPicker.jsx: selettore colori disponibili per la sequenza segreta,2025-12-19,0.5h,Catalin
+creazione GuessRow: riga di tentativo singolo,2025-12-20,2h,Catalin
+creazione GameBoard.jsx: area di gioco principale,2025-12-21,2h,Catalin
+CALL di Google Meet con il team per discutere del progetto,2025-12-28,1.5h,Sandu/Mattia/Catalin/Andrea
+creazione BombHeader.jsx: componente di intestazione del gioco,2025-12-28,1h,Catalin
+creazione MainMenu.jsx: interfaccia per la scelta modalità di gioco,2025-12-29,3h,Sandu
+CALL di Google Meet con il team per discutere del progetto,2025-12-30,1.5h,Sandu/Mattia/Catalin/Andrea
+creazione schermata di sfida giocatore,2025-12-30,1.5h,Andrea
+CALL di Google Meet con il team per discutere del progetto,2026-01-01,1h,Sandu/Mattia/Catalin/Andrea
+creazione list utenti loggati (da sfidare online),2026-01-02,3h,Andrea
+finestra di login,2026-01-02,2h,Sandu
+finestra di registrazione,2026-01-02,2h,Catalin
 configurazione repository backend in GitHub,2025-12-16,3h,Sandu/Mattia/Catalin/Andrea
 configurazione piattaforma cloud Neon per gestione database PostgreSQL,2025-12-16,1.5h,Catalin/Andrea
 configurazione ambiente cloud Render.com per deploy progetto backend in Node.js/Express.js,2025-12-16,2h,Sandu/Mattia/Catalin/Andrea
@@ -28,24 +49,12 @@ registrazione: implementazione del ruolo dell'utente,2025-12-20,1h,Catalin
 creazione connessione a database,2025-12-21,1h,Andrea
 creazione server Express per sviluppo,2025-12-21,1h,Andrea
 creazione tabella utenti in Neon,2025-12-21,1h,Catalin/Andrea
+CALL di Google Meet con il team per discutere del progetto,2025-12-22,1.5h,Sandu/Mattia/Catalin/Andrea
 registrazione: username univoco,2025-12-22,1h,Catalin
 creazione API classifica utenti,2025-12-22,3h,Andrea
 creazione controller Socket.io per la partita in modalità 1 VS 1,2025-12-23,5h,Sandu
-portare la logica del gioco nel backend (come penultimo/ultimo task),2025-12-24,8h,Sandu/Catalin/Andrea/Mattia
-configurazione repository fronend in GitHub,2025-12-15,3h,Sandu/Mattia/Catalin/Andrea
-installazione progetto React/Vite,2025-12-16,1h,Sandu/Mattia/Catalin/Andrea
-configurazione piattaforma cloud Vercel per deploy progetto frontend con React/Vite,2025-12-17,2h,Sandu/Mattia/Catalin/Andrea
-creazione EndScreen.jsx: schermata di fine partita.,2025-12-17,2h,Catalin
-creazione VersusSetup.jsx: componente per configurazione partita in modalità 1 VS 1,2025-12-18,2h,Catalin
-creazione ColorPicker.jsx: selettore colori disponibili per la sequenza segreta,2025-12-19,0.5h,Catalin
-creazione GuessRow: riga di tentativo singolo,2025-12-20,2h,Catalin
-creazione GameBoard.jsx: area di gioco principale,2025-12-21,2h,Catalin
-creazione BombHeader.jsx: componente di intestazione del gioco,2025-12-28,1h,Catalin
-creazione MainMenu.jsx: interfaccia per la scelta modalità di gioco,2025-12-29,3h,Sandu
-creazione schermata di sfida giocatore,2025-12-30,1.5h,Andrea
-creazione list utenti loggati (da sfidare online),2026-01-02,3h,Andrea
-finestra di login,2026-01-02,2h,Sandu
-finestra di registrazione,2026-01-02,2h,Catalin`;
+CALL di Google Meet con il team per discutere del progetto,2025-12-24,1.5h,Sandu/Mattia/Catalin/Andrea
+CALL di Google Meet con il team per discutere del progetto,2025-01-03,1.5h,Sandu/Mattia/Catalin/Andrea`;
 
 export const ProjectGanttTaskReact = () => {
   const [allTasks, setAllTasks] = useState([]);
@@ -94,10 +103,10 @@ export const ProjectGanttTaskReact = () => {
 
   if (!stats) {
     return (
-      <div style={{ 
-        display: "flex", 
-        justifyContent: "center", 
-        alignItems: "center", 
+      <div style={{
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
         height: "100vh",
         color: "white",
         fontSize: "1.5rem"
@@ -108,20 +117,20 @@ export const ProjectGanttTaskReact = () => {
   }
 
   return (
-    <div style={{ 
+    <div style={{
       minHeight: "100vh",
       backgroundColor: "#0f172a",
       padding: "20px"
     }}>
       {/* Header */}
-      <div style={{ 
-        maxWidth: "1600px", 
+      <div style={{
+        maxWidth: "1600px",
         margin: "0 auto",
         marginBottom: "30px"
       }}>
-        <h1 style={{ 
-          color: "white", 
-          fontSize: "2.5rem", 
+        <h1 style={{
+          color: "white",
+          fontSize: "2.5rem",
           marginBottom: "10px",
           fontFamily: "Orbitron, sans-serif"
         }}>
@@ -385,8 +394,8 @@ export const ProjectGanttTaskReact = () => {
             <div>
               <strong style={{ color: "white" }}>Progresso:</strong>{" "}
               <span style={{
-                color: selectedTask.progress === 100 ? "#10b981" : 
-                       selectedTask.progress > 50 ? "#3b82f6" : "#f59e0b"
+                color: selectedTask.progress === 100 ? "#10b981" :
+                  selectedTask.progress > 50 ? "#3b82f6" : "#f59e0b"
               }}>
                 {selectedTask.progress}%
               </span>
