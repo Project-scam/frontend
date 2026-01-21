@@ -38,7 +38,6 @@ import Modal from "./components/Modal/Modal";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 import ResetPassword from "./components/ResetPassword/ResetPassword";
 
-
 const LogoutIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -69,9 +68,13 @@ function App() {
     textColor: "black",
     textColorSubtitle: "black",
   });
+<<<<<<< HEAD
+  const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+=======
   const [windowWidth, setWindowWidth] =
     useState(window.innerWidth);
   const [isGanttTaskReact, setIsGanttTaskReact] = useState(false); // apre il Gantt con gantt-task-react
+>>>>>>> f6f7fba2bd7a0d0f2bdcdbe0f4289686afbc27f1
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -266,9 +269,9 @@ function App() {
     mode === GAME_MODES.DEVIL && !hasStarted
       ? false
       : gameWon ||
-      gameOver ||
-      !currentGuess.every((c) => c !== null) ||
-      secretCode.length === 0;
+        gameOver ||
+        !currentGuess.every((c) => c !== null) ||
+        secretCode.length === 0;
 
   const mainButtonLabel =
     mode === GAME_MODES.DEVIL && !hasStarted ? "START" : "DEFUSE NOW";
@@ -384,6 +387,9 @@ function App() {
         onForgotPassword={() => setIsForgotPasswordView(true)}
       />
     );
+  }
+  {
+    console.log("utente attuale" + currentUser);
   }
 
   if (!mode) {

@@ -4,6 +4,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+
+  font-family: Orbitron;
 }
 
 /* toglie lo scroll-bar per Chrome, Edge, Safari */
@@ -63,6 +65,7 @@ body {
   background: rgba(255, 255, 255, 0.1);
   color: white;
   font-size: 16px;
+  color: #eab308;
 }
 
 .page-login button {
@@ -71,8 +74,13 @@ body {
   padding: 10px;
   background-color: rgba(255, 255, 255, 0.3);
   color: white;
-  border-radius: 8px;
+  border: none;
+  border-radius: 24px;
   margin-bottom: 20px;
+}
+
+.btn-blue{
+  background-color: #05214e;
 }
 
 .form-login input:focus {
@@ -510,7 +518,10 @@ body {
   border-radius: 8px;
   background: rgba(255, 255, 255, 0.1);
   color: white;
-  font-size: 16px;
+  font-size: 14px;
+  color: #eab308 ;
+
+
 }
 
 .registration-form input:focus {
