@@ -16,18 +16,27 @@ export const useAuth = () => {
   const [isGuest, setIsGuest] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
+  const [userAccountRole, setUserAccountRole] = useState(null); // Stato per il ruolo account (admin/user)
   const [isRegisterView, setRegisterView] = useState(false);
 
   const handleLoginSuccess = (user) => {
     console.log("User data received from Login:", user);
     setLogged(true);
-    setCurrentUser(typeof user === "string" ? user : user?.username || "Guest");
+    // Salva l'intero oggetto user o lo username come fallback
+    if (typeof user === "object" && user !== null) {
+      setCurrentUser(user.email || user.username || "Guest");
+      setUserAccountRole(user.ruolo || "user");
+    } else {
+      setCurrentUser(typeof user === "string" ? user : "Guest");
+      setUserAccountRole("user");
+    }
     setRegisterView(false);
   };
   const handleLoginGuest = () => {
     console.log("User logged in as Guest");
     setIsGuest(true);
     setCurrentUser("Guest");
+    setUserAccountRole(null); // Guest non ha ruolo
     setRegisterView(false);
   };
 
@@ -65,6 +74,7 @@ export const useAuth = () => {
     } finally {
       setLogged(false);
       setCurrentUser(null);
+      setUserAccountRole(null);
     }
   };
 
@@ -73,6 +83,7 @@ export const useAuth = () => {
     isGuest,
     isLoading,
     currentUser,
+    userAccountRole,
     isRegisterView,
     setIsGuest,
     setLogged,

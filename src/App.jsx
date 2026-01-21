@@ -20,6 +20,7 @@ import { UserList } from "./components/UserList";
 import Btn from "./components/Btn/Btn";
 import RulesOfGameDefault from "./components/RulesOfGameDefault";
 import { Leaderboard } from "./components/Leaderboard";
+import ProjectGanttTaskReact from "./pages/ProjectGanttTaskReact";
 import {
   COLORS_BOMB,
   MAX_TURNS,
@@ -59,6 +60,7 @@ function App() {
   // UI State
   const [isRulesOfGame, setIsRulesOfGame] = useState(false);
   const [isLeaderboard, setIsLeaderboard] = useState(false);
+  const [isGanttView, setIsGanttView] = useState(false);
   const [showModal, setShowModal] = useState(false);
   const [modalConfig, setModalConfig] = useState({
     title: "",
@@ -66,7 +68,13 @@ function App() {
     textColor: "black",
     textColorSubtitle: "black",
   });
+<<<<<<< HEAD
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
+=======
+  const [windowWidth, setWindowWidth] =
+    useState(window.innerWidth);
+  const [isGanttTaskReact, setIsGanttTaskReact] = useState(false); // apre il Gantt con gantt-task-react
+>>>>>>> f6f7fba2bd7a0d0f2bdcdbe0f4289686afbc27f1
   useEffect(() => {
     const handleResize = () => {
       setWindowWidth(window.innerWidth);
@@ -93,6 +101,7 @@ function App() {
     isLogged,
     isLoading,
     currentUser,
+    userAccountRole,
     isRegisterView,
     setIsGuest,
     setLogged,
@@ -292,6 +301,58 @@ function App() {
     return <Leaderboard onClose={() => setIsLeaderboard(false)} />;
   }
 
+  if (isGanttView) {
+    // Controllo di sicurezza: solo admin possono accedere
+    if (userAccountRole !== "admin") {
+      return (
+        <div className="page-wrapper">
+          <div className="mode-menu">
+            <h1 className="menu-title" style={{ color: "#ef4444" }}>⛔ Accesso Negato</h1>
+            <p className="menu-subtitle" style={{ color: "#fca5a5" }}>
+              Il Gantt Chart è riservato agli amministratori
+            </p>
+            <button
+              className="menu-btn"
+              onClick={() => setIsGanttView(false)}
+              style={{
+                marginTop: "20px",
+                background: "linear-gradient(135deg, #4b5563, #374151)",
+              }}
+            >
+              ← Torna al Menu
+            </button>
+          </div>
+        </div>
+      );
+    }
+
+    return (
+      <div style={{ position: "relative", minHeight: "100vh" }}>
+        <div style={{ position: "absolute", top: "20px", left: "20px", zIndex: 1000 }}>
+          <button
+            className="back-menu-btn"
+            onClick={() => setIsGanttView(false)}
+            style={{
+              background: "linear-gradient(135deg, #4a90e2, #357abd)",
+              color: "white",
+              border: "none",
+              padding: "10px 20px",
+              borderRadius: "8px",
+              cursor: "pointer",
+              fontSize: "14px",
+              fontWeight: "600",
+              boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
+              zIndex: 1001
+            }}
+          >
+            ← Back to Menu
+          </button>
+        </div>
+        <ProjectGanttTaskReact />
+      </div>
+    );
+  }
+
   if (!isGuest && !isLogged) {
     // Se l'URL contiene token e email, mostra ResetPassword
     if (isResetPasswordView) {
@@ -416,6 +477,19 @@ function App() {
           >
             Leaderboard {currentUser === "Guest" && "🔒"}
           </button>
+
+          {/* Pulsante Gantt Chart - Visibile solo per Admin */}
+          {userAccountRole === "admin" && (
+            <button
+              className="menu-btn"
+              onClick={() => setIsGanttView(true)}
+              style={{
+                background: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+              }}
+            >
+              📊 Project Gantt Chart
+            </button>
+          )}
 
           <button
             className="menu-btn"
