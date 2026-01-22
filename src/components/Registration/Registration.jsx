@@ -16,7 +16,8 @@ const isValidEmail = (email) => {
 };
 
 const Registration = ({
-  inputName = "Email", // defaul cambiabile liv. visivo
+  inputUsername= "Username",
+  inputEmail = "Email", // defaul cambiabile liv. visivo
   inputPassword = "Password", // defaut cambiabile liv. visivo
   inputPasswordReconfirm = "Rewrite Password", // default cambiabile liv. visivo
   onRegisterSuccess,
@@ -53,6 +54,7 @@ const Registration = ({
     });
 
     setShowModal(false); // prima di fare la richiesta, chiudo la modal
+    const username = event.target.elements.username.value 
     const email = event.target.elements.email.value; // prendo i valori dell' email
     const password = event.target.elements.password.value; // prendo i valori della password
     const rewritePassword = event.target.elements.passwordReconfirm.value; // prendo i valori della seconda password
@@ -156,7 +158,16 @@ const Registration = ({
         <h1 className="title">REGISTRATION</h1>
 
         <form onSubmit={handleSubmit} className="registration-form">
-          <label className="menu-title" htmlFor="email">{inputName}:</label>
+          <label className="menu-title" htmlFor="username">{inputUsername}:</label>
+          <input
+            id="username"
+            name="username"
+            type="username"
+            placeholder="Write your username"
+            required  
+          />
+
+          <label className="menu-title" htmlFor="email">{inputEmail}:</label>
           <input
             id="email"
             name="email"
