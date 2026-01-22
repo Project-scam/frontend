@@ -16,7 +16,8 @@ const isValidEmail = (email) => {
 };
 
 const Registration = ({
-  inputName = "Email", // defaul cambiabile liv. visivo
+  inputUsername= "Username",
+  inputEmail = "Email", // defaul cambiabile liv. visivo
   inputPassword = "Password", // defaut cambiabile liv. visivo
   inputPasswordReconfirm = "Rewrite Password", // default cambiabile liv. visivo
   onRegisterSuccess,
