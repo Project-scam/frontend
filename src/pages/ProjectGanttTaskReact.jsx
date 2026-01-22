@@ -7,6 +7,7 @@ import {
   filterTasksByResource
 } from "../utils/ganttTaskReactParser";
 
+
 // Dati CSV importati direttamente
 const CSV_DATA = `Task Name,Start Date,Duration,Resources
 CALL di Google Meet con il team per discutere del progetto,2025-11-28,2.5h,Sandu/Mattia/Catalin/Andrea
