@@ -55,7 +55,7 @@ registrazione: username univoco,2025-12-22,1h,Catalin
 creazione API classifica utenti,2025-12-22,3h,Andrea
 creazione controller Socket.io per la partita in modalità 1 VS 1,2025-12-23,5h,Sandu
 CALL di Google Meet con il team per discutere del progetto,2025-12-24,1.5h,Sandu/Mattia/Catalin/Andrea
-CALL di Google Meet con il team per discutere del progetto,2025-01-03,1.5h,Sandu/Mattia/Catalin/Andrea`;
+CALL di Google Meet con il team per discutere del progetto,2026-01-03,1.5h,Sandu/Mattia/Catalin/Andrea`;
 
 export const ProjectGanttTaskReact = () => {
   const [allTasks, setAllTasks] = useState([]);
