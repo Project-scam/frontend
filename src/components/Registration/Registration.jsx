@@ -54,6 +54,7 @@ const Registration = ({
     });
 
     setShowModal(false); // prima di fare la richiesta, chiudo la modal
+    const username = event.target.elements.username.value 
     const email = event.target.elements.email.value; // prendo i valori dell' email
     const password = event.target.elements.password.value; // prendo i valori della password
     const rewritePassword = event.target.elements.passwordReconfirm.value; // prendo i valori della seconda password
