@@ -53,7 +53,7 @@ creazione tabella utenti in Neon,2025-12-21,1h,Catalin/Andrea
 CALL di Google Meet con il team (riunione),2025-12-22,1.5h,Sandu/Mattia/Catalin/Andrea
 registrazione: username univoco,2025-12-22,1h,Catalin
 creazione API classifica utenti,2025-12-22,3h,Andrea
-creazione controller Socket.io con relativo modulo 2025-12-23,5h,Sandu
+creazione controller Socket.io con relativo modulo,2025-12-23,5h,Sandu
 CALL di Google Meet con il team ,2025-12-24,1.5h,Sandu/Mattia/Catalin/Andrea
 CALL di Google Meet con il team (riunione),2026-01-03,1.5h,Sandu/Mattia/Catalin/Andrea`;
 

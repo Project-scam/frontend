@@ -134,7 +134,27 @@ export const parseCSVToGanttTaskReact = (csvContent) => {
         }
 
         const durationHours = parseDuration(duration);
-        const startDate = new Date(startDateStr + 'T08:00:00');
+
+        // Valida e crea la data
+        let startDate;
+        try {
+            // Verifica che startDateStr sia nel formato corretto (YYYY-MM-DD)
+            if (!startDateStr || !/^\d{4}-\d{2}-\d{2}$/.test(startDateStr)) {
+                console.warn(`Invalid date format for task "${taskName}": "${startDateStr}". Using default date.`);
+                startDateStr = '2024-01-01';
+            }
+            startDate = new Date(startDateStr + 'T08:00:00');
+
+            // Verifica che la data sia valida
+            if (isNaN(startDate.getTime())) {
+                console.warn(`Invalid date for task "${taskName}": "${startDateStr}". Using default date.`);
+                startDate = new Date('2024-01-01T08:00:00');
+            }
+        } catch (error) {
+            console.error(`Error parsing date for task "${taskName}":`, error);
+            startDate = new Date('2024-01-01T08:00:00');
+        }
+
         const endDate = calculateEndDate(startDate, durationHours);
         const progress = estimateProgress(startDate);
         const taskType = getTaskType(durationHours);
