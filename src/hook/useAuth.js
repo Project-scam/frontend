@@ -22,9 +22,9 @@ export const useAuth = () => {
   const handleLoginSuccess = (user) => {
     console.log("User data received from Login:", user);
     setLogged(true);
-    // Salva l'intero oggetto user o lo username come fallback
+    // Salva lo username invece dell'email per la visualizzazione nella lista utenti
     if (typeof user === "object" && user !== null) {
-      setCurrentUser(user.email || user.username || "Guest");
+      setCurrentUser(user.username || user.email || "Guest");
       setUserAccountRole(user.ruolo || "user");
     } else {
       setCurrentUser(typeof user === "string" ? user : "Guest");
