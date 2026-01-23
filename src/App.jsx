@@ -399,8 +399,9 @@ function App() {
     return (
       <>
         {currentUser ? <UserAvatar name={"Franco"} /> : ""}
+
         <div className="page-wrapper">
-          {currentUser ? <UserAvatar name={currentUser} /> : ""}
+          {currentUser ? <UserAvatar name={"Giulio"} /> : ""}
           <div className="mode-menu">
             <h1 className="menu-title">MASTERMIND SCAM</h1>
             <p className="menu-subtitle">
