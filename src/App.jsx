@@ -397,16 +397,18 @@ function App() {
   }
   if (!mode) {
     return (
-      <div className="page-wrapper">
-        {currentUser ? <UserAvatar name={currentUser} /> : ""}
-        <div className="mode-menu">
-          <h1 className="menu-title">MASTERMIND SCAM</h1>
-          <p className="menu-subtitle">
-            Choose a game mode or{" "}
-            <Btn variant="simple" onClick={() => setIsRulesOfGame(true)}>
-              LEARN THE GAME RULES
-            </Btn>
-          </p>
+      <>
+        {currentUser ? <UserAvatar name={"Franco"} /> : ""}
+        <div className="page-wrapper">
+          {currentUser ? <UserAvatar name={currentUser} /> : ""}
+          <div className="mode-menu">
+            <h1 className="menu-title">MASTERMIND SCAM</h1>
+            <p className="menu-subtitle">
+              Choose a game mode or{" "}
+              <Btn variant="simple" onClick={() => setIsRulesOfGame(true)}>
+                LEARN THE GAME RULES
+              </Btn>
+            </p>
 
             {isRulesOfGame && (
               <RulesOfGameDefault onClose={() => setIsRulesOfGame(false)} />
