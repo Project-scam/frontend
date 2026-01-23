@@ -37,6 +37,7 @@ import { usePoints } from "./hook/usePoint";
 import Modal from "./components/Modal/Modal";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 import ResetPassword from "./components/ResetPassword/ResetPassword";
+import UserAvatar from "./components/UserAvatar";
 
 const LogoutIcon = () => (
   <svg
@@ -144,7 +145,7 @@ function App() {
     (code) => {
       setSecretCode(code);
     },
-    [setSecretCode]
+    [setSecretCode],
   );
 
   const handleGameEnded = useCallback(
@@ -160,7 +161,7 @@ function App() {
         gameLogicSettersRef.current.setGameOverReason(gameOverReason);
       }
     },
-    []
+    [],
   );
 
   // Versus Mode - chiamato con i callback (che useranno il ref per i setter)
@@ -208,7 +209,7 @@ function App() {
   const { timeLeft, hasStarted, startGame, getTimeExpired } = useDevilMode(
     mode,
     gameWon,
-    gameOver
+    gameOver,
   );
 
   // Points
@@ -264,9 +265,9 @@ function App() {
     mode === GAME_MODES.DEVIL && !hasStarted
       ? false
       : gameWon ||
-      gameOver ||
-      !currentGuess.every((c) => c !== null) ||
-      secretCode.length === 0;
+        gameOver ||
+        !currentGuess.every((c) => c !== null) ||
+        secretCode.length === 0;
 
   const mainButtonLabel =
     mode === GAME_MODES.DEVIL && !hasStarted ? "START" : "DEFUSE NOW";
@@ -302,7 +303,9 @@ function App() {
       return (
         <div className="page-wrapper">
           <div className="mode-menu">
-            <h1 className="menu-title" style={{ color: "#ef4444" }}>⛔ Accesso Negato</h1>
+            <h1 className="menu-title" style={{ color: "#ef4444" }}>
+              ⛔ Accesso Negato
+            </h1>
             <p className="menu-subtitle" style={{ color: "#fca5a5" }}>
               Il Gantt Chart è riservato agli amministratori
             </p>
@@ -323,7 +326,14 @@ function App() {
 
     return (
       <div style={{ position: "relative", minHeight: "100vh" }}>
-        <div style={{ position: "absolute", top: "20px", left: "20px", zIndex: 1000 }}>
+        <div
+          style={{
+            position: "absolute",
+            top: "20px",
+            left: "20px",
+            zIndex: 1000,
+          }}
+        >
           <button
             className="back-menu-btn"
             onClick={() => setIsGanttView(false)}
@@ -337,7 +347,7 @@ function App() {
               fontSize: "14px",
               fontWeight: "600",
               boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
-              zIndex: 1001
+              zIndex: 1001,
             }}
           >
             ← Back to Menu
@@ -383,10 +393,7 @@ function App() {
       />
     );
   }
-  {
-    console.log("utente attuale" + currentUser);
-  }
-
+  <UserAvatar name={currentUser} />;
   if (!mode) {
     return (
       <div className="page-wrapper">

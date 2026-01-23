@@ -551,3 +551,47 @@ body {
 .registration-btn:active {
   transform: scale(0.97);
 }
+
+
+.profile-avatar {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  overflow: hidden;
+  cursor: pointer;
+  color: #fff;
+  width: auto;
+  max-width: 40px;
+  transition: max-width 0.3s ease, padding 0.3s ease;
+}
+
+.profile-avatar:hover {
+  max-width: 400px;
+  padding-right: 12px;
+  border: 1px solid black;
+
+}
+
+.avatar-circle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  flex-shrink: 0;
+  border-radius: 999px;
+
+  border: 1px solid black;
+
+}
+
+.avatar-name {
+  white-space: nowrap;
+  margin-left: 8px;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+  font-size: 14px;
+}
+
+.profile-avatar:hover .avatar-name {
+  opacity: 1;
+}
