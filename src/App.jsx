@@ -274,9 +274,7 @@ function App() {
 
   const mainButtonOnClick =
     mode === GAME_MODES.DEVIL && !hasStarted ? startGame : submitGuess;
-  if (currentUser) {
-    <UserAvatar name={currentUser} />;
-  }
+
   // Rendering
   if (isLoading) {
     return (
@@ -298,7 +296,9 @@ function App() {
   if (isLeaderboard) {
     return <Leaderboard onClose={() => setIsLeaderboard(false)} />;
   }
-
+  if (currentUser) {
+    <UserAvatar name={currentUser} />;
+  }
   if (isGanttView) {
     // Controllo di sicurezza: solo admin possono accedere
     if (userAccountRole !== "admin") {
