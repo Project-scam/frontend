@@ -398,8 +398,8 @@ function App() {
   if (!mode) {
     return (
       <>
-        {currentUser ? <UserAvatar name={currentUser} /> : ""}
         <div className="page-wrapper">
+          {currentUser ? <UserAvatar name={currentUser} /> : ""}
           <div className="mode-menu">
             <h1 className="menu-title">MASTERMIND SCAM</h1>
             <p className="menu-subtitle">
