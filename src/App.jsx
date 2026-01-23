@@ -274,7 +274,9 @@ function App() {
 
   const mainButtonOnClick =
     mode === GAME_MODES.DEVIL && !hasStarted ? startGame : submitGuess;
-
+  if (currentUser) {
+    <UserAvatar name={currentUser} />;
+  }
   // Rendering
   if (isLoading) {
     return (
@@ -396,8 +398,6 @@ function App() {
   if (!mode) {
     return (
       <div className="page-wrapper">
-        <UserAvatar name={currentUser} />
-
         <div className="mode-menu">
           <h1 className="menu-title">MASTERMIND SCAM</h1>
           <p className="menu-subtitle">
