@@ -554,6 +554,9 @@ body {
 
 
 .profile-avatar {
+  position:absolute;
+  margin-left:25px;
+  margin-top: 25px;
   display: inline-flex;
   align-items: center;
   border-radius: 999px;

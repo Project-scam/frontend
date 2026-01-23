@@ -274,7 +274,9 @@ function App() {
 
   const mainButtonOnClick =
     mode === GAME_MODES.DEVIL && !hasStarted ? startGame : submitGuess;
-
+  if (currentUser) {
+    <UserAvatar name={currentUser} />;
+  }
   // Rendering
   if (isLoading) {
     return (
@@ -393,7 +395,6 @@ function App() {
       />
     );
   }
-  <UserAvatar name={currentUser} />;
   if (!mode) {
     return (
       <div className="page-wrapper">
