@@ -296,10 +296,7 @@ function App() {
   if (isLeaderboard) {
     return <Leaderboard onClose={() => setIsLeaderboard(false)} />;
   }
-  if (currentUser) {
-    <UserAvatar name={currentUser} />;
-    console.log(currentUser);
-  }
+
   if (isGanttView) {
     // Controllo di sicurezza: solo admin possono accedere
     if (userAccountRole !== "admin") {
@@ -399,6 +396,8 @@ function App() {
   if (!mode) {
     return (
       <div className="page-wrapper">
+        <UserAvatar name={currentUser} />
+
         <div className="mode-menu">
           <h1 className="menu-title">MASTERMIND SCAM</h1>
           <p className="menu-subtitle">
