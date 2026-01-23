@@ -274,9 +274,7 @@ function App() {
 
   const mainButtonOnClick =
     mode === GAME_MODES.DEVIL && !hasStarted ? startGame : submitGuess;
-  if (currentUser) {
-    <UserAvatar name={currentUser} />;
-  }
+
   // Rendering
   if (isLoading) {
     return (
@@ -303,26 +301,29 @@ function App() {
     // Controllo di sicurezza: solo admin possono accedere
     if (userAccountRole !== "admin") {
       return (
-        <div className="page-wrapper">
-          <div className="mode-menu">
-            <h1 className="menu-title" style={{ color: "#ef4444" }}>
-              ⛔ Accesso Negato
-            </h1>
-            <p className="menu-subtitle" style={{ color: "#fca5a5" }}>
-              Il Gantt Chart è riservato agli amministratori
-            </p>
-            <button
-              className="menu-btn"
-              onClick={() => setIsGanttView(false)}
-              style={{
-                marginTop: "20px",
-                background: "linear-gradient(135deg, #4b5563, #374151)",
-              }}
-            >
-              ← Torna al Menu
-            </button>
+        <>
+          {currentUser ? <UserAvatar name={currentUser} /> : ""}
+          <div className="page-wrapper">
+            <div className="mode-menu">
+              <h1 className="menu-title" style={{ color: "#ef4444" }}>
+                ⛔ Accesso Negato
+              </h1>
+              <p className="menu-subtitle" style={{ color: "#fca5a5" }}>
+                Il Gantt Chart è riservato agli amministratori
+              </p>
+              <button
+                className="menu-btn"
+                onClick={() => setIsGanttView(false)}
+                style={{
+                  marginTop: "20px",
+                  background: "linear-gradient(135deg, #4b5563, #374151)",
+                }}
+              >
+                ← Torna al Menu
+              </button>
+            </div>
           </div>
-        </div>
+        </>
       );
     }
 
