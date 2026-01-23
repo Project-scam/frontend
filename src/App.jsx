@@ -274,9 +274,7 @@ function App() {
 
   const mainButtonOnClick =
     mode === GAME_MODES.DEVIL && !hasStarted ? startGame : submitGuess;
-  if (currentUser) {
-    <UserAvatar name={currentUser} />;
-  }
+
   // Rendering
   if (isLoading) {
     return (
@@ -303,26 +301,28 @@ function App() {
     // Controllo di sicurezza: solo admin possono accedere
     if (userAccountRole !== "admin") {
       return (
-        <div className="page-wrapper">
-          <div className="mode-menu">
-            <h1 className="menu-title" style={{ color: "#ef4444" }}>
-              ⛔ Accesso Negato
-            </h1>
-            <p className="menu-subtitle" style={{ color: "#fca5a5" }}>
-              Il Gantt Chart è riservato agli amministratori
-            </p>
-            <button
-              className="menu-btn"
-              onClick={() => setIsGanttView(false)}
-              style={{
-                marginTop: "20px",
-                background: "linear-gradient(135deg, #4b5563, #374151)",
-              }}
-            >
-              ← Torna al Menu
-            </button>
+        <>
+          <div className="page-wrapper">
+            <div className="mode-menu">
+              <h1 className="menu-title" style={{ color: "#ef4444" }}>
+                ⛔ Accesso Negato
+              </h1>
+              <p className="menu-subtitle" style={{ color: "#fca5a5" }}>
+                Il Gantt Chart è riservato agli amministratori
+              </p>
+              <button
+                className="menu-btn"
+                onClick={() => setIsGanttView(false)}
+                style={{
+                  marginTop: "20px",
+                  background: "linear-gradient(135deg, #4b5563, #374151)",
+                }}
+              >
+                ← Torna al Menu
+              </button>
+            </div>
           </div>
-        </div>
+        </>
       );
     }
 
@@ -397,138 +397,141 @@ function App() {
   }
   if (!mode) {
     return (
-      <div className="page-wrapper">
-        <div className="mode-menu">
-          <h1 className="menu-title">MASTERMIND SCAM</h1>
-          <p className="menu-subtitle">
-            Choose a game mode or{" "}
-            <Btn variant="simple" onClick={() => setIsRulesOfGame(true)}>
-              LEARN THE GAME RULES
-            </Btn>
-          </p>
+      <>
+        <div className="page-wrapper">
+          {currentUser ? <UserAvatar name={currentUser} /> : ""}
+          <div className="mode-menu">
+            <h1 className="menu-title">MASTERMIND SCAM</h1>
+            <p className="menu-subtitle">
+              Choose a game mode or{" "}
+              <Btn variant="simple" onClick={() => setIsRulesOfGame(true)}>
+                LEARN THE GAME RULES
+              </Btn>
+            </p>
 
-          {isRulesOfGame && (
-            <RulesOfGameDefault onClose={() => setIsRulesOfGame(false)} />
-          )}
+            {isRulesOfGame && (
+              <RulesOfGameDefault onClose={() => setIsRulesOfGame(false)} />
+            )}
 
-          <button
-            className="menu-btn"
-            onClick={() => {
-              handleCloseModal();
-              setMode(GAME_MODES.NORMAL);
-            }}
-          >
-            Single Player
-          </button>
-
-          <button
-            className="menu-btn"
-            onClick={() => {
-              handleCloseModal();
-              setMode(GAME_MODES.DEVIL);
-            }}
-          >
-            Devil Mode
-          </button>
-
-          <button
-            className="menu-btn"
-            onClick={() => {
-              console.log("👤 currentUser =", `"${currentUser}"`);
-              if (currentUser === "Guest") {
-                setModalConfig({
-                  title: "Restricted Mode",
-                  message: "This mode is reserved for registered users only!",
-                  textColor: "red",
-                  textColorSubtitle: "black",
-                });
-                setShowModal(true);
-                return;
-              }
-              setMode(GAME_MODES.VERSUS);
-            }}
-            style={
-              currentUser === "Guest"
-                ? { opacity: 0.5, cursor: "not-allowed" }
-                : {}
-            }
-          >
-            1 vs 1 (Codemaker / Codebreaker) {currentUser === "Guest" && "🔒"}
-          </button>
-
-          <button
-            className="menu-btn"
-            onClick={() => {
-              if (currentUser === "Guest") {
-                setModalConfig({
-                  title: "Restricted Access",
-                  message:
-                    "This ranking is reserved for registered users only!",
-                  textColor: "red",
-                  textColorSubtitle: "black",
-                });
-                setShowModal(true);
-                return;
-              }
-              setIsLeaderboard(true);
-            }}
-            style={
-              currentUser === "Guest"
-                ? { opacity: 0.5, cursor: "not-allowed" }
-                : {}
-            }
-          >
-            Leaderboard {currentUser === "Guest" && "🔒"}
-          </button>
-
-          {/* Pulsante Gantt Chart - Visibile solo per Admin */}
-          {userAccountRole === "admin" && (
             <button
               className="menu-btn"
-              onClick={() => setIsGanttView(true)}
-              style={{
-                background: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+              onClick={() => {
+                handleCloseModal();
+                setMode(GAME_MODES.NORMAL);
               }}
             >
-              📊 Project Gantt Chart
+              Single Player
             </button>
-          )}
 
-          <button
-            className="menu-btn"
-            onClick={() => {
-              if (currentUser == "Guest") {
-                setIsGuest(false);
-                setLogged(false);
-                console.log("Tornato alla schermata di Login");
-              } else {
-                handleLogout();
+            <button
+              className="menu-btn"
+              onClick={() => {
+                handleCloseModal();
+                setMode(GAME_MODES.DEVIL);
+              }}
+            >
+              Devil Mode
+            </button>
+
+            <button
+              className="menu-btn"
+              onClick={() => {
+                console.log("👤 currentUser =", `"${currentUser}"`);
+                if (currentUser === "Guest") {
+                  setModalConfig({
+                    title: "Restricted Mode",
+                    message: "This mode is reserved for registered users only!",
+                    textColor: "red",
+                    textColorSubtitle: "black",
+                  });
+                  setShowModal(true);
+                  return;
+                }
+                setMode(GAME_MODES.VERSUS);
+              }}
+              style={
+                currentUser === "Guest"
+                  ? { opacity: 0.5, cursor: "not-allowed" }
+                  : {}
               }
-            }}
-            style={{
-              marginTop: "24px",
-              background: "linear-gradient(135deg, #4b5563, #374151)",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-            }}
-          >
-            <LogoutIcon />
-            {currentUser === "Guest" ? "Login" : "Logout"}
-          </button>
+            >
+              1 vs 1 (Codemaker / Codebreaker) {currentUser === "Guest" && "🔒"}
+            </button>
 
-          {showModal && (
-            <Modal
-              onClose={handleCloseModal}
-              title={modalConfig.title}
-              subtitle={modalConfig.message}
-              textColor={modalConfig.textColor}
-              textColorSubtitle={modalConfig.textColorSubtitle}
-            />
-          )}
+            <button
+              className="menu-btn"
+              onClick={() => {
+                if (currentUser === "Guest") {
+                  setModalConfig({
+                    title: "Restricted Access",
+                    message:
+                      "This ranking is reserved for registered users only!",
+                    textColor: "red",
+                    textColorSubtitle: "black",
+                  });
+                  setShowModal(true);
+                  return;
+                }
+                setIsLeaderboard(true);
+              }}
+              style={
+                currentUser === "Guest"
+                  ? { opacity: 0.5, cursor: "not-allowed" }
+                  : {}
+              }
+            >
+              Leaderboard {currentUser === "Guest" && "🔒"}
+            </button>
+
+            {/* Pulsante Gantt Chart - Visibile solo per Admin */}
+            {userAccountRole === "admin" && (
+              <button
+                className="menu-btn"
+                onClick={() => setIsGanttView(true)}
+                style={{
+                  background: "linear-gradient(135deg, #8b5cf6, #7c3aed)",
+                }}
+              >
+                📊 Project Gantt Chart
+              </button>
+            )}
+
+            <button
+              className="menu-btn"
+              onClick={() => {
+                if (currentUser == "Guest") {
+                  setIsGuest(false);
+                  setLogged(false);
+                  console.log("Tornato alla schermata di Login");
+                } else {
+                  handleLogout();
+                }
+              }}
+              style={{
+                marginTop: "24px",
+                background: "linear-gradient(135deg, #4b5563, #374151)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                gap: "8px",
+              }}
+            >
+              <LogoutIcon />
+              {currentUser === "Guest" ? "Login" : "Logout"}
+            </button>
+
+            {showModal && (
+              <Modal
+                onClose={handleCloseModal}
+                title={modalConfig.title}
+                subtitle={modalConfig.message}
+                textColor={modalConfig.textColor}
+                textColorSubtitle={modalConfig.textColorSubtitle}
+              />
+            )}
+          </div>
         </div>
-      </div>
+      </>
     );
   }
 

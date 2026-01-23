@@ -555,8 +555,6 @@ body {
 
 .profile-avatar {
   position:absolute;
-  margin-left:25px;
-  margin-top: 25px;
   display: inline-flex;
   align-items: center;
   border-radius: 999px;
@@ -566,6 +564,7 @@ body {
   width: auto;
   max-width: 40px;
   transition: max-width 0.3s ease, padding 0.3s ease;
+  z-index: 999;
 }
 
 .profile-avatar:hover {
