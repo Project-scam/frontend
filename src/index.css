@@ -566,6 +566,7 @@ body {
   width: auto;
   max-width: 40px;
   transition: max-width 0.3s ease, padding 0.3s ease;
+  z-index: 999;
 }
 
 .profile-avatar:hover {
