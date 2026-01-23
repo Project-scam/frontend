@@ -298,6 +298,7 @@ function App() {
   }
   if (currentUser) {
     <UserAvatar name={currentUser} />;
+    console.log(currentUser);
   }
   if (isGanttView) {
     // Controllo di sicurezza: solo admin possono accedere
