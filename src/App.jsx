@@ -39,6 +39,7 @@ import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 import ResetPassword from "./components/ResetPassword/ResetPassword";
 import UserAvatar from "./components/UserAvatar";
 
+
 const LogoutIcon = () => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -265,9 +266,9 @@ function App() {
     mode === GAME_MODES.DEVIL && !hasStarted
       ? false
       : gameWon ||
-        gameOver ||
-        !currentGuess.every((c) => c !== null) ||
-        secretCode.length === 0;
+      gameOver ||
+      !currentGuess.every((c) => c !== null) ||
+      secretCode.length === 0;
 
   const mainButtonLabel =
     mode === GAME_MODES.DEVIL && !hasStarted ? "START" : "DEFUSE NOW";
