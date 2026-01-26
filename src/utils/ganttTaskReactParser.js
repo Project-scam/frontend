@@ -113,13 +113,48 @@ export const parseCSVToGanttTaskReact = (csvContent) => {
     const tasks = dataLines.map((line, index) => {
         const columns = line.split(',').map(col => col.trim());
 
-        const taskName = columns[0] || `Task ${index + 1}`;
-        const startDateStr = columns[1] || '2024-01-01';
-        const duration = columns[2] || '8h';
-        const resources = columns[3] || '';
+        // Se ci sono più di 4 colonne, significa che il nome del task contiene virgole
+        // Prendiamo le ultime 3 colonne come: data, durata, risorse
+        // E tutto il resto come nome del task
+        let taskName, startDateStr, duration, resources;
+
+        if (columns.length >= 4) {
+            // Le ultime 3 colonne sono sempre: data, durata, risorse
+            resources = columns[columns.length - 1] || '';
+            duration = columns[columns.length - 2] || '8h';
+            startDateStr = columns[columns.length - 3] || '2024-01-01';
+            // Tutto il resto è il nome del task
+            taskName = columns.slice(0, columns.length - 3).join(', ').trim() || `Task ${index + 1}`;
+        } else {
+            // Formato standard: nome, data, durata, risorse
+            taskName = columns[0] || `Task ${index + 1}`;
+            startDateStr = columns[1] || '2024-01-01';
+            duration = columns[2] || '8h';
+            resources = columns[3] || '';
+        }
 
         const durationHours = parseDuration(duration);
-        const startDate = new Date(startDateStr + 'T08:00:00');
+
+        // Valida e crea la data
+        let startDate;
+        try {
+            // Verifica che startDateStr sia nel formato corretto (YYYY-MM-DD)
+            if (!startDateStr || !/^\d{4}-\d{2}-\d{2}$/.test(startDateStr)) {
+                console.warn(`Invalid date format for task "${taskName}": "${startDateStr}". Using default date.`);
+                startDateStr = '2024-01-01';
+            }
+            startDate = new Date(startDateStr + 'T08:00:00');
+
+            // Verifica che la data sia valida
+            if (isNaN(startDate.getTime())) {
+                console.warn(`Invalid date for task "${taskName}": "${startDateStr}". Using default date.`);
+                startDate = new Date('2024-01-01T08:00:00');
+            }
+        } catch (error) {
+            console.error(`Error parsing date for task "${taskName}":`, error);
+            startDate = new Date('2024-01-01T08:00:00');
+        }
+
         const endDate = calculateEndDate(startDate, durationHours);
         const progress = estimateProgress(startDate);
         const taskType = getTaskType(durationHours);

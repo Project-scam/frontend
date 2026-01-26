@@ -66,17 +66,20 @@ export default function Login({
     }
 
     try {
-      const response = await fetch(API_URLS.LOGIN, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        credentials: "include", // FONDAMENTALE: Permette al browser di salvare il cookie
-        body: JSON.stringify({
-          email, // Invia 'email' come richiesto dal backend
-          password,
-        }),
-      });
+      const response = await fetch(
+        API_URLS.LOGIN,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          credentials: "include", // FONDAMENTALE: Permette al browser di salvare il cookie
+          body: JSON.stringify({
+            email: username, // Invia 'email' come richiesto dal backend
+            password,
+          }),
+        }
+      );
 
       const risposta = await response.json();
 
@@ -116,8 +119,8 @@ export default function Login({
           id={"email"} // aggiunto id per la label
           label={"Email"}
           type="email"
-          value={email}
-          setInputValue={setEmail}
+          value={username}
+          setInputValue={setUsername}
         />
 
         <Input
@@ -147,8 +150,11 @@ export default function Login({
         <button type="button" onClick={onGuestLogin}>
           Login as Guest
         </button>
-        <button type="button" onClick={onForgotPassword}>
-          Forgot Password
+        <button
+          type="button"
+          onClick={onForgotPassword}
+          className="btn-blue"
+        >Forgot Password
         </button>
       </form>
     </div>
