@@ -13,13 +13,13 @@ import { API_BASE_URL } from "../config";
 import { calculatePoints as calcPoints } from "../utils/gameUtils";
 
 export const usePoints = () => {
-  const updatePoints = async (username, pointsToAdd) => {
+  const updatePoints = async (email, pointsToAdd) => {
     try {
       const response = await fetch(`${API_BASE_URL}/points/update`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         credentials: "include",
-        body: JSON.stringify({ username, pointsToAdd }),
+        body: JSON.stringify({ email, pointsToAdd }),
       });
 
       if (response.ok) {
@@ -39,7 +39,7 @@ export const usePoints = () => {
   const handleGameEndPoints = (mode, currentUser, gameWon, guessesCount) => {
     if (mode === "versus" && currentUser && currentUser !== "Guest") {
       const points = calcPoints(gameWon, guessesCount);
-      updatePoints(currentUser, gameWon ? points : 0);
+      updatePoints(currentUser.email, gameWon ? points : 0);
     }
   };
 
