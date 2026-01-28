@@ -25,11 +25,7 @@ export const useAuth = () => {
     setLogged(true);
     // Salva lo username invece dell'email per la visualizzazione nella lista utenti
     if (typeof user === "object" && user !== null) {
-        setCurrentUser({
-          username: user.username,
-          email: user.email,
-          ruolo: user.ruolo || "user"
-        });
+      setCurrentUser(user.username || user.email || "Guest");
       setUserAccountRole(user.ruolo || "user");
     } else {
       setCurrentUser(typeof user === "string" ? user : "Guest");
