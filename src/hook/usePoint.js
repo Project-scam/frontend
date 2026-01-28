@@ -36,10 +36,10 @@ export const usePoints = () => {
     }
   };
 
-  const handleGameEndPoints = (mode, currentUser,email, gameWon, guessesCount) => {
+  const handleGameEndPoints = (mode, currentUser,currentUserEmail, gameWon, guessesCount) => {
     if (mode === "versus" && currentUser && currentUser !== "Guest") {
       const points = calcPoints(gameWon, guessesCount);
-      updatePoints(email, gameWon ? points : 0);
+      updatePoints(currentUserEmail, gameWon ? points : 0);
     }
   };
 
