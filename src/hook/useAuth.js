@@ -17,18 +17,21 @@ export const useAuth = () => {
   const [isGuest, setIsGuest] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   const [currentUser, setCurrentUser] = useState(null);
+  const [currentUserEmail, setCurrentUserEmail] = useState(null)
   const [userAccountRole, setUserAccountRole] = useState(null); // Stato per il ruolo account (admin/user)
   const [isRegisterView, setRegisterView] = useState(false);
-
+  
   const handleLoginSuccess = (user) => {
     console.log("User data received from Login:", user);
     setLogged(true);
     // Salva lo username invece dell'email per la visualizzazione nella lista utenti
     if (typeof user === "object" && user !== null) {
       setCurrentUser(user.username || user.email || "Guest");
+      setCurrentUserEmail(user.email || null)
       setUserAccountRole(user.ruolo || "user");
     } else {
       setCurrentUser(typeof user === "string" ? user : "Guest");
+      setCurrentUserEmail(null) 
       setUserAccountRole("user");
     }
     setRegisterView(false);
@@ -84,6 +87,7 @@ export const useAuth = () => {
     isGuest,
     isLoading,
     currentUser,
+    currentUserEmail,
     userAccountRole,
     isRegisterView,
     setIsGuest,

@@ -97,6 +97,7 @@ function App() {
     isLogged,
     isLoading,
     currentUser,
+    currentUserEmail,
     userAccountRole,
     isRegisterView,
     setIsGuest,
@@ -225,7 +226,7 @@ function App() {
   // Submit guess con gestione punti
   const submitGuess = () => {
     submitGuessBase((won, guessesCount) => {
-      handleGameEndPoints(mode, currentUser, won, guessesCount);
+      handleGameEndPoints(mode, currentUser, currentUserEmail, won, guessesCount);
       if (mode === GAME_MODES.VERSUS) {
         notifyGameEnd(won, guessesCount, currentUser, opponent);
       }
