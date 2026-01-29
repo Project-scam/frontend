@@ -266,9 +266,9 @@ function App() {
     mode === GAME_MODES.DEVIL && !hasStarted
       ? false
       : gameWon ||
-        gameOver ||
-        !currentGuess.every((c) => c !== null) ||
-        secretCode.length === 0;
+      gameOver ||
+      !currentGuess.every((c) => c !== null) ||
+      secretCode.length === 0;
 
   const mainButtonLabel =
     mode === GAME_MODES.DEVIL && !hasStarted ? "START" : "DEFUSE NOW";
@@ -485,7 +485,7 @@ function App() {
               Leaderboard {currentUser === "Guest" && "🔒"}
             </button>
 
-            {/* Pulsante Gantt Chart - Visibile solo per Admin */}
+            {/* Pulsante Gantt Chart - Visibile solo per Admin 
             {userAccountRole === "admin" && (
               <button
                 className="menu-btn"
@@ -497,7 +497,7 @@ function App() {
                 📊 Project Gantt Chart
               </button>
             )}
-
+            */}
             <button
               className="menu-btn"
               onClick={() => {
