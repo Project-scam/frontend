@@ -281,7 +281,7 @@ function App() {
 
   const PageLayout = ({ children }) => (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <div style={{ flex: 1 }}>{children}</div>
+      <div style={{ flex: 1, paddingBottom: "56px" }}>{children}</div>
       <Footer
         copyright="© 2025 Mastermind"
         onPrivacyClick={() => setShowPrivacyPolicy(true)}
