@@ -1,0 +1,28 @@
+/*=====================================
+* File: Footer.css
+* stili per il footer
+* @author: "andrea.villari@allievi.itsdigitalacademy.com"
+* @verson: "1.0.0 2026-02-01
+*/
+
+.footer{
+    margin-top: auto;
+    padding: 16px;
+    text-align: center;
+    background-color: rgba(0,0,0,0.2);
+}
+
+.footer-link{
+    background: none;
+    border: none;
+    color: inherit;
+    cursor: pointer;
+    text-decoration: underline;
+    font-size: inherit;
+    color: #eab308;
+}
+
+.footer-link:hover{
+    opacity: 0.8;
+}
+

@@ -38,6 +38,8 @@ import Modal from "./components/Modal/Modal";
 import ForgotPassword from "./components/ForgotPassword/ForgotPassword";
 import ResetPassword from "./components/ResetPassword/ResetPassword";
 import UserAvatar from "./components/UserAvatar";
+import { Footer } from "./components/Footer";
+import { PrivacyPolicy } from "./PrivacyPolicy";
 
 const LogoutIcon = () => (
   <svg
@@ -69,6 +71,7 @@ function App() {
     textColor: "black",
     textColorSubtitle: "black",
   });
+  const [showPrivacyPolicy, setShowPrivacyPolicy] = useState(false);
   const [windowWidth, setWindowWidth] = useState(window.innerWidth);
   const [isGanttTaskReact, setIsGanttTaskReact] = useState(false); // apre il Gantt con gantt-task-react
   useEffect(() => {
@@ -276,33 +279,54 @@ function App() {
   const mainButtonOnClick =
     mode === GAME_MODES.DEVIL && !hasStarted ? startGame : submitGuess;
 
+  const PageLayout = ({ children }) => (
+    <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <div style={{ flex: 1 }}>{children}</div>
+      <Footer
+        copyright="© 2025 Mastermind"
+        onPrivacyClick={() => setShowPrivacyPolicy(true)}
+      >
+        Privacy Policy
+      </Footer>
+      {showPrivacyPolicy && (
+        <PrivacyPolicy onClose={() => setShowPrivacyPolicy(false)} />
+      )}
+    </div>
+  );
+
   // Rendering
   if (isLoading) {
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-          color: "white",
-          fontSize: "1.5rem",
-        }}
-      >
-        Loading...
-      </div>
+      <PageLayout>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100vh",
+            color: "white",
+            fontSize: "1.5rem",
+          }}
+        >
+          Loading...
+        </div>
+      </PageLayout>
     );
   }
 
   if (isLeaderboard) {
-    return <Leaderboard onClose={() => setIsLeaderboard(false)} />;
+    return (
+      <PageLayout>
+        <Leaderboard onClose={() => setIsLeaderboard(false)} />
+      </PageLayout>
+    );
   }
 
   if (isGanttView) {
     // Controllo di sicurezza: solo admin possono accedere
     if (userAccountRole !== "admin") {
       return (
-        <>
+        <PageLayout>
           <div className="page-wrapper">
             <div className="mode-menu">
               <h1 className="menu-title" style={{ color: "#ef4444" }}>
@@ -323,11 +347,12 @@ function App() {
               </button>
             </div>
           </div>
-        </>
+        </PageLayout>
       );
     }
 
     return (
+      <PageLayout>
       <div style={{ position: "relative", minHeight: "100vh" }}>
         <div
           style={{
@@ -358,6 +383,7 @@ function App() {
         </div>
         <ProjectGanttTaskReact />
       </div>
+      </PageLayout>
     );
   }
 
@@ -365,40 +391,48 @@ function App() {
     // Se l'URL contiene token e email, mostra ResetPassword
     if (isResetPasswordView) {
       return (
-        <ResetPassword
-          onBackToLogin={() => {
-            setIsResetPasswordView(false);
-            window.history.replaceState({}, document.title, "/"); // Pulisce URL
-          }}
-        />
+        <PageLayout>
+          <ResetPassword
+            onBackToLogin={() => {
+              setIsResetPasswordView(false);
+              window.history.replaceState({}, document.title, "/"); // Pulisce URL
+            }}
+          />
+        </PageLayout>
       );
     }
 
     // Se l'utente ha cliccato "Forgot Password"
     if (isForgotPasswordView) {
       return (
-        <ForgotPassword onBackToLogin={() => setIsForgotPasswordView(false)} />
+        <PageLayout>
+          <ForgotPassword onBackToLogin={() => setIsForgotPasswordView(false)} />
+        </PageLayout>
       );
     }
 
     // Rendering normale Login/Registration
     return isRegisterView ? (
-      <Registration
-        onRegisterSuccess={handleLoginSuccess}
-        onShowLogin={() => setRegisterView(false)}
-      />
+      <PageLayout>
+        <Registration
+          onRegisterSuccess={handleLoginSuccess}
+          onShowLogin={() => setRegisterView(false)}
+        />
+      </PageLayout>
     ) : (
-      <Login
-        onLoginSuccess={handleLoginSuccess}
-        onShowRegister={() => setRegisterView(true)}
-        onGuestLogin={handleLoginGuest}
-        onForgotPassword={() => setIsForgotPasswordView(true)}
-      />
+      <PageLayout>
+        <Login
+          onLoginSuccess={handleLoginSuccess}
+          onShowRegister={() => setRegisterView(true)}
+          onGuestLogin={handleLoginGuest}
+          onForgotPassword={() => setIsForgotPasswordView(true)}
+        />
+      </PageLayout>
     );
   }
   if (!mode) {
     return (
-      <>
+      <PageLayout>
         {currentUser ? <UserAvatar name={currentUser} /> : ""}
 
         <div className="page-wrapper">
@@ -533,26 +567,28 @@ function App() {
             )}
           </div>
         </div>
-      </>
+      </PageLayout>
     );
   }
 
   // Versus Setup - mostra UserList se non c'è ancora un opponent
   if (mode === GAME_MODES.VERSUS && !opponent) {
     return (
-      <UserList
-        socket={socket}
-        currentUser={currentUser}
-        onBack={resetGame}
-        onGameStart={handleGameStart}
-      />
+      <PageLayout>
+        <UserList
+          socket={socket}
+          currentUser={currentUser}
+          onBack={resetGame}
+          onGameStart={handleGameStart}
+        />
+      </PageLayout>
     );
   }
 
   // Versus Setup - mostra VersusSetup se c'è un opponent e isSettingCode è true
   if (mode === GAME_MODES.VERSUS && opponent && isSettingCode) {
     return (
-      <>
+      <PageLayout>
         <VersusSetup
           tempCode={tempCode}
           colors={COLORS_BOMB}
@@ -563,7 +599,7 @@ function App() {
           onBack={resetGame}
         />
         <div style={{ color: "white" }}>Setup against {opponent}</div>
-      </>
+      </PageLayout>
     );
   }
 
@@ -574,6 +610,7 @@ function App() {
     !isSettingCode
   ) {
     return (
+      <PageLayout>
       <div className="page-wrapper">
         <div className="bomb-container">
           <div style={{ padding: "12px 16px" }}>
@@ -628,10 +665,12 @@ function App() {
           </div>
         </div>
       </div>
+      </PageLayout>
     );
   }
 
   return (
+    <PageLayout>
     <div className="page-wrapper">
       <div className="bomb-container">
         {guesses.length === 0 &&
@@ -725,6 +764,7 @@ function App() {
         />
       )}
     </div>
+    </PageLayout>
   );
 }
 
