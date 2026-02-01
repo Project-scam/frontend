@@ -283,10 +283,10 @@ function App() {
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <div style={{ flex: 1, paddingBottom: "56px" }}>{children}</div>
       <Footer
-        copyright="© 2025 Mastermind"
+        copyright="© 2026 Mastermind SCAM"
         onPrivacyClick={() => setShowPrivacyPolicy(true)}
       >
-        Privacy Policy
+        Privacy & Policy
       </Footer>
       {showPrivacyPolicy && (
         <PrivacyPolicy onClose={() => setShowPrivacyPolicy(false)} />

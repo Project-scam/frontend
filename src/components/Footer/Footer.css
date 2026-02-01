@@ -18,7 +18,9 @@
     background-color: rgba(0,0,0,0.85);
     z-index: 100;
 }
-
+.footer-text{
+    color:#eab308;
+}
 .footer-link{
     background: none;
     border: none;
@@ -27,6 +29,7 @@
     text-decoration: underline;
     font-size: inherit;
     color: #eab308;
+    text-align: center;
 }
 
 .footer-link:hover{
